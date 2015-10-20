@@ -3,28 +3,32 @@ package com.aivo.hyperion.aivo.models.pojos;
 /**
  * Created by corpp on 20.10.2015.
  */
-public class Note {
+public class Media {
 
+    private String icon;
     private String createdAt;
     private String updateAt;
     private int userId = -1;
-    private int noteId = -1;
     private int mindMapId = -1;
     private int magnetId = -1;
-    private int color = -1;
-    private String title = "";
-    private String content = "";
+    private String uri = "";
 
-    public Note() {
+    public Media() {
+        this.icon = "";
         this.createdAt = "1970-01-01T00:00:00.000Z";
         this.updateAt = "1970-01-01T00:00:00.000Z";
         this.userId = -1;
-        this.noteId = -1;
         this.mindMapId = -1;
         this.magnetId = -1;
-        this.color = -1;
-        this.title = "";
-        this.content = "";
+        this.uri = "";
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public String getCreatedAt() {
@@ -51,14 +55,6 @@ public class Note {
         this.userId = userId;
     }
 
-    public int getNoteId() {
-        return noteId;
-    }
-
-    public void setNoteId(int noteId) {
-        this.noteId = noteId;
-    }
-
     public int getMindMapId() {
         return mindMapId;
     }
@@ -75,27 +71,11 @@ public class Note {
         this.magnetId = magnetId;
     }
 
-    public int getColor() {
-        return color;
+    public String getUri() {
+        return uri;
     }
 
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 }
