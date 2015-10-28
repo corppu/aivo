@@ -6,18 +6,18 @@ import java.util.List;
 /**
  * Created by corpp on 20.10.2015.
  */
-public class User {
+public class UserPojo {
 
     private int userId;
     private String email;
     private String createdAt;
     private String updateAt;
 
-    private int mindMapIdCounter;
-    private List<Integer> mindMapIds;
-    private List<Integer> favouriteMindMapIds;
-    private List<Integer> deletedMindMapIds;
-    private List<Integer> recentMindMapIds;
+    private int mindmapIdCounter;
+    private List<Integer> mindmapIds;
+    private List<Integer> favouriteMindmapIds;
+    private List<Integer> deletedMindmapIds;
+    private List<Integer> recentMindmapIds;
 
     private int noteIdCounter;
     private List<Integer> noteIds;
@@ -25,17 +25,17 @@ public class User {
     private List<Integer> deletedNoteIds;
     private List<Integer> recentNoteIds;
 
-    public User() {
+    public UserPojo() {
         this.userId = 0;
         this.email = "";
         this.createdAt = "1970-01-01T00:00:00.000Z";
         this.updateAt = "1970-01-01T00:00:00.000Z";
 
-        this.mindMapIdCounter = 0;
-        this.mindMapIds = new ArrayList<>();
-        this.favouriteMindMapIds = new ArrayList<>();
-        this.deletedMindMapIds = new ArrayList<>();
-        this.recentMindMapIds = new ArrayList<>();
+        this.mindmapIdCounter = 0;
+        this.mindmapIds = new ArrayList<>();
+        this.favouriteMindmapIds = new ArrayList<>();
+        this.deletedMindmapIds = new ArrayList<>();
+        this.recentMindmapIds = new ArrayList<>();
 
         this.noteIdCounter = 0;
         this.noteIds = new ArrayList<>();
@@ -60,44 +60,44 @@ public class User {
         this.email = email;
     }
 
-    public int getMindMapIdCounter() {
-        return mindMapIdCounter;
+    public int getMindmapIdCounter() {
+        return mindmapIdCounter;
     }
 
-    public void setMindMapIdCounter(int mindMapIdCounter) {
-        this.mindMapIdCounter = mindMapIdCounter;
+    public void setMindmapIdCounter(int mindmapIdCounter) {
+        this.mindmapIdCounter = mindmapIdCounter;
     }
 
-    public List<Integer> getMindMapIds() {
-        return mindMapIds;
+    public List<Integer> getMindmapIds() {
+        return mindmapIds;
     }
 
-    public void setMindMapIds(List<Integer> mindMapIds) {
-        this.mindMapIds = mindMapIds;
+    public void setMindmapIds(List<Integer> mindmapIds) {
+        this.mindmapIds = mindmapIds;
     }
 
-    public List<Integer> getFavouriteMindMapIds() {
-        return favouriteMindMapIds;
+    public List<Integer> getFavouriteMindmapIds() {
+        return favouriteMindmapIds;
     }
 
-    public void setFavouriteMindMapIds(List<Integer> favouriteMindMapIds) {
-        this.favouriteMindMapIds = favouriteMindMapIds;
+    public void setFavouriteMindmapIds(List<Integer> favouriteMindmapIds) {
+        this.favouriteMindmapIds = favouriteMindmapIds;
     }
 
-    public List<Integer> getDeletedMindMapIds() {
-        return deletedMindMapIds;
+    public List<Integer> getDeletedMindmapIds() {
+        return deletedMindmapIds;
     }
 
-    public void setDeletedMindMapIds(List<Integer> deletedMindMapIds) {
-        this.deletedMindMapIds = deletedMindMapIds;
+    public void setDeletedMindmapIds(List<Integer> deletedMindmapIds) {
+        this.deletedMindmapIds = deletedMindmapIds;
     }
 
-    public List<Integer> getRecentMindMapIds() {
-        return recentMindMapIds;
+    public List<Integer> getRecentMindmapIds() {
+        return recentMindmapIds;
     }
 
-    public void setRecentMindMapIds(List<Integer> recentMindMapIds) {
-        this.recentMindMapIds = recentMindMapIds;
+    public void setRecentMindmapIds(List<Integer> recentMindmapIds) {
+        this.recentMindmapIds = recentMindmapIds;
     }
 
     public int getNoteIdCounter() {

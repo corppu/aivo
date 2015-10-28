@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * Created by corpp on 20.10.2015.
  */
-public class Mindmap {
+public class MindmapPojo {
 
     private String createdAt;
     private String updateAt;
     private int userId;
-    private int mindMapId;
+    private int mindmapId;
     private int magnetIdCounter;
     private List<Integer> removedMagnetIds;
     private List<Integer> magnetIds;
@@ -21,11 +21,11 @@ public class Mindmap {
     private String title;
     private int thumbnailId;
 
-    public Mindmap() {
+    public MindmapPojo() {
         this.createdAt = "1970-01-01T00:00:00.000Z";
         this.updateAt = "1970-01-01T00:00:00.000Z";
         this.userId = -1;
-        this.mindMapId = -1;
+        this.mindmapId = -1;
         this.magnetIdCounter = 0;
         this.removedMagnetIds = new ArrayList<>();
         this.magnetIds = new ArrayList<>();
@@ -58,12 +58,12 @@ public class Mindmap {
         this.userId = userId;
     }
 
-    public int getMindMapId() {
-        return mindMapId;
+    public int getMindmapId() {
+        return mindmapId;
     }
 
-    public void setMindMapId(int mindMapId) {
-        this.mindMapId = mindMapId;
+    public void setMindmapId(int mindmapId) {
+        this.mindmapId = mindmapId;
     }
 
     public int getMagnetIdCounter() {

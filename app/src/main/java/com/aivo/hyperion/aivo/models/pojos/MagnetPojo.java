@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * Created by corpp on 20.10.2015.
  */
-public class Magnet {
+public class MagnetPojo {
 
     private String createdAt;
     private String updateAt;
     private int userId;
-    private int mindMapId;
+    private int mindmapId;
     private int magnetId;
     private int x;
     private int y;
@@ -26,11 +26,11 @@ public class Magnet {
     private int color;
     private String title;
 
-    public Magnet() {
+    public MagnetPojo() {
         this.createdAt = "1970-01-01T00:00:00.000Z";
         this.updateAt = "1970-01-01T00:00:00.000Z";
         this.userId = -1;
-        this.mindMapId = -1;
+        this.mindmapId = -1;
         this.magnetId = -1;
         this.x = -1;
         this.y = -1;
@@ -68,12 +68,12 @@ public class Magnet {
         this.userId = userId;
     }
 
-    public int getMindMapId() {
-        return mindMapId;
+    public int getMindmapId() {
+        return mindmapId;
     }
 
-    public void setMindMapId(int mindMapId) {
-        this.mindMapId = mindMapId;
+    public void setMindmapId(int mindmapId) {
+        this.mindmapId = mindmapId;
     }
 
     public int getMagnetId() {
