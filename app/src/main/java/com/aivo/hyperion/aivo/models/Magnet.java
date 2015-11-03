@@ -1,6 +1,5 @@
 package com.aivo.hyperion.aivo.models;
 
-import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
 import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
 
 import java.io.IOException;
@@ -9,34 +8,47 @@ public class Magnet {
     // The local pojo
     private MagnetPojo pojo;
 
-    // The given local storage module
-    private LocalStorageModule lsm;
-    private void setLSM(LocalStorageModule lsm_) {
-        if (lsm == null)
-            throw new InternalError("Magnet created without a valid LocalStorageModule reference!");
-        lsm = lsm_;
+    // The model mediator reference
+    private ModelMediator mediator;
+    private void setMediator(ModelMediator modelMediator_) {
+        if (modelMediator_ == null)
+            throw new InternalError("User created without a valid ModelMediator reference!");
+        mediator = modelMediator_;
     }
 
-    /** Create a new Magnet with no references.
+    /** Create a new Magnet. Gets required information from the mediator.
      *
-     * @param lsm_  LocalStorageModule reference. Required!
+     * @param mediator_  LocalStorageModule reference. Required!
      */
-    public Magnet(LocalStorageModule lsm_) {
-        setLSM(lsm_);
+    public Magnet(ModelMediator mediator_, final int x, final int y) {
+        setMediator(mediator_);
         pojo = new MagnetPojo();
+
+        // Set identifiers and update other models
+        pojo.setUserId(mediator.getUser().getId());
+        pojo.setMindmapId(mediator.getMindmap().getId());
+        pojo.setMagnetId(mediator.getMindmap().getAddNextFreeMagnetId());
+
+        // Set other pojo data
+        pojo.setX(x); pojo.setY(y);
     }
 
     /** Create a Magnet from a existing file.
      *
-     * @param lsm_          LocalStorageModule reference. Required!
-     * @param userId        User identifier.
-     * @param mindmapId     Mindmap identifier.
+     * @param mediator_     LocalStorageModule reference. Required!
      * @param magnetId      Magnet identifier.
      * @throws IOException  If unable to read from or close the file.
      */
-    public Magnet(LocalStorageModule lsm_, final int userId, final int mindmapId,
-                  final int magnetId) throws IOException {
-        setLSM(lsm_);
-        pojo = lsm.loadMagnet(userId, mindmapId, magnetId);
+    public Magnet(ModelMediator mediator_, final int magnetId) throws IOException {
+        setMediator(mediator_);
+        pojo = mediator.getLSM().loadMagnet(mediator.getUser().getId(),
+                                            mediator.getMindmap().getId(), magnetId);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // Public interface
+    public int getId() { return pojo.getMagnetId(); }
+
+    //----------------------------------------------------------------------------------------------
+    // Protected model functions
 }

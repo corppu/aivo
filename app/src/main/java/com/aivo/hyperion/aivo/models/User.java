@@ -1,42 +1,80 @@
 package com.aivo.hyperion.aivo.models;
 
-import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
 import com.aivo.hyperion.aivo.models.pojos.UserPojo;
 
 import java.io.IOException;
 
-/**
- * Created by corpp on 20.10.2015.
- */
 public class User {
     // The local pojo
     private UserPojo pojo;
 
-    // The given local storage module
-    private LocalStorageModule lsm;
-    private void setLSM(LocalStorageModule lsm_) {
-        if (lsm == null)
-            throw new InternalError("User created without a valid LocalStorageModule reference!");
-        lsm = lsm_;
+    // The model mediator reference
+    private ModelMediator mediator;
+    private void setMediator(ModelMediator modelMediator_) {
+        if (modelMediator_ == null)
+            throw new InternalError("User created without a valid ModelMediator reference!");
+        mediator = modelMediator_;
     }
 
-    /** Create a new User with no references.
+    /** Create a new User. Gets required information from the mediator.
      *
-     * @param lsm_  LocalStorageModule reference. Required!
+     * @param mediator_  ModelMediator reference. Required!
      */
-    public User(LocalStorageModule lsm_) {
-        setLSM(lsm_);
+    public User(ModelMediator mediator_) {
+        setMediator(mediator_);
         pojo = new UserPojo();
+        pojo.setUserId(0); // TODO: Figure out next available user id
     }
 
     /** Create a User from a existing file.
      *
-     * @param lsm_          LocalStorageModule reference. Required!
+     * @param mediator_     ModelMediator reference. Required!
      * @param userId        User identifier.
      * @throws IOException  If unable to read from or close the file.
      */
-    public User(LocalStorageModule lsm_, final int userId) throws IOException {
-        setLSM(lsm_);
-        pojo = lsm.loadUser(userId);
+    public User(ModelMediator mediator_, final int userId) throws IOException {
+        setMediator(mediator_);
+        pojo = mediator.getLSM().loadUser(userId);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    // Public interface
+    public int getId() { return pojo.getUserId(); }
+
+    //----------------------------------------------------------------------------------------------
+    // Protected model functions
+    protected int getAddNextFreeMindmapId() {
+        int nextId;
+        if (pojo.getDeletedMindmapIds().size() > 0) {
+            nextId = pojo.getDeletedMindmapIds().remove(0).intValue();
+        } else {
+            nextId = pojo.getMindmapIdCounter();
+            pojo.setMindmapIdCounter(nextId + 1);
+        }
+        pojo.getMindmapIds().add(nextId);
+        return nextId;
+    }
+    protected int getAddNextFreeNoteId() {
+        int nextId;
+        if (pojo.getDeletedNoteIds().size() > 0) {
+            nextId = pojo.getDeletedNoteIds().remove(0).intValue();
+        } else {
+            nextId = pojo.getNoteIdCounter();
+            pojo.setNoteIdCounter(nextId + 1);
+        }
+        pojo.getNoteIds().add(nextId);
+        return nextId;
+    }
+    protected void deleteMindmapId(final int mindmapId) {
+        if (!pojo.getMindmapIds().contains(mindmapId))
+            throw new InternalError("Tried to delete a unlisted Mindmap from a User!");
+        pojo.getMindmapIds().remove(new Integer(mindmapId));
+        pojo.getDeletedMindmapIds().add(mindmapId);
+    }
+    protected void deleteNoteId(final int noteId) {
+        if (!pojo.getNoteIds().contains(noteId))
+            throw new InternalError("Tried to delete a unlisted Note from a User!");
+        pojo.getNoteIds().remove(new Integer(noteId));
+        pojo.getDeletedNoteIds().add(noteId);
     }
 }

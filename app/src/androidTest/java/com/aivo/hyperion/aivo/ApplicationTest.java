@@ -31,6 +31,6 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 
 
     public void testCreateUser() {
-        User user = new User();
+
     }
 }

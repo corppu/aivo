@@ -75,7 +75,7 @@ public class LocalStorageModule {
 
     /** Saves the given MagnetPojos in the proper folders.
      *
-     * @param magnetPojos       Magnets to be saved.
+     * @param magnetPojos   Magnets to be saved.
      * @throws IOException  If unable to write to a file. Any Magnets succesfully saved before
      *                      this exception occurred will remain on the external storage.
      */
@@ -87,7 +87,7 @@ public class LocalStorageModule {
 
     /** Saves the given NotePojo in the proper folder.
      *
-     * @param notePojo          NotePojo to be saved.
+     * @param notePojo      NotePojo to be saved.
      * @throws IOException  If unable to write to the file.
      */
     public void saveNote(final NotePojo notePojo) throws IOException {
@@ -99,7 +99,7 @@ public class LocalStorageModule {
 
     /** Saves the given Notes in the proper folders. NotePojo validity is checked before saving.
      *
-     * @param notePojos         Notes to be saved.
+     * @param notePojos     Notes to be saved.
      * @throws IOException  If unable to write to a file. Any Notes succesfully saved before
      *                      this exception occurred will remain on the external storage.
      */
@@ -111,7 +111,7 @@ public class LocalStorageModule {
 
     /** Saves the given UserPojo in the proper folder.
      *
-     * @param userPojo          UserPojo to be saved.
+     * @param userPojo      UserPojo to be saved.
      * @throws IOException  If unable to write to the file.
      */
     public void saveUser(final UserPojo userPojo) throws IOException {

@@ -1,43 +1,51 @@
 package com.aivo.hyperion.aivo.models;
 
-import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
 import com.aivo.hyperion.aivo.models.pojos.NotePojo;
 
 import java.io.IOException;
 
-/**
- * Created by corpp on 20.10.2015.
- */
 public class Note {
     // The local pojo
     private NotePojo pojo;
 
-    // The given local storage module
-    private LocalStorageModule lsm;
-    private void setLSM(LocalStorageModule lsm_) {
-        if (lsm == null)
-            throw new InternalError("Note created without a valid LocalStorageModule reference!");
-        lsm = lsm_;
+    // The model mediator reference
+    private ModelMediator mediator;
+    private void setMediator(ModelMediator modelMediator_) {
+        if (modelMediator_ == null)
+            throw new InternalError("User created without a valid ModelMediator reference!");
+        mediator = modelMediator_;
     }
 
-    /** Create a new Note with no references.
+    /** Create a new Note. Gets required information from the mediator.
      *
-     * @param lsm_  LocalStorageModule reference. Required!
+     * @param mediator_  LocalStorageModule reference. Required!
      */
-    public Note(LocalStorageModule lsm_) {
-        setLSM(lsm_);
+    public Note(ModelMediator mediator_) {
+        setMediator(mediator_);
         pojo = new NotePojo();
+
+        // Set identifiers and update other models
+        pojo.setUserId(mediator.getUser().getId());
+        pojo.setMindmapId(mediator.getUser().getAddNextFreeNoteId());
     }
 
     /** Create a Note from a existing file.
      *
-     * @param lsm_          LocalStorageModule reference. Required!
-     * @param userId        User identifier.
+     * @param mediator_     LocalStorageModule reference. Required!
      * @param noteId        Note identifier.
      * @throws IOException  If unable to read from or close the file.
      */
-    public Note(LocalStorageModule lsm_, final int userId, final int noteId) throws IOException {
-        setLSM(lsm_);
-        pojo = lsm.loadNote(userId, noteId);
+    public Note(ModelMediator mediator_, final int noteId) throws IOException {
+        setMediator(mediator_);
+        pojo = mediator.getLSM().loadNote(mediator.getUser().getId(), noteId);
     }
+
+    //----------------------------------------------------------------------------------------------
+    // Public interface
+    public int getId() { return pojo.getNoteId(); }
+
+    //----------------------------------------------------------------------------------------------
+    // Protected model functions
+
+    // TODO: Jos noten aukaisee ja irrottaa magneetista, täytyy päivittää kyseinen magneetti...
 }
