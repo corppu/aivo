@@ -3,7 +3,7 @@ package com.aivo.hyperion.aivo.models;
 import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
 
 import java.io.IOException;
-import java.io.InvalidObjectException;
+
 import java.util.ArrayList;
 
 public class ModelMediator {
@@ -11,16 +11,16 @@ public class ModelMediator {
     private LocalStorageModule lsm;
     protected LocalStorageModule getLSM() { return lsm; }
 
-    // The current User
+    // The current User (null if none opened)
     private User user;
 
-    // The currently open Mindmap
+    // The currently open Mindmap (null if none opened)
     private Mindmap mindmap;
 
-    // The currently open Note
+    // The currently open Note (null if none opened)
     private Note note;
 
-    // List of magnets in the current mindmap
+    // List of magnets in the current mindmap (Never null, use clear!)
     private ArrayList<Magnet> magnets;
 
     public ModelMediator() {
@@ -109,7 +109,9 @@ public class ModelMediator {
             try {
                 user = new User(this, userId);
             } catch (IOException e) {
+                user = null;
                 // TODO: Event: Unable to read the User file!
+                return;
             }
         }
         // TODO: Event: User opened
@@ -137,12 +139,21 @@ public class ModelMediator {
             try {
                 mindmap = new Mindmap(this, mindMapId);
             } catch (IOException e) {
+                mindmap = null;
                 // TODO: Event: Unable to read the Mindmap file!
+                return;
             }
         }
 
-        // Also open the magnets of the mindmap
-        mindmap.openMagnets();
+        // Try to open the magnets of the mindmap
+        try {
+            mindmap.openMagnets();
+        } catch (IOException e) {
+            mindmap = null;
+            magnets.clear();
+            // TODO: Event: Unable to read a Mindmap's Magnet file!
+            return;
+        }
 
         // TODO: Event: Mindmap opened
     }
@@ -169,29 +180,85 @@ public class ModelMediator {
         // TODO: Event: Note opened
     }
 
-    public void closeUser() {
-        // First close any opened Note or Mindmap
-        closeNote();
-        closeMindmap();
+    /** First saves and closes any opened Note, then Mindmap with its Magnet and finally the User.
+     *
+     * @return  True if no user is open after.
+     */
+    public boolean closeUser() {
+        if (user == null) return true;
 
-        // TODO: Event: Closing user
+        // First try to close any opened Note or Mindmap
+        if (!closeNote() || !closeMindmap())
+            return false;
 
+        try {
+            user.savePojo();
+        } catch (IOException e) {
+            // TODO: Event: Unable to save the User file!
+            return false;
+        }
+
+        // Saved successfully, close user
+        user = null;
+
+        // TODO: Event: User closed
+        return true;
     }
 
-    public void closeMindmap() {
+    /** Save and close any open Mindmap and its Magnets.
+     *
+     * @return  True if no Mindmap is open after. (no Magnets either)
+     */
+    public boolean closeMindmap() {
+        if (mindmap == null) return true;
 
-        // TODO: Event: Closing mindmap
+        try {
+            mindmap.savePojo();
+        } catch (IOException e) {
+            // TODO: Event: Unable to save the Mindmap file!
+            return false;
+        }
+
+        try {
+            mindmap.saveMagnets();
+        } catch (IOException e) {
+            // TODO: Event: Unable to save a Mindmap Magnet file!
+            return false;
+        }
+
+        // Saved successfully, close them
+        magnets.clear();
+        mindmap = null;
+
+        // TODO: Event: Mindmap closed
+        return true;
     }
 
-    public void closeNote() {
+    /** Save and close any open Note.
+     *
+     * @return  True if no Note is open after.
+     */
+    public boolean closeNote() {
+        if (note == null) return true;
 
-        // TODO: Event: Closing note
+        try {
+            note.savePojo();
+        } catch (IOException e) {
+            // TODO: Event: Unable to save the Note file!
+            return false;
+        }
+
+        // Saved successfully, close note
+        note = null;
+
+        // TODO: Event: Note closed
+        return true;
     }
 
 
     //----------------------------------------------------------------------------------------------
     // Public Magnet functions
-    public void addMagnet(final int x, final int y) { // TODO:  root/parent??
+    public void addMagnet(final int x, final int y) { // TODO:  root/parent etc
         if (user==null)
             throw new InternalError("Tried to add a Magnet without first opening a User!");
         if (mindmap==null)

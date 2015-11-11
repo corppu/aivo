@@ -20,7 +20,7 @@ public class User {
      *
      * @param mediator_  ModelMediator reference. Required!
      */
-    public User(ModelMediator mediator_) {
+    protected User(ModelMediator mediator_) {
         setMediator(mediator_);
         pojo = new UserPojo();
         pojo.setUserId(0); // TODO: Figure out next available user id
@@ -32,7 +32,7 @@ public class User {
      * @param userId        User identifier.
      * @throws IOException  If unable to read from or close the file.
      */
-    public User(ModelMediator mediator_, final int userId) throws IOException {
+    protected User(ModelMediator mediator_, final int userId) throws IOException {
         setMediator(mediator_);
         pojo = mediator.getLSM().loadUser(userId);
     }
@@ -43,6 +43,9 @@ public class User {
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions
+    protected void savePojo() throws IOException {
+        mediator.getLSM().saveUser(pojo);
+    }
     protected int getAddNextFreeMindmapId() {
         int nextId;
         if (pojo.getDeletedMindmapIds().size() > 0) {

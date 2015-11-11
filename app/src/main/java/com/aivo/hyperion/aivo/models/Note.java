@@ -20,7 +20,7 @@ public class Note {
      *
      * @param mediator_  LocalStorageModule reference. Required!
      */
-    public Note(ModelMediator mediator_) {
+    protected Note(ModelMediator mediator_) {
         setMediator(mediator_);
         pojo = new NotePojo();
 
@@ -35,7 +35,7 @@ public class Note {
      * @param noteId        Note identifier.
      * @throws IOException  If unable to read from or close the file.
      */
-    public Note(ModelMediator mediator_, final int noteId) throws IOException {
+    protected Note(ModelMediator mediator_, final int noteId) throws IOException {
         setMediator(mediator_);
         pojo = mediator.getLSM().loadNote(mediator.getUser().getId(), noteId);
     }
@@ -46,6 +46,9 @@ public class Note {
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions
+    protected void savePojo() throws IOException {
+        mediator.getLSM().saveNote(pojo);
+    }
 
     // TODO: Jos noten aukaisee ja irrottaa magneetista, täytyy päivittää kyseinen magneetti...
 }

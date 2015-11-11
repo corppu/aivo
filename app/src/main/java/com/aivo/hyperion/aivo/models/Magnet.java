@@ -20,7 +20,7 @@ public class Magnet {
      *
      * @param mediator_  LocalStorageModule reference. Required!
      */
-    public Magnet(ModelMediator mediator_, final int x, final int y) {
+    protected Magnet(ModelMediator mediator_, final int x, final int y) {
         setMediator(mediator_);
         pojo = new MagnetPojo();
 
@@ -39,7 +39,7 @@ public class Magnet {
      * @param magnetId      Magnet identifier.
      * @throws IOException  If unable to read from or close the file.
      */
-    public Magnet(ModelMediator mediator_, final int magnetId) throws IOException {
+    protected Magnet(ModelMediator mediator_, final int magnetId) throws IOException {
         setMediator(mediator_);
         pojo = mediator.getLSM().loadMagnet(mediator.getUser().getId(),
                                             mediator.getMindmap().getId(), magnetId);
@@ -51,4 +51,7 @@ public class Magnet {
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions
+    protected void savePojo() throws IOException {
+        mediator.getLSM().saveMagnet(pojo);
+    }
 }

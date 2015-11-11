@@ -21,7 +21,7 @@ public class Mindmap {
      *
      * @param mediator_  ModelMediator reference. Required!
      */
-    public Mindmap(ModelMediator mediator_) {
+    protected Mindmap(ModelMediator mediator_) {
         setMediator(mediator_);
         pojo = new MindmapPojo();
 
@@ -36,7 +36,7 @@ public class Mindmap {
      * @param mindmapId     Mindmap identifier.
      * @throws IOException  If unable to read from or close the file.
      */
-    public Mindmap(ModelMediator mediator_, final int mindmapId) throws IOException {
+    protected Mindmap(ModelMediator mediator_, final int mindmapId) throws IOException {
         setMediator(mediator_);
         pojo = mediator.getLSM().loadMindmap(mediator.getUser().getId(), mindmapId);
     }
@@ -49,6 +49,13 @@ public class Mindmap {
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions
+    protected void savePojo() throws IOException {
+        mediator.getLSM().saveMindmap(pojo);
+    }
+    protected void saveMagnets() throws IOException {
+        for (Magnet magnet : mediator.getMagnets())
+            magnet.savePojo();
+    }
     protected int getAddNextFreeMagnetId() {
         int nextId;
         if (pojo.getRemovedMagnetIds().size() > 0) {
@@ -60,13 +67,9 @@ public class Mindmap {
         pojo.getMagnetIds().add(nextId);
         return nextId;
     }
-    protected void openMagnets() {
+    protected void openMagnets() throws IOException {
         for (int magnetId : pojo.getMagnetIds()) {
-            try {
-                mediator.getMagnets().add(new Magnet(mediator, magnetId));
-            } catch (IOException e) {
-                // TODO: Event: Unable to read a mindmap magnet
-            }
+            mediator.getMagnets().add(new Magnet(mediator, magnetId));
         }
     }
 }
