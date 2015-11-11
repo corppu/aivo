@@ -3,6 +3,8 @@ package com.aivo.hyperion.aivo.models;
 import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Magnet {
     // The local pojo
@@ -48,10 +50,20 @@ public class Magnet {
     //----------------------------------------------------------------------------------------------
     // Public interface
     public int getId() { return pojo.getMagnetId(); }
+    public ArrayList<Integer> getLineIds() { return new ArrayList<Integer>(pojo.getLineIds()); }
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
         mediator.getLSM().saveMagnet(pojo);
+    }
+    protected boolean isConnectedTo(Magnet magnet) {
+        if (magnet == this)
+            throw new InternalError("Tried to check if a Magnet is connected to itself!!!");
+        for (Integer lineId : magnet.getLineIds()) {
+            if (getLineIds().contains(lineId))
+                return true;
+        }
+        return false;
     }
 }

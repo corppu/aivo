@@ -45,7 +45,7 @@ public class LocalStorageModule {
     public void saveMindmap(final MindmapPojo mindMap) throws IOException {
 
         // Get the file and save to it
-        File file = getUserFile(mindMap.getUserId(), mindMap.getMindmapId(), -1, false);
+        File file = getUserFile(mindMap.getUserId(), mindMap.getMindmapId(), -1, fileType.mindmap);
         saveToFile(file, gson.toJson(mindMap));
     }
 
@@ -69,20 +69,20 @@ public class LocalStorageModule {
     public void saveMagnet(final MagnetPojo magnetPojo) throws IOException {
 
         // Get the file and save to it
-        File file = getUserFile(magnetPojo.getUserId(), magnetPojo.getMindmapId(), magnetPojo.getMagnetId(), false);
+        File file = getUserFile(magnetPojo.getUserId(), magnetPojo.getMindmapId(), magnetPojo.getMagnetId(), fileType.magnet);
         saveToFile(file, gson.toJson(magnetPojo));
     }
 
-    /** Saves the given MagnetPojos in the proper folders.
+    /** Saves the given LinePojo in the proper folder.
      *
-     * @param magnetPojos   Magnets to be saved.
-     * @throws IOException  If unable to write to a file. Any Magnets succesfully saved before
-     *                      this exception occurred will remain on the external storage.
+     * @param linePojo          LinePojo to be saved.
+     * @throws IOException      If unable to write to the file.
      */
-    public void saveMagnets(final ArrayList<MagnetPojo> magnetPojos) throws IOException {
-        for (MagnetPojo magnetPojo : magnetPojos) {
-            saveMagnet(magnetPojo);
-        }
+    public void saveLine(final LinePojo linePojo) throws IOException {
+
+        // Get the file and save to it
+        File file = getUserFile(linePojo.getUserId(), linePojo.getMindmapId(), linePojo.getLineId(), fileType.line);
+        saveToFile(file, gson.toJson(linePojo));
     }
 
     /** Saves the given NotePojo in the proper folder.
@@ -93,7 +93,7 @@ public class LocalStorageModule {
     public void saveNote(final NotePojo notePojo) throws IOException {
 
         // Get the file and save to it
-        File file = getUserFile(notePojo.getUserId(), -1, notePojo.getNoteId(), false);
+        File file = getUserFile(notePojo.getUserId(), -1, notePojo.getNoteId(), fileType.note);
         saveToFile(file, gson.toJson(notePojo));
     }
 
@@ -117,7 +117,7 @@ public class LocalStorageModule {
     public void saveUser(final UserPojo userPojo) throws IOException {
 
         // Get the file and save to it
-        File file = getUserFile(userPojo.getUserId(), -1, -1, false);
+        File file = getUserFile(userPojo.getUserId(), -1, -1, fileType.user);
         saveToFile(file, gson.toJson(userPojo));
     }
 
@@ -131,7 +131,7 @@ public class LocalStorageModule {
     public MindmapPojo loadMindmap(final int userId, final int mindMapId) throws IOException {
 
         // Get the file
-        File file = getUserFile(userId, mindMapId, -1, false);
+        File file = getUserFile(userId, mindMapId, -1, fileType.mindmap);
         if (file.isFile()) {
             // read the file, transform it to pojo and check its validity
             String data = readFromFile(file);
@@ -174,7 +174,7 @@ public class LocalStorageModule {
             throws IOException {
 
         // Get the file
-        File file = getUserFile(userId, mindMapId, magnetId, false);
+        File file = getUserFile(userId, mindMapId, magnetId, fileType.magnet);
         if (file.isFile()) {
             // read the file, transform it to pojo
             String data = readFromFile(file);
@@ -185,24 +185,19 @@ public class LocalStorageModule {
         return null;
     }
 
-    /** Loads all the MagnetPojos of a MindmapPojo from the external storage.
-     *
-     * @param mindMap       MindmapPojo identifier
-     * @return              MagnetPojos that were listed within the MindmapPojo.
-     * @throws IOException  If unable to read from or close any file.
-     */
-    public ArrayList<MagnetPojo> loadMagnets(final MindmapPojo mindMap) throws IOException {
+    public LinePojo loadLine(final int userId, final int mindMapId, final int lineId)
+            throws IOException {
 
-        ArrayList<MagnetPojo> magnetPojos = new ArrayList<>();
-
-        // Read the mindmaps magnetPojos
-        for (int magnetId : mindMap.getMagnetIds()) {
-            MagnetPojo temp = loadMagnet(mindMap.getUserId(), mindMap.getMindmapId(), magnetId);
-            if ( !(temp == null) )
-                magnetPojos.add( temp );
+        // Get the file
+        File file = getUserFile(userId, mindMapId, lineId, fileType.line);
+        if (file.isFile()) {
+            // read the file, transform it to pojo
+            String data = readFromFile(file);
+            LinePojo linePojo = gson.fromJson(data, LinePojo.class);
+            return linePojo;
         }
 
-        return magnetPojos;
+        return null;
     }
 
     /** Loads a NotePojo from the external storage.
@@ -215,7 +210,7 @@ public class LocalStorageModule {
     public NotePojo loadNote(final int userId, final int noteId) throws IOException {
 
         // Get the file
-        File file = getUserFile(userId, -1, noteId, false);
+        File file = getUserFile(userId, -1, noteId, fileType.note);
         if (file.isFile()) {
             // read the file, transform it to pojo and check its validity
             String data = readFromFile(file);
@@ -253,7 +248,7 @@ public class LocalStorageModule {
     public UserPojo loadUser(final int userId) throws IOException {
 
         // Get the file
-        File file = getUserFile(userId, -1, -1, false);
+        File file = getUserFile(userId, -1, -1, fileType.user);
         if (file.isFile()) {
             // read the file, transform it to pojo and check its validity
             String data = readFromFile(file);
@@ -277,7 +272,7 @@ public class LocalStorageModule {
             throws IOException {
 
         // Delete the mindmap file
-        File file = getUserFile(userId, mindMapId, -1, false);
+        File file = getUserFile(userId, mindMapId, -1, fileType.mindmap);
         deleteFile(file);
 
         // Delete all folder content?
@@ -301,7 +296,7 @@ public class LocalStorageModule {
             throws IOException {
 
         // Delete the magnet file
-        File file = getUserFile(userId, mindMapId, magnetId, false);
+        File file = getUserFile(userId, mindMapId, magnetId, fileType.magnet);
         deleteFile(file);
     }
     // ^
@@ -318,7 +313,7 @@ public class LocalStorageModule {
     public void deleteNote(final int userId, final int noteId) throws IOException {
 
         // Delete the note file
-        File file = getUserFile(userId, -1, noteId, false);
+        File file = getUserFile(userId, -1, noteId, fileType.note);
         deleteFile(file);
     }
     // ^
@@ -336,7 +331,7 @@ public class LocalStorageModule {
     public void deleteUser(final int userId, final boolean Recursive) throws IOException {
 
         // Delete the user file
-        File file = getUserFile(userId, -1, -1, false);
+        File file = getUserFile(userId, -1, -1, fileType.user);
         deleteFile(file);
 
         // Delete all folder content?
@@ -349,8 +344,61 @@ public class LocalStorageModule {
         deleteUser(userPojo.getUserId(), Recursive);
     }
 
+    enum fileType {user, mindmap, magnet, note, line}
+    /** Returns a reference to a user file.
+     *
+     * @param userId            UserId. Must be >= 0.
+     * @param mindmapId         MindmapId. Must be >=0, in case of magnet, mindmap or line.
+     * @param typeId            TypeId. Must be >=0, in case of magnet, note or line.
+     * @param filetype          Enum to define which filetype we are getting.
+     * @return                  Wanted File reference.
+     */
+    private File getUserFile(final int userId, final int mindmapId, final int typeId, final fileType filetype) {
+        if (userId < 0)
+            throw new InternalError("getUserFile() called with invalid userId!");
+        if (mindmapId < 0 && (
+                filetype == fileType.magnet ||
+                filetype == fileType.mindmap ||
+                filetype == fileType.line))
+            throw new InternalError("getUserFile() called with invalid mindmapId, when it was required!");
+        if (typeId < 0 && (
+                filetype == fileType.note ||
+                filetype == fileType.magnet ||
+                filetype == fileType.line))
+            throw new InternalError("getUserFile() called with invalid typeId, when it was required!");
 
+        // File is always in user file
+        String filepath = "/Documents/Aivo/User_" + userId;
+        String filename = "";
 
+        // Append to filepath and set filename
+        switch (filetype) {
+            case user:
+                // filepath already ready
+                filename = "User_" + userId + ".json";
+                break;
+            case mindmap:
+                filepath += "/Mindmap_" + typeId;
+                filename = "Mindmap_" + typeId + ".json";
+                break;
+            case magnet:
+                filepath += "/Mindmap_" + typeId;
+                filename = "Magnet_" + typeId + ".json";
+                break;
+            case note:
+                filepath += "/Notes";
+                filename = "Note_" + typeId + ".json";
+                break;
+            case line:
+                filepath += "/Mindmap_" + typeId;
+                filename = "Line_" + typeId + ".json";
+                break;
+        }
+        // append filename to path
+        File file = new File(Environment.getExternalStorageDirectory() + filepath, filename);
+        return file;
+        //return (folderOnly) ? file.getParentFile() : file;
+    }
 
 
 
@@ -362,7 +410,7 @@ public class LocalStorageModule {
      * @param folderOnly        If true, returns reference to the folder the wanted file resides in.
      * @return                  Wanted File reference.
      */
-    private File getUserFile(final int userId, final int mindMapId,
+/*    private File getUserFile(final int userId, final int mindMapId,
                              final int magnetIdOrNoteId, final boolean folderOnly) {
 
         if (userId < 0)
@@ -390,7 +438,7 @@ public class LocalStorageModule {
         File file = new File(Environment.getExternalStorageDirectory() + filepath, filename);
         return (folderOnly) ? file.getParentFile() : file;
     }
-
+*/
     /** Reads contents of given file to a string.
      *
      * @param file          file to read, must not be null

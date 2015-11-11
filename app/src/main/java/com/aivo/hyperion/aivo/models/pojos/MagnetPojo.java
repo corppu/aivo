@@ -17,12 +17,8 @@ public class MagnetPojo {
     private int magnetId;
     private int x;
     private int y;
-    private int rootId;
-    private int parentId;
     private int noteId;
-    private List<Integer> childIds;
-    private List<Integer> parentRelativeIds;
-    private List<Integer> childRelativeIds;
+    private List<Integer> lineIds;
     private int color;
     private String title;
 
@@ -34,12 +30,8 @@ public class MagnetPojo {
         this.magnetId = -1;
         this.x = -1;
         this.y = -1;
-        this.rootId = -1;
-        this.parentId = -1;
         this.noteId = -1;
-        this.childIds = new ArrayList<>();
-        this.parentRelativeIds = new ArrayList<>();
-        this.childRelativeIds = new ArrayList<>();
+        this.lineIds = new ArrayList<>();
         this.color = Color.YELLOW;
         this.title = "";
     }
@@ -100,22 +92,6 @@ public class MagnetPojo {
         this.y = y;
     }
 
-    public int getRootId() {
-        return rootId;
-    }
-
-    public void setRootId(int rootId) {
-        this.rootId = rootId;
-    }
-
-    public int getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(int parentId) {
-        this.parentId = parentId;
-    }
-
     public int getNoteId() {
         return noteId;
     }
@@ -124,28 +100,12 @@ public class MagnetPojo {
         this.noteId = noteId;
     }
 
-    public List<Integer> getChildIds() {
-        return childIds;
+    public List<Integer> getLineIds() {
+        return lineIds;
     }
 
-    public void setChildIds(List<Integer> childIds) {
-        this.childIds = childIds;
-    }
-
-    public List<Integer> getParentRelativeIds() {
-        return parentRelativeIds;
-    }
-
-    public void setParentRelativeIds(List<Integer> parentRelativeIds) {
-        this.parentRelativeIds = parentRelativeIds;
-    }
-
-    public List<Integer> getChildRelativeIds() {
-        return childRelativeIds;
-    }
-
-    public void setChildRelativeIds(List<Integer> childRelativeIds) {
-        this.childRelativeIds = childRelativeIds;
+    public void setLineIds(List<Integer> lineIds) {
+        this.lineIds = lineIds;
     }
 
     public int getColor() {

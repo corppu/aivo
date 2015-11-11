@@ -39,6 +39,13 @@ public class Mindmap {
     protected Mindmap(ModelMediator mediator_, final int mindmapId) throws IOException {
         setMediator(mediator_);
         pojo = mediator.getLSM().loadMindmap(mediator.getUser().getId(), mindmapId);
+
+        for (int magnetId : pojo.getMagnetIds()) {
+            mediator.getMagnets().add(new Magnet(mediator, magnetId));
+        }
+        for (int lineId : pojo.getLineIds()) {
+            mediator.getLines().add(new Line(mediator, lineId));
+        }
     }
 
     //----------------------------------------------------------------------------------------------
@@ -51,15 +58,15 @@ public class Mindmap {
     // Protected model functions
     protected void savePojo() throws IOException {
         mediator.getLSM().saveMindmap(pojo);
-    }
-    protected void saveMagnets() throws IOException {
         for (Magnet magnet : mediator.getMagnets())
             magnet.savePojo();
+        for (Line line : mediator.getLines())
+            line.savePojo();
     }
     protected int getAddNextFreeMagnetId() {
         int nextId;
         if (pojo.getRemovedMagnetIds().size() > 0) {
-            nextId = pojo.getRemovedMagnetIds().remove(0).intValue();
+            nextId = pojo.getRemovedMagnetIds().remove(0);
         } else {
             nextId = pojo.getMagnetIdCounter();
             pojo.setMagnetIdCounter(nextId + 1);
@@ -67,9 +74,15 @@ public class Mindmap {
         pojo.getMagnetIds().add(nextId);
         return nextId;
     }
-    protected void openMagnets() throws IOException {
-        for (int magnetId : pojo.getMagnetIds()) {
-            mediator.getMagnets().add(new Magnet(mediator, magnetId));
+    protected int getAddNextFreeLineId() {
+        int nextId;
+        if (pojo.getRemovedLineIds().size() > 0) {
+            nextId = pojo.getRemovedLineIds().remove(0);
+        } else {
+            nextId = pojo.getLineIdCounter();
+            pojo.setLineIdCounter(nextId + 1);
         }
+        pojo.getLineIds().add(nextId);
+        return nextId;
     }
 }

@@ -49,7 +49,7 @@ public class User {
     protected int getAddNextFreeMindmapId() {
         int nextId;
         if (pojo.getDeletedMindmapIds().size() > 0) {
-            nextId = pojo.getDeletedMindmapIds().remove(0).intValue();
+            nextId = pojo.getDeletedMindmapIds().remove(0);
         } else {
             nextId = pojo.getMindmapIdCounter();
             pojo.setMindmapIdCounter(nextId + 1);
@@ -60,7 +60,7 @@ public class User {
     protected int getAddNextFreeNoteId() {
         int nextId;
         if (pojo.getDeletedNoteIds().size() > 0) {
-            nextId = pojo.getDeletedNoteIds().remove(0).intValue();
+            nextId = pojo.getDeletedNoteIds().remove(0);
         } else {
             nextId = pojo.getNoteIdCounter();
             pojo.setNoteIdCounter(nextId + 1);
@@ -70,13 +70,13 @@ public class User {
     }
     protected void deleteMindmapId(final int mindmapId) {
         if (!pojo.getMindmapIds().contains(mindmapId))
-            throw new InternalError("Tried to delete a unlisted Mindmap from a User!");
+            throw new InternalError("Tried to delete a unlisted Mindmap from a User!"); // TODO: Move to mediator
         pojo.getMindmapIds().remove(new Integer(mindmapId));
         pojo.getDeletedMindmapIds().add(mindmapId);
     }
     protected void deleteNoteId(final int noteId) {
         if (!pojo.getNoteIds().contains(noteId))
-            throw new InternalError("Tried to delete a unlisted Note from a User!");
+            throw new InternalError("Tried to delete a unlisted Note from a User!"); // TODO: Move to mediator
         pojo.getNoteIds().remove(new Integer(noteId));
         pojo.getDeletedNoteIds().add(noteId);
     }

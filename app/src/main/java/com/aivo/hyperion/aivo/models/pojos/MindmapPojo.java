@@ -17,6 +17,9 @@ public class MindmapPojo {
     private int magnetIdCounter;
     private List<Integer> removedMagnetIds;
     private List<Integer> magnetIds;
+    private int lineIdCounter;
+    private List<Integer> removedLineIds;
+    private List<Integer> lineIds;
     private int color;
     private String title;
     private int thumbnailId;
@@ -29,6 +32,9 @@ public class MindmapPojo {
         this.magnetIdCounter = 0;
         this.removedMagnetIds = new ArrayList<>();
         this.magnetIds = new ArrayList<>();
+        this.lineIdCounter = 0;
+        this.removedLineIds = new ArrayList<>();
+        this.lineIds = new ArrayList<>();
         this.color = Color.WHITE;
         this.title = "";
         this.thumbnailId = -1;
@@ -88,6 +94,30 @@ public class MindmapPojo {
 
     public void setMagnetIds(List<Integer> magnetIds) {
         this.magnetIds = magnetIds;
+    }
+
+    public int getLineIdCounter() {
+        return lineIdCounter;
+    }
+
+    public void setLineIdCounter(int lineIdCounter) {
+        this.lineIdCounter = lineIdCounter;
+    }
+
+    public List<Integer> getRemovedLineIds() {
+        return removedLineIds;
+    }
+
+    public void setRemovedLineIds(List<Integer> removedLineIds) {
+        this.removedLineIds = removedLineIds;
+    }
+
+    public List<Integer> getLineIds() {
+        return lineIds;
+    }
+
+    public void setLineIds(List<Integer> lineIds) {
+        this.lineIds = lineIds;
     }
 
     public int getColor() {

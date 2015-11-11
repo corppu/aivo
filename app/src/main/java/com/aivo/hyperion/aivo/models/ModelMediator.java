@@ -23,11 +23,15 @@ public class ModelMediator {
     // List of magnets in the current mindmap (Never null, use clear!)
     private ArrayList<Magnet> magnets;
 
+    // List of lines in the current mindmap (Never null, use clear!)
+    private ArrayList<Line> lines;
+
     public ModelMediator() {
         lsm = new LocalStorageModule();
         user = null;
         mindmap = null;
         magnets = new ArrayList<Magnet>();
+        lines = new ArrayList<Line>();
     }
 
     //----------------------------------------------------------------------------------------------
@@ -62,20 +66,14 @@ public class ModelMediator {
         return magnets;
     }
 
-    /** Get a specific Magnet from the current Mindmap.
-     * Must first open a Mindmap! Magnet must exist!
+    /** Get all Lines of current Mindmap. Must first open a Mindmap!
      *
-     * @param magnetId  Identifier.
-     * @return          Magnet.
+     * @return  Lines.
      */
-    public Magnet getMagnet(final int magnetId) {
+    public ArrayList<Line> getLines() {
         if (mindmap==null)
-            throw new InternalError("Tried to get a Magnet without first opening a Mindmap!");
-        for (Magnet magnet : magnets) {
-            if (magnet.getId() == magnetId)
-                return magnet;
-        }
-        throw new InternalError("Tried to open a Magnet that didn't exist in the current Mindmap!");
+            throw new InternalError("Tried to get Lines without first opening a Mindmap!");
+        return lines;
     }
 
     /** Get the currently open Note. Must first open a Note!
@@ -134,25 +132,16 @@ public class ModelMediator {
             mindmap = new Mindmap(this);
 
         } else {
-
             // Try to open the Mindmap file
             try {
                 mindmap = new Mindmap(this, mindMapId);
             } catch (IOException e) {
                 mindmap = null;
+                magnets.clear();
+                lines.clear();
                 // TODO: Event: Unable to read the Mindmap file!
                 return;
             }
-        }
-
-        // Try to open the magnets of the mindmap
-        try {
-            mindmap.openMagnets();
-        } catch (IOException e) {
-            mindmap = null;
-            magnets.clear();
-            // TODO: Event: Unable to read a Mindmap's Magnet file!
-            return;
         }
 
         // TODO: Event: Mindmap opened
@@ -219,14 +208,8 @@ public class ModelMediator {
             return false;
         }
 
-        try {
-            mindmap.saveMagnets();
-        } catch (IOException e) {
-            // TODO: Event: Unable to save a Mindmap Magnet file!
-            return false;
-        }
-
         // Saved successfully, close them
+        lines.clear();
         magnets.clear();
         mindmap = null;
 
@@ -262,18 +245,29 @@ public class ModelMediator {
         if (user==null)
             throw new InternalError("Tried to add a Magnet without first opening a User!");
         if (mindmap==null)
-            throw new InternalError("Tried to add a Magnet without first opening a Mindmap!");
+            throw new InternalError("Tried to a+dd a Magnet without first opening a Mindmap!");
 
     }
 
-    public void removeMagnet(final int magnetId) {
+    public void removeMagnet(Magnet magnet) {
         if (user==null)
             throw new InternalError("Tried to remove a Magnet without first opening a User!");
         if (mindmap==null)
             throw new InternalError("Tried to remove a Magnet without first opening a Mindmap!");
-        if (!mindmap.getMagnetIds().contains(magnetId))
-            throw new InternalError("Tried to remove a unlisted Magnet!");
+        if (!magnets.contains(magnet))
+            throw new InternalError("Tried to remove a unlisted Magnet!!!");
 
+        // Remove connections
+
+    }
+
+    public void selectMagnet(Magnet magnet) {
+        if (user==null)
+            throw new InternalError("Tried to select a Magnet without first opening a User!");
+        if (mindmap==null)
+            throw new InternalError("Tried to select a Magnet without first opening a Mindmap!");
+        if (!magnets.contains(magnet))
+            throw new InternalError("Tried to select a unlisted Magnet!!!");
 
     }
 }
