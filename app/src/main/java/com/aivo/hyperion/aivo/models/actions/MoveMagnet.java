@@ -36,4 +36,15 @@ public class MoveMagnet implements IAction {
         mMagnet.setX((int)mStartPointF.x);
         mMagnet.setY((int)mStartPointF.y);
     }
+
+
+    @Override
+    public void setMediator(ModelMediator mediator) {
+
+    }
+
+    @Override
+    public void setView(View view) {
+
+    }
 }

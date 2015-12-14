@@ -26,9 +26,9 @@ public class ActionHandler {
 
     public void undo() {
         if (canUndo()) {
-            IAction IAction = mUndoStack.pop();
-            IAction.undo();
-            mRedoStack.add(IAction);
+            IAction action = mUndoStack.pop();
+            action.undo();
+            mRedoStack.add(action);
         }
     }
 
@@ -38,9 +38,9 @@ public class ActionHandler {
 
     public void redo() {
         if (canRedo()) {
-            IAction IAction = mRedoStack.pop();
-            IAction.execute();
-            mUndoStack.add(IAction);
+            IAction action = mRedoStack.pop();
+            action.execute();
+            mUndoStack.add(action);
         }
     }
 }

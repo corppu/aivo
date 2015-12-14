@@ -2,6 +2,7 @@ package com.aivo.hyperion.aivo.models.actions;
 
 import android.view.View;
 
+import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
 
 /**
@@ -27,4 +28,14 @@ public class DeleteMagnet implements IAction {
 
     }
 
+
+    @Override
+    public void setMediator(ModelMediator mediator) {
+
+    }
+
+    @Override
+    public void setView(View view) {
+
+    }
 }

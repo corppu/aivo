@@ -2,6 +2,7 @@ package com.aivo.hyperion.aivo.models.actions;
 
 import android.view.View;
 
+import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
 
 /**
@@ -10,6 +11,16 @@ import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
 public class CreateMagnet implements IAction {
 
     public CreateMagnet(MagnetPojo magnet, final View view) {
+
+    }
+
+    @Override
+    public void setMediator(ModelMediator mediator) {
+
+    }
+
+    @Override
+    public void setView(View view) {
 
     }
 
