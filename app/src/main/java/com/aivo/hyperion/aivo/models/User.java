@@ -34,7 +34,7 @@ public class User {
      */
     protected User(ModelMediator mediator_, final int userId) throws IOException {
         setMediator(mediator_);
-        pojo = mediator.getLSM().loadUser(userId);
+        pojo = mediator.lsm.loadUser(userId);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ public class User {
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
-        mediator.getLSM().saveUser(pojo);
+        mediator.lsm.saveUser(pojo);
     }
     protected int getAddNextFreeMindmapId() {
         int nextId;

@@ -8,85 +8,38 @@ import java.util.ArrayList;
 
 public class ModelMediator {
     // Create one LSM to be used by all model classes in the package
-    private LocalStorageModule lsm;
-    protected LocalStorageModule getLSM() { return lsm; }
+    protected LocalStorageModule lsm;
 
     // The current User (null if none opened)
-    private User user;
+    protected User user;
 
     // The currently open Mindmap (null if none opened)
-    private Mindmap mindmap;
+    protected Mindmap mindmap;
 
     // The currently open Note (null if none opened)
-    private Note note;
+    protected Note note;
 
-    // List of magnets in the current mindmap (Never null, use clear!)
-    private ArrayList<Magnet> magnets;
-
-    // List of lines in the current mindmap (Never null, use clear!)
-    private ArrayList<Line> lines;
+    protected ArrayList<ModelListener> listeners;
 
     public ModelMediator() {
         lsm = new LocalStorageModule();
         user = null;
         mindmap = null;
-        magnets = new ArrayList<Magnet>();
-        lines = new ArrayList<Line>();
+        note = null;
+        listeners = new ArrayList<ModelListener>();
     }
 
-    //----------------------------------------------------------------------------------------------
-    // Public getters
-    /** Get current User. Must first open a User!
-     *
-     * @return  User.
-     */
-    public User getUser() {
-        if (user==null)
-            throw new InternalError("Tried to get User without first opening one!");
-        return user;
+    public void registerListener(ModelListener listener) {
+        if (listeners.contains(listener))
+            throw new InternalError("Tried to register a already registered ModelListener!");
+        listeners.add(listener);
     }
 
-    /** Get current Mindmap. Must first open a Mindmap!
-     *
-     * @return  Mindmap.
-     */
-    public Mindmap getMindmap() {
-        if (mindmap==null)
-            throw new InternalError("Tried to get Mindmap without first opening one!");
-        return mindmap;
+    public void unregisterListener(ModelListener listener) {
+        if (!listeners.contains(listener))
+            throw new InternalError("Tried to unregister a unregistered ModelListener!");
+        listeners.remove(listener);
     }
-
-    /** Get all Magnets of current Mindmap. Must first open a Mindmap!
-     *
-     * @return  Magnets.
-     */
-    public ArrayList<Magnet> getMagnets() {
-        if (mindmap==null)
-            throw new InternalError("Tried to get Magnets without first opening a Mindmap!");
-        return magnets;
-    }
-
-    /** Get all Lines of current Mindmap. Must first open a Mindmap!
-     *
-     * @return  Lines.
-     */
-    public ArrayList<Line> getLines() {
-        if (mindmap==null)
-            throw new InternalError("Tried to get Lines without first opening a Mindmap!");
-        return lines;
-    }
-
-    /** Get the currently open Note. Must first open a Note!
-     *
-     * @return  Note.
-     */
-    public Note getNote() {
-        if (note==null)
-            throw new InternalError("Tried to get Note without first opening one!");
-        return note;
-    }
-
-
 
     //----------------------------------------------------------------------------------------------
     // Public open/close functions for User, Note and Magnet
@@ -112,7 +65,8 @@ public class ModelMediator {
                 return;
             }
         }
-        // TODO: Event: User opened
+
+        for (ModelListener listener : listeners) listener.onUserOpened(user);
     }
 
     /** Open a existing Mindmap, or create and open a new Mindmap.
@@ -137,14 +91,12 @@ public class ModelMediator {
                 mindmap = new Mindmap(this, mindMapId);
             } catch (IOException e) {
                 mindmap = null;
-                magnets.clear();
-                lines.clear();
                 // TODO: Event: Unable to read the Mindmap file!
                 return;
             }
         }
 
-        // TODO: Event: Mindmap opened
+        for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
     }
 
     /** Open a existing Note, or create and open a new Note.
@@ -166,10 +118,10 @@ public class ModelMediator {
             // TODO: Event: Unable to read the Note file!
         }
 
-        // TODO: Event: Note opened
+        for (ModelListener listener : listeners) listener.onNoteOpened(note);
     }
 
-    /** First saves and closes any opened Note, then Mindmap with its Magnet and finally the User.
+    /** First saves and closes any opened Note, then Mindmap and finally the User.
      *
      * @return  True if no user is open after.
      */
@@ -190,13 +142,13 @@ public class ModelMediator {
         // Saved successfully, close user
         user = null;
 
-        // TODO: Event: User closed
+        for (ModelListener listener : listeners) listener.onUserClosed();
         return true;
     }
 
-    /** Save and close any open Mindmap and its Magnets.
+    /** Save and close any open Mindmap.
      *
-     * @return  True if no Mindmap is open after. (no Magnets either)
+     * @return  True if no Mindmap is open after.
      */
     public boolean closeMindmap() {
         if (mindmap == null) return true;
@@ -208,12 +160,10 @@ public class ModelMediator {
             return false;
         }
 
-        // Saved successfully, close them
-        lines.clear();
-        magnets.clear();
+        // Saved successfully, close mindmap
         mindmap = null;
 
-        // TODO: Event: Mindmap closed
+        for (ModelListener listener : listeners) listener.onMindmapClosed();
         return true;
     }
 
@@ -234,40 +184,10 @@ public class ModelMediator {
         // Saved successfully, close note
         note = null;
 
-        // TODO: Event: Note closed
+        for (ModelListener listener : listeners) listener.onNoteClosed();
         return true;
     }
 
 
-    //----------------------------------------------------------------------------------------------
-    // Public Magnet functions
-    public void addMagnet(final int x, final int y) { // TODO:  root/parent etc
-        if (user==null)
-            throw new InternalError("Tried to add a Magnet without first opening a User!");
-        if (mindmap==null)
-            throw new InternalError("Tried to a+dd a Magnet without first opening a Mindmap!");
 
-    }
-
-    public void removeMagnet(Magnet magnet) {
-        if (user==null)
-            throw new InternalError("Tried to remove a Magnet without first opening a User!");
-        if (mindmap==null)
-            throw new InternalError("Tried to remove a Magnet without first opening a Mindmap!");
-        if (!magnets.contains(magnet))
-            throw new InternalError("Tried to remove a unlisted Magnet!!!");
-
-        // Remove connections
-
-    }
-
-    public void selectMagnet(Magnet magnet) {
-        if (user==null)
-            throw new InternalError("Tried to select a Magnet without first opening a User!");
-        if (mindmap==null)
-            throw new InternalError("Tried to select a Magnet without first opening a Mindmap!");
-        if (!magnets.contains(magnet))
-            throw new InternalError("Tried to select a unlisted Magnet!!!");
-
-    }
 }

@@ -9,6 +9,12 @@ public class Mindmap {
     // The local pojo
     private MindmapPojo pojo;
 
+    // List of magnets in the mindmap (Never null, use clear!)
+    private ArrayList<Magnet> magnets;
+
+    // List of lines in the current mindmap (Never null, use clear!)
+    private ArrayList<Line> lines;
+
     // The model mediator reference
     private ModelMediator mediator;
     private void setMediator(ModelMediator modelMediator_) {
@@ -24,10 +30,11 @@ public class Mindmap {
     protected Mindmap(ModelMediator mediator_) {
         setMediator(mediator_);
         pojo = new MindmapPojo();
+        magnets = new ArrayList<Magnet>();
 
         // Set identifiers and update other models
-        pojo.setUserId(mediator.getUser().getId());
-        pojo.setMindmapId(mediator.getUser().getAddNextFreeMindmapId());
+        pojo.setUserId(mediator.user.getId());
+        pojo.setMindmapId(mediator.user.getAddNextFreeMindmapId());
     }
 
     /** Create a Mindmap from a existing file.
@@ -38,29 +45,61 @@ public class Mindmap {
      */
     protected Mindmap(ModelMediator mediator_, final int mindmapId) throws IOException {
         setMediator(mediator_);
-        pojo = mediator.getLSM().loadMindmap(mediator.getUser().getId(), mindmapId);
+        pojo = mediator.lsm.loadMindmap(mediator.user.getId(), mindmapId);
 
         for (int magnetId : pojo.getMagnetIds()) {
-            mediator.getMagnets().add(new Magnet(mediator, magnetId));
+            magnets.add(new Magnet(mediator, magnetId));
         }
         for (int lineId : pojo.getLineIds()) {
-            mediator.getLines().add(new Line(mediator, lineId));
+            lines.add(new Line(mediator, lineId));
         }
     }
 
     //----------------------------------------------------------------------------------------------
     // Public interface
     public int getId() { return pojo.getMindmapId(); }
-    public ArrayList<Integer> getMagnetIds() { return new ArrayList<Integer>(pojo.getMagnetIds()); }
+    public ArrayList<Magnet> getMagnets() {
+        return new ArrayList<Magnet>(magnets);
+    }
+    public ArrayList<Line> getLines() {
+        return new ArrayList<Line>(lines);
+    }
 
+    public void addMagnet(final Magnet previousMagnet, final int x, final int y) { // TODO:  root/parent etc
+        // Create and add the new magnet to the mindmap
+        Magnet magnet = new Magnet(mediator, x, y);
+        magnets.add(magnet);
 
+    }
+
+    public void removeMagnet(Magnet magnet) {
+        if (!magnets.contains(magnet))
+            throw new InternalError("Tried to remove a unlisted Magnet!!!");
+
+        // Remove connections
+
+    }
+
+    public void selectMagnet(Magnet magnet) {
+        if (!magnets.contains(magnet))
+            throw new InternalError("Tried to select a unlisted Magnet!!!");
+
+    }
+
+    public void addLine(Magnet magnet1, Magnet magnet2) {
+        if (magnet1.isConnectedTo(magnet2))
+            throw new InternalError("Tried to connect Magnets that were already connected!");
+
+        Line line = new Line(mediator, magnet1, magnet2);
+        lines.add(line);
+    }
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
-        mediator.getLSM().saveMindmap(pojo);
-        for (Magnet magnet : mediator.getMagnets())
+        mediator.lsm.saveMindmap(pojo);
+        for (Magnet magnet : magnets)
             magnet.savePojo();
-        for (Line line : mediator.getLines())
+        for (Line line : lines)
             line.savePojo();
     }
     protected int getAddNextFreeMagnetId() {

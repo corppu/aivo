@@ -25,8 +25,8 @@ public class Note {
         pojo = new NotePojo();
 
         // Set identifiers and update other models
-        pojo.setUserId(mediator.getUser().getId());
-        pojo.setMindmapId(mediator.getUser().getAddNextFreeNoteId());
+        pojo.setUserId(mediator.user.getId());
+        pojo.setMindmapId(mediator.user.getAddNextFreeNoteId());
     }
 
     /** Create a Note from a existing file.
@@ -37,7 +37,7 @@ public class Note {
      */
     protected Note(ModelMediator mediator_, final int noteId) throws IOException {
         setMediator(mediator_);
-        pojo = mediator.getLSM().loadNote(mediator.getUser().getId(), noteId);
+        pojo = mediator.lsm.loadNote(mediator.user.getId(), noteId);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -47,7 +47,7 @@ public class Note {
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
-        mediator.getLSM().saveNote(pojo);
+        mediator.lsm.saveNote(pojo);
     }
 
     // TODO: Jos noten aukaisee ja irrottaa magneetista, täytyy päivittää kyseinen magneetti...

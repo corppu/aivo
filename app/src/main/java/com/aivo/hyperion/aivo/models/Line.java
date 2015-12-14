@@ -23,19 +23,19 @@ public class Line {
         setMediator(mediator_);
         pojo = new LinePojo();
 
-        if (magnet1.isConnectedTo(magnet2))
-            throw new InternalError("Tried to create a Line between Magnets that already have a Line between them!");
-
-        pojo.setUserId(mediator.getUser().getId());
-        pojo.setMindmapId(mediator.getMindmap().getId());
-        pojo.setLineId(mediator.getMindmap().getAddNextFreeLineId());
+        pojo.setUserId(mediator.user.getId());
+        pojo.setMindmapId(mediator.mindmap.getId());
+        pojo.setLineId(mediator.mindmap.getAddNextFreeLineId());
         pojo.setMagnet1(magnet1.getId());
         pojo.setMagnet2(magnet2.getId());
+
+        magnet1.addLine(this);
+        magnet2.addLine(this);
     }
 
     protected Line(ModelMediator mediator_, final int lineId) throws IOException {
         setMediator(mediator_);
-        pojo = mediator.getLSM().loadLine(mediator.getUser().getId(), mediator.getMindmap().getId(), lineId);
+        pojo = mediator.lsm.loadLine(mediator.user.getId(), mediator.mindmap.getId(), lineId);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -45,6 +45,6 @@ public class Line {
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
-        mediator.getLSM().saveLine(pojo);
+        mediator.lsm.saveLine(pojo);
     }
 }
