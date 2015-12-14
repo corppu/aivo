@@ -5,11 +5,10 @@ import android.view.View;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 
 /**
- * Created by corpp on 14.12.2015.
+ * Created by MicroLoota on 14.12.2015.
  */
-public class CreateMagnet implements IAction {
-
-    public CreateMagnet(final View view) {
+public class CreateUser implements IAction {
+    public CreateUser(final View view) {
 
     }
 

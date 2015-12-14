@@ -41,6 +41,18 @@ public class ModelMediator {
         listeners.remove(listener);
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public Mindmap getMindmap() {
+        return mindmap;
+    }
+
+    public Note getNote() {
+        return note;
+    }
+
     //----------------------------------------------------------------------------------------------
     // Public open/close functions for User, Note and Magnet
     /** Open a existing User, or create and open a new User.
@@ -61,12 +73,12 @@ public class ModelMediator {
                 user = new User(this, userId);
             } catch (IOException e) {
                 user = null;
-                // TODO: Event: Unable to read the User file!
+                for (ModelListener listener : listeners) listener.onException(e);
                 return;
             }
         }
 
-        for (ModelListener listener : listeners) listener.onUserOpened(user);
+        for (ModelListener listener : listeners) listener.onUserOpened();
     }
 
     /** Open a existing Mindmap, or create and open a new Mindmap.
@@ -91,12 +103,12 @@ public class ModelMediator {
                 mindmap = new Mindmap(this, mindMapId);
             } catch (IOException e) {
                 mindmap = null;
-                // TODO: Event: Unable to read the Mindmap file!
+                for (ModelListener listener : listeners) listener.onException(e);
                 return;
             }
         }
 
-        for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
+        for (ModelListener listener : listeners) listener.onMindmapOpened();
     }
 
     /** Open a existing Note, or create and open a new Note.
@@ -115,10 +127,10 @@ public class ModelMediator {
         try {
             note = new Note(this, noteId);
         } catch (IOException e) {
-            // TODO: Event: Unable to read the Note file!
+            for (ModelListener listener : listeners) listener.onException(e);
         }
 
-        for (ModelListener listener : listeners) listener.onNoteOpened(note);
+        for (ModelListener listener : listeners) listener.onNoteOpened();
     }
 
     /** First saves and closes any opened Note, then Mindmap and finally the User.
@@ -135,7 +147,7 @@ public class ModelMediator {
         try {
             user.savePojo();
         } catch (IOException e) {
-            // TODO: Event: Unable to save the User file!
+            for (ModelListener listener : listeners) listener.onException(e);
             return false;
         }
 
@@ -156,7 +168,7 @@ public class ModelMediator {
         try {
             mindmap.savePojo();
         } catch (IOException e) {
-            // TODO: Event: Unable to save the Mindmap file!
+            for (ModelListener listener : listeners) listener.onException(e);
             return false;
         }
 
@@ -177,7 +189,7 @@ public class ModelMediator {
         try {
             note.savePojo();
         } catch (IOException e) {
-            // TODO: Event: Unable to save the Note file!
+            for (ModelListener listener : listeners) listener.onException(e);
             return false;
         }
 

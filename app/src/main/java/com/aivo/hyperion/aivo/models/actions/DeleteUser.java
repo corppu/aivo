@@ -2,19 +2,19 @@ package com.aivo.hyperion.aivo.models.actions;
 
 import android.view.View;
 
-import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.ModelMediator;
+import com.aivo.hyperion.aivo.models.User;
 
 /**
- * Created by corpp on 14.12.2015.
+ * Created by MicroLoota on 14.12.2015.
  */
-public class DeleteMagnet implements IAction {
+public class DeleteUser implements IAction {
 
-    private Magnet mMagnet;
+    private User mUser;
     private final View mView;
 
-    public DeleteMagnet(Magnet magnet, final View view) {
-        mMagnet = magnet;
+    public DeleteUser(User magnet, final View view) {
+        mUser = magnet;
         mView = view;
     }
 
