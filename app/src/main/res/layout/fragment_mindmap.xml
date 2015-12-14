@@ -1,10 +1,33 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.aivo.hyperion.aivo.views.MindmapFragment">
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <com.aivo.hyperion.aivo.views.MindmapView
+        android:background="#ff69ce"
+        android:layout_width="5000sp"
+        android:layout_height="5000sp"
+        android:layout_gravity="center"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="40dp"
+
+        app:magnetSelectionFrameBorderColor="#33b5e5"
+        app:magnetSelectionFrameColor="#33b5e5"
+
+        app:magnetSelectionFrameWidth="48sp"
+        app:magnetSelectionFrameHeight="48sp"
+        app:magnetSelectionFrameBorderThickness="4sp"
+
+        app:magnetFrameWidth="24sp"
+        app:magnetFrameHeight="24sp"
+        app:magnetFrameBorderThickness="2sp"
+
+        app:magnetTopCircleRadius="14sp"
+        app:magnetBottomCircleRadius="14sp"
+
+        app:addSignDrawable="@android:drawable/ic_menu_add"
+        />
 
 </FrameLayout>

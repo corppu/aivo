@@ -1,0 +1,20 @@
+<resources>
+    <declare-styleable name="MindmapView">
+
+        <attr name="magnetSelectionFrameBorderColor" format="color" />
+        <attr name="magnetSelectionFrameColor" format="color" />
+
+        <attr name="magnetSelectionFrameWidth" format="dimension" />
+        <attr name="magnetSelectionFrameHeight" format="dimension" />
+        <attr name="magnetSelectionFrameBorderThickness" format="dimension" />
+
+        <attr name="magnetFrameWidth" format="dimension" />
+        <attr name="magnetFrameHeight" format="dimension" />
+        <attr name="magnetFrameBorderThickness" format="dimension" />
+
+        <attr name="magnetTopCircleRadius" format="dimension" />
+        <attr name="magnetBottomCircleRadius" format="dimension" />
+
+        <attr name="addSignDrawable" format="color|reference" />
+    </declare-styleable>
+</resources>
