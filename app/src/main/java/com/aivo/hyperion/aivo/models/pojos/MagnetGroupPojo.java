@@ -1,32 +1,38 @@
 package com.aivo.hyperion.aivo.models.pojos;
 
-import android.graphics.Color;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by corpp on 20.10.2015.
+ * Created by MicroLoota on 17.12.2015.
  */
-public class MagnetPojo {
+public class MagnetGroupPojo {
 
     private String createdAt;
     private String updateAt;
     private int userId;
     private int mindmapId;
-    private int magnetId;
     private int magnetGroupId;
-    private int color;
-    private String title;
-    private String content;
+    private int x;
+    private int y;
+    private int w;
+    private int h;
+    private List<Integer> magnetIds;
+    private List<Integer> lineIds;
 
-    public MagnetPojo() {
+
+    public MagnetGroupPojo() {
         this.createdAt = "1970-01-01T00:00:00.000Z";
         this.updateAt = "1970-01-01T00:00:00.000Z";
         this.userId = -1;
         this.mindmapId = -1;
-        this.magnetId = -1;
         this.magnetGroupId = -1;
-        this.color = Color.YELLOW;
-        this.title = "";
-        this.content = "";
+        this.x = -1;
+        this.y = -1;
+        this.w = -1;
+        this.h = -1;
+        this.magnetIds = new ArrayList<>();
+        this.lineIds = new ArrayList<>();
     }
 
     public String getCreatedAt() {
@@ -61,14 +67,6 @@ public class MagnetPojo {
         this.mindmapId = mindmapId;
     }
 
-    public int getMagnetId() {
-        return magnetId;
-    }
-
-    public void setMagnetId(int magnetId) {
-        this.magnetId = magnetId;
-    }
-
     public int getMagnetGroupId() {
         return magnetGroupId;
     }
@@ -77,27 +75,51 @@ public class MagnetPojo {
         this.magnetGroupId = magnetGroupId;
     }
 
-    public int getColor() {
-        return color;
+    public int getX() {
+        return x;
     }
 
-    public void setColor(int color) {
-        this.color = color;
+    public void setX(int x) {
+        this.x = x;
     }
 
-    public String getTitle() {
-        return title;
+    public int getY() {
+        return y;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setY(int y) {
+        this.y = y;
     }
 
-    public String getContent() {
-        return content;
+    public int getW() {
+        return w;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setW(int w) {
+        this.w = w;
+    }
+
+    public int getH() {
+        return h;
+    }
+
+    public void setH(int h) {
+        this.h = h;
+    }
+
+    public List<Integer> getMagnetIds() {
+        return magnetIds;
+    }
+
+    public void setMagnetIds(List<Integer> magnetIds) {
+        this.magnetIds = magnetIds;
+    }
+
+    public List<Integer> getLineIds() {
+        return lineIds;
+    }
+
+    public void setLineIds(List<Integer> lineIds) {
+        this.lineIds = lineIds;
     }
 }

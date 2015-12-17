@@ -19,18 +19,18 @@ public class Line {
         mediator = modelMediator_;
     }
 
-    protected Line(ModelMediator mediator_, Magnet magnet1, Magnet magnet2) {
+    protected Line(ModelMediator mediator_, MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
         setMediator(mediator_);
         pojo = new LinePojo();
 
         pojo.setUserId(mediator.user.getId());
         pojo.setMindmapId(mediator.mindmap.getId());
         pojo.setLineId(mediator.mindmap.getAddNextFreeLineId());
-        pojo.setMagnet1(magnet1.getId());
-        pojo.setMagnet2(magnet2.getId());
+        pojo.setMagnetGroup1(magnetGroup1.getId());
+        pojo.setMagnetGroup2(magnetGroup2.getId());
 
-        magnet1.addLine(this);
-        magnet2.addLine(this);
+        magnetGroup1.addLine(this);
+        magnetGroup2.addLine(this);
     }
 
     protected Line(ModelMediator mediator_, final int lineId) throws IOException {
@@ -41,6 +41,20 @@ public class Line {
     //----------------------------------------------------------------------------------------------
     // Public interface
     public int getId() { return pojo.getLineId(); }
+    public MagnetGroup getMagnetGroup1() {
+        for (MagnetGroup magnetGroup : mediator.mindmap.getMagnetGroups())
+            if (magnetGroup.getLines().contains(this))
+                return magnetGroup;
+        throw new InternalError("Could not find a Lines first MagnetGroup from Mindmap!");
+    }
+    public MagnetGroup getMagnetGroup2() {
+        boolean firstFound = false;
+        for (MagnetGroup magnetGroup : mediator.mindmap.getMagnetGroups())
+            if (magnetGroup.getLines().contains(this))
+                if (!firstFound) firstFound = true;
+                else return magnetGroup;
+        throw new InternalError("Could not find a Lines second MagnetGroup from Mindmap!");
+    }
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions

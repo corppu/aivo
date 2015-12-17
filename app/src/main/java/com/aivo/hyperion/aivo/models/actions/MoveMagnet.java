@@ -9,6 +9,7 @@ import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
 /**
  * Created by corpp on 14.12.2015.
  */
+/*  // TODO: Rework needed after adding MagnetGroup!
 public class MoveMagnet implements IAction {
 
     private final PointF mStartPointF;
@@ -48,3 +49,4 @@ public class MoveMagnet implements IAction {
 
     }
 }
+*/

@@ -85,30 +85,6 @@ public class LocalStorageModule {
         saveToFile(file, gson.toJson(linePojo));
     }
 
-    /** Saves the given NotePojo in the proper folder.
-     *
-     * @param notePojo      NotePojo to be saved.
-     * @throws IOException  If unable to write to the file.
-     */
-    public void saveNote(final NotePojo notePojo) throws IOException {
-
-        // Get the file and save to it
-        File file = getUserFile(notePojo.getUserId(), -1, notePojo.getNoteId(), fileType.note);
-        saveToFile(file, gson.toJson(notePojo));
-    }
-
-    /** Saves the given Notes in the proper folders. NotePojo validity is checked before saving.
-     *
-     * @param notePojos     Notes to be saved.
-     * @throws IOException  If unable to write to a file. Any Notes succesfully saved before
-     *                      this exception occurred will remain on the external storage.
-     */
-    public void saveNotes(final ArrayList<NotePojo> notePojos) throws IOException {
-        for (NotePojo notePojo : notePojos) {
-            saveNote(notePojo);
-        }
-    }
-
     /** Saves the given UserPojo in the proper folder.
      *
      * @param userPojo      UserPojo to be saved.
@@ -200,45 +176,6 @@ public class LocalStorageModule {
         return null;
     }
 
-    /** Loads a NotePojo from the external storage.
-     *
-     * @param userId        identifier
-     * @param noteId        identifier
-     * @return              The wanted note
-     * @throws IOException  If unable to read or close the file.
-     */
-    public NotePojo loadNote(final int userId, final int noteId) throws IOException {
-
-        // Get the file
-        File file = getUserFile(userId, -1, noteId, fileType.note);
-        if (file.isFile()) {
-            // read the file, transform it to pojo and check its validity
-            String data = readFromFile(file);
-            NotePojo notePojo = gson.fromJson(data, NotePojo.class);
-            return notePojo;
-        }
-
-        return null;
-    }
-
-    /** Returns all UserPojos NotePojos.
-     *
-     * @param user      UserPojo identifier
-     * @return          ArrayList of users NotePojos.
-     */
-    public ArrayList<NotePojo> loadNotes(final UserPojo user) throws IOException {
-
-        ArrayList<NotePojo> notePojos = new ArrayList<>();
-
-        for (int noteId : user.getNoteIds()) {
-            NotePojo temp = loadNote(user.getUserId(), noteId);
-            if ( !(temp == null) )
-                notePojos.add(temp);
-        }
-
-        return notePojos;
-    }
-
     /** Loads a UserPojo from the external storage.
      *
      * @param userId        identifier
@@ -302,23 +239,6 @@ public class LocalStorageModule {
     // ^
     public void deleteMagnet(final MagnetPojo magnetPojo) throws IOException {
         deleteMagnet(magnetPojo.getUserId(), magnetPojo.getMindmapId(), magnetPojo.getMagnetId());
-    }
-
-    /** Deletes the given note. This does NOT update connected magnets!
-     *
-     * @param userId        identifier
-     * @param noteId        identifier
-     * @throws IOException  If unable to delete the NotePojo, if it exists.
-     */
-    public void deleteNote(final int userId, final int noteId) throws IOException {
-
-        // Delete the note file
-        File file = getUserFile(userId, -1, noteId, fileType.note);
-        deleteFile(file);
-    }
-    // ^
-    public void deleteNote(final NotePojo notePojo) throws IOException {
-        deleteNote(notePojo.getUserId(), notePojo.getNoteId());
     }
 
     /** Delete the given user file or entire user folder.
@@ -543,38 +463,6 @@ public class LocalStorageModule {
             if (!dir.delete())
                 throw new IOException("Could not delete folder \"" + dir.toString() + "\"!");
         }
-    }
-
-    /** Returns a filtered list of users notes.
-     *
-     * @param userPojo      UserPojo identifier, must be defined.
-     * @param nameFilter    NotePojo title must contain this. Pass null to ignore.
-     * @param favouriteOnly NotePojo must be a userPojo favourite. Pass false to ignore.
-     * @param recentOnly    NotePojo must be in users recent note list. Pass false to ignore.
-     * @param mindMapId     NotePojo must belong to this mindMap. Pass negative to ignore.
-     * @return              Filtered ArrayList of users Notes.
-     * @throws IOException  If unable to read from or close any file.
-     */
-    public ArrayList<NotePojo> loadNotes(final UserPojo userPojo, @Nullable final String nameFilter,
-                                     final boolean favouriteOnly, final boolean recentOnly,
-                                     final int mindMapId ) throws IOException {
-        if (userPojo == null)
-            throw new InternalError("loadNotes() called with an invalid userPojo!");
-
-        ArrayList<NotePojo> list = loadNotes(userPojo);
-
-        for (Iterator<NotePojo> it = list.iterator(); it.hasNext(); ) {
-            NotePojo notePojo = it.next();
-
-            if  (   (mindMapId >= 0 && notePojo.getMindmapId() != mindMapId) ||
-                    (favouriteOnly && !userPojo.getFavouriteNoteIds().contains(notePojo.getNoteId())) ||
-                    (recentOnly && !userPojo.getRecentNoteIds().contains(notePojo.getNoteId())) ||
-                    (!(nameFilter == null) && !notePojo.getTitle().contains(nameFilter))    )
-                it.remove();
-
-        }
-
-        return list;
     }
 
     /** Returns a filtered list of users mindmaps.

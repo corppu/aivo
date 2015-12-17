@@ -22,8 +22,8 @@ public class LinePojo {
     private int color;
     private int thickness;
 
-    private int magnet1;
-    private int magnet2;
+    private int magnetGroup1;
+    private int magnetGroup2;
     private List<Point> points;
 
     public LinePojo() {
@@ -35,8 +35,8 @@ public class LinePojo {
         this.type = 0;
         this.color = Color.BLACK;
         this.thickness = 10;
-        this.magnet1 = -1;
-        this.magnet2 = -1;
+        this.magnetGroup1 = -1;
+        this.magnetGroup2 = -1;
         this.points = new ArrayList<>();
     }
 
@@ -104,20 +104,20 @@ public class LinePojo {
         this.thickness = thickness;
     }
 
-    public int getMagnet1() {
-        return magnet1;
+    public int getMagnetGroup1() {
+        return magnetGroup1;
     }
 
-    public void setMagnet1(int magnet1) {
-        this.magnet1 = magnet1;
+    public void setMagnetGroup1(int magnetGroup1) {
+        this.magnetGroup1 = magnetGroup1;
     }
 
-    public int getMagnet2() {
-        return magnet2;
+    public int getMagnetGroup2() {
+        return magnetGroup2;
     }
 
-    public void setMagnet2(int magnet2) {
-        this.magnet2 = magnet2;
+    public void setMagnetGroup2(int magnetGroup2) {
+        this.magnetGroup2 = magnetGroup2;
     }
 
     public List<Point> getPoints() {

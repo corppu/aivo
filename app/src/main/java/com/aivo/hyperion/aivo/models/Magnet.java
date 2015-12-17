@@ -3,8 +3,6 @@ package com.aivo.hyperion.aivo.models;
 import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Magnet {
     // The local pojo
@@ -20,9 +18,10 @@ public class Magnet {
 
     /** Create a new Magnet. Gets required information from the mediator.
      *
-     * @param mediator_  LocalStorageModule reference. Required!
+     * @param mediator_     LocalStorageModule reference. Required!
+     * @param magnetGroup   MagnetGroup to create this magnet into. Required!
      */
-    protected Magnet(ModelMediator mediator_, final int x, final int y) {
+    protected Magnet(ModelMediator mediator_, MagnetGroup magnetGroup) {
         setMediator(mediator_);
         pojo = new MagnetPojo();
 
@@ -31,8 +30,7 @@ public class Magnet {
         pojo.setMindmapId(mediator.mindmap.getId());
         pojo.setMagnetId(mediator.mindmap.getAddNextFreeMagnetId());
 
-        // Set other pojo data
-        pojo.setX(x); pojo.setY(y);
+        pojo.setMagnetGroupId(magnetGroup.getId());
     }
 
     /** Create a Magnet from a existing file.
@@ -50,24 +48,16 @@ public class Magnet {
     //----------------------------------------------------------------------------------------------
     // Public interface
     public int getId() { return pojo.getMagnetId(); }
-    public ArrayList<Integer> getLineIds() { return new ArrayList<Integer>(pojo.getLineIds()); }
+    public MagnetGroup getMagnetGroup() {
+        for (MagnetGroup magnetGroup : mediator.mindmap.getMagnetGroups())
+            if (magnetGroup.getId() == pojo.getMagnetGroupId())
+                return magnetGroup;
+        throw new InternalError("Could not find Magnets MagnetGroup from Mindmap!");
+    }
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
         mediator.lsm.saveMagnet(pojo);
-    }
-    protected boolean isConnectedTo(Magnet magnet) {
-        if (magnet == this)
-            throw new InternalError("Tried to check if a Magnet is connected to itself!!!");
-        for (Integer lineId : magnet.getLineIds()) {
-            if (pojo.getLineIds().contains(lineId))
-                return true;
-        }
-        return false;
-    }
-    /** Should only be called from Mindmaps addLine() */
-    protected void addLine(Line line) {
-        pojo.getLineIds().add(line.getId());
     }
 }

@@ -17,6 +17,9 @@ public class MindmapPojo {
     private int magnetIdCounter;
     private List<Integer> removedMagnetIds;
     private List<Integer> magnetIds;
+    private int magnetGroupIdCounter;
+    private List<Integer> removedMagnetGroupIds;
+    private List<Integer> magnetGroupIds;
     private int lineIdCounter;
     private List<Integer> removedLineIds;
     private List<Integer> lineIds;
@@ -32,6 +35,9 @@ public class MindmapPojo {
         this.magnetIdCounter = 0;
         this.removedMagnetIds = new ArrayList<>();
         this.magnetIds = new ArrayList<>();
+        this.magnetGroupIdCounter = 0;
+        this.removedMagnetGroupIds = new ArrayList<>();
+        this.magnetGroupIds = new ArrayList<>();
         this.lineIdCounter = 0;
         this.removedLineIds = new ArrayList<>();
         this.lineIds = new ArrayList<>();
@@ -94,6 +100,30 @@ public class MindmapPojo {
 
     public void setMagnetIds(List<Integer> magnetIds) {
         this.magnetIds = magnetIds;
+    }
+
+    public int getMagnetGroupIdCounter() {
+        return magnetGroupIdCounter;
+    }
+
+    public void setMagnetGroupIdCounter(int magnetGroupIdCounter) {
+        this.magnetGroupIdCounter = magnetGroupIdCounter;
+    }
+
+    public List<Integer> getRemovedMagnetGroupIds() {
+        return removedMagnetGroupIds;
+    }
+
+    public void setRemovedMagnetGroupIds(List<Integer> removedMagnetGroupIds) {
+        this.removedMagnetGroupIds = removedMagnetGroupIds;
+    }
+
+    public List<Integer> getMagnetGroupIds() {
+        return magnetGroupIds;
+    }
+
+    public void setMagnetGroupIds(List<Integer> magnetGroupIds) {
+        this.magnetGroupIds = magnetGroupIds;
     }
 
     public int getLineIdCounter() {

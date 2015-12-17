@@ -16,16 +16,12 @@ public class ModelMediator {
     // The currently open Mindmap (null if none opened)
     protected Mindmap mindmap;
 
-    // The currently open Note (null if none opened)
-    protected Note note;
-
     protected ArrayList<ModelListener> listeners;
 
     public ModelMediator() {
         lsm = new LocalStorageModule();
         user = null;
         mindmap = null;
-        note = null;
         listeners = new ArrayList<ModelListener>();
     }
 
@@ -47,10 +43,6 @@ public class ModelMediator {
 
     public Mindmap getMindmap() {
         return mindmap;
-    }
-
-    public Note getNote() {
-        return note;
     }
 
     //----------------------------------------------------------------------------------------------
@@ -111,28 +103,6 @@ public class ModelMediator {
         for (ModelListener listener : listeners) listener.onMindmapOpened();
     }
 
-    /** Open a existing Note, or create and open a new Note.
-     *
-     * @param noteId    Note identifier. If negative, new Note is created with unique id.
-     */
-    public void openNote(final int noteId) {
-        // Can't open a Note without first opening a User
-        if (user==null)
-            throw new InternalError("Tried to open a Note without opening a User!");
-
-        // Close any opened Note
-        closeNote();
-
-        // Try to open the Note file
-        try {
-            note = new Note(this, noteId);
-        } catch (IOException e) {
-            for (ModelListener listener : listeners) listener.onException(e);
-        }
-
-        for (ModelListener listener : listeners) listener.onNoteOpened();
-    }
-
     /** First saves and closes any opened Note, then Mindmap and finally the User.
      *
      * @return  True if no user is open after.
@@ -140,8 +110,8 @@ public class ModelMediator {
     public boolean closeUser() {
         if (user == null) return true;
 
-        // First try to close any opened Note or Mindmap
-        if (!closeNote() || !closeMindmap())
+        // First try to close any opened Mindmap
+        if (!closeMindmap())
             return false;
 
         try {
@@ -178,28 +148,5 @@ public class ModelMediator {
         for (ModelListener listener : listeners) listener.onMindmapClosed();
         return true;
     }
-
-    /** Save and close any open Note.
-     *
-     * @return  True if no Note is open after.
-     */
-    public boolean closeNote() {
-        if (note == null) return true;
-
-        try {
-            note.savePojo();
-        } catch (IOException e) {
-            for (ModelListener listener : listeners) listener.onException(e);
-            return false;
-        }
-
-        // Saved successfully, close note
-        note = null;
-
-        for (ModelListener listener : listeners) listener.onNoteClosed();
-        return true;
-    }
-
-
 
 }
