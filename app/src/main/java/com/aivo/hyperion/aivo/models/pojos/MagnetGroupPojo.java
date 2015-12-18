@@ -29,8 +29,8 @@ public class MagnetGroupPojo {
         this.magnetGroupId = -1;
         this.x = -1;
         this.y = -1;
-        this.w = -1;
-        this.h = -1;
+        this.w = 1;
+        this.h = 1;
         this.magnetIds = new ArrayList<>();
         this.lineIds = new ArrayList<>();
     }

@@ -33,7 +33,6 @@ public class MagnetGroup {
 
         // Set other pojo data
         pojo.setX(x); pojo.setY(y);
-        pojo.setW(1); pojo.setH(1);
     }
 
     protected MagnetGroup(ModelMediator mediator_, final int magnetGroupId) throws IOException {
@@ -78,22 +77,19 @@ public class MagnetGroup {
 
         return false;
     }
-    /** Should only be called from Mindmaps */
+
     protected void addLine(Line line) {
         pojo.getLineIds().add(line.getId());
     }
 
-    /** Should only be called from Mindmaps */
     protected void removeLine(Line line) {
         pojo.getLineIds().remove(new Integer(line.getId()));
     }
 
-    /** Should only be called from Mindmaps */
     protected void addMagnet(Magnet magnet) {
         pojo.getMagnetIds().add(magnet.getId());
     }
 
-    /** Should only be called from Mindmaps */
     protected void removeMagnet(Magnet magnet) {
         pojo.getMagnetIds().remove(new Integer(magnet.getId()));
     }
