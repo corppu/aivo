@@ -4,18 +4,14 @@ package com.aivo.hyperion.aivo.models;
  * Created by MicroLoota on 25.11.2015.
  */
 public interface ModelListener {
-    void onUserOpened();
-    void onMindmapOpened();
-    void onNoteOpened();
+    void onUserOpened(User user);
+    void onMindmapOpened(Mindmap mindmap);
 
-    void onUserChanged();
-    void onMindmapChanged();
-    void onMagnetChanged();
-    void onNoteChanged();
+    void onUserChanged(User user);
+    void onMindmapChanged(Mindmap mindmap);
 
     void onUserClosed();
     void onMindmapClosed();
-    void onNoteClosed();
 
     void onException(Exception e);
 

@@ -70,7 +70,7 @@ public class ModelMediator {
             }
         }
 
-        for (ModelListener listener : listeners) listener.onUserOpened();
+        for (ModelListener listener : listeners) listener.onUserOpened(user);
     }
 
     /** Open a existing Mindmap, or create and open a new Mindmap.
@@ -100,7 +100,7 @@ public class ModelMediator {
             }
         }
 
-        for (ModelListener listener : listeners) listener.onMindmapOpened();
+        for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
     }
 
     /** First saves and closes any opened Note, then Mindmap and finally the User.
