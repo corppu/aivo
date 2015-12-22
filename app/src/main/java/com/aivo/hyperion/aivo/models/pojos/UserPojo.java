@@ -13,35 +13,29 @@ public class UserPojo {
     private String createdAt;
     private String updateAt;
 
-    private int mindmapIdCounter;
+    private int objectIdCounter;
+
     private List<Integer> mindmapIds;
     private List<Integer> favouriteMindmapIds;
-    private List<Integer> deletedMindmapIds;
     private List<Integer> recentMindmapIds;
 
-    private int noteIdCounter;
-    private List<Integer> noteIds;
-    private List<Integer> favouriteNoteIds;
-    private List<Integer> deletedNoteIds;
-    private List<Integer> recentNoteIds;
+    private int defaultThemeId;
+    private List<Integer> themeIds;
 
     public UserPojo() {
-        this.userId = 0;
+        this.userId = -1;
         this.email = "";
         this.createdAt = "1970-01-01T00:00:00.000Z";
         this.updateAt = "1970-01-01T00:00:00.000Z";
 
-        this.mindmapIdCounter = 0;
+        this.objectIdCounter = 0;
+
         this.mindmapIds = new ArrayList<>();
         this.favouriteMindmapIds = new ArrayList<>();
-        this.deletedMindmapIds = new ArrayList<>();
         this.recentMindmapIds = new ArrayList<>();
 
-        this.noteIdCounter = 0;
-        this.noteIds = new ArrayList<>();
-        this.favouriteNoteIds = new ArrayList<>();
-        this.deletedNoteIds = new ArrayList<>();
-        this.recentNoteIds = new ArrayList<>();
+        this.defaultThemeId = -1;
+        this.themeIds = new ArrayList<>();
     }
 
     public int getUserId() {
@@ -60,12 +54,12 @@ public class UserPojo {
         this.email = email;
     }
 
-    public int getMindmapIdCounter() {
-        return mindmapIdCounter;
+    public int getObjectIdCounter() {
+        return objectIdCounter;
     }
 
-    public void setMindmapIdCounter(int mindmapIdCounter) {
-        this.mindmapIdCounter = mindmapIdCounter;
+    public void setObjectIdCounter(int objectIdCounter) {
+        this.objectIdCounter = objectIdCounter;
     }
 
     public List<Integer> getMindmapIds() {
@@ -84,60 +78,12 @@ public class UserPojo {
         this.favouriteMindmapIds = favouriteMindmapIds;
     }
 
-    public List<Integer> getDeletedMindmapIds() {
-        return deletedMindmapIds;
-    }
-
-    public void setDeletedMindmapIds(List<Integer> deletedMindmapIds) {
-        this.deletedMindmapIds = deletedMindmapIds;
-    }
-
     public List<Integer> getRecentMindmapIds() {
         return recentMindmapIds;
     }
 
     public void setRecentMindmapIds(List<Integer> recentMindmapIds) {
         this.recentMindmapIds = recentMindmapIds;
-    }
-
-    public int getNoteIdCounter() {
-        return noteIdCounter;
-    }
-
-    public void setNoteIdCounter(int noteIdCounter) {
-        this.noteIdCounter = noteIdCounter;
-    }
-
-    public List<Integer> getNoteIds() {
-        return noteIds;
-    }
-
-    public void setNoteIds(List<Integer> noteIds) {
-        this.noteIds = noteIds;
-    }
-
-    public List<Integer> getFavouriteNoteIds() {
-        return favouriteNoteIds;
-    }
-
-    public void setFavouriteNoteIds(List<Integer> favouriteNoteIds) {
-        this.favouriteNoteIds = favouriteNoteIds;
-    }
-
-    public List<Integer> getDeletedNoteIds() {
-        return deletedNoteIds;
-    }
-
-    public void setDeletedNoteIds(List<Integer> deletedNoteIds) {
-        this.deletedNoteIds = deletedNoteIds;
-    }
-
-    public List<Integer> getRecentNoteIds() {
-        return recentNoteIds;
-    }
-
-    public void setRecentNoteIds(List<Integer> recentNoteIds) {
-        this.recentNoteIds = recentNoteIds;
     }
 
     public String getUpdateAt() {
@@ -154,5 +100,21 @@ public class UserPojo {
 
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public int getDefaultThemeId() {
+        return defaultThemeId;
+    }
+
+    public void setDefaultThemeId(int defaultThemeId) {
+        this.defaultThemeId = defaultThemeId;
+    }
+
+    public List<Integer> getThemeIds() {
+        return themeIds;
+    }
+
+    public void setThemeIds(List<Integer> themeIds) {
+        this.themeIds = themeIds;
     }
 }

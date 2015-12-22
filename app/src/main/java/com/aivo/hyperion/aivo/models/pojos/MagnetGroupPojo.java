@@ -17,6 +17,7 @@ public class MagnetGroupPojo {
     private int y;
     private int w;
     private int h;
+    private String title;
     private List<Integer> magnetIds;
     private List<Integer> lineIds;
 
@@ -31,6 +32,7 @@ public class MagnetGroupPojo {
         this.y = -1;
         this.w = 1;
         this.h = 1;
+        this.title = "";
         this.magnetIds = new ArrayList<>();
         this.lineIds = new ArrayList<>();
     }
@@ -105,6 +107,14 @@ public class MagnetGroupPojo {
 
     public void setH(int h) {
         this.h = h;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public List<Integer> getMagnetIds() {

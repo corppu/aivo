@@ -41,43 +41,38 @@ public class User {
     // Public interface
     public int getId() { return pojo.getUserId(); }
 
+    public Theme getDefaultTheme() {
+        if (pojo.getDefaultThemeId() < 0) {
+            return new Theme();
+        } else {
+            return new Theme();
+        }
+    }
+
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
         mediator.lsm.saveUser(pojo);
     }
-    protected int getAddNextFreeMindmapId() {
-        int nextId;
-        if (pojo.getDeletedMindmapIds().size() > 0) {
-            nextId = pojo.getDeletedMindmapIds().remove(0);
-        } else {
-            nextId = pojo.getMindmapIdCounter();
-            pojo.setMindmapIdCounter(nextId + 1);
-        }
-        pojo.getMindmapIds().add(nextId);
+    protected int getNextObjectId() {
+        int nextId = pojo.getObjectIdCounter();
+        pojo.setObjectIdCounter(nextId + 1);
         return nextId;
     }
-    protected int getAddNextFreeNoteId() {
-        int nextId;
-        if (pojo.getDeletedNoteIds().size() > 0) {
-            nextId = pojo.getDeletedNoteIds().remove(0);
-        } else {
-            nextId = pojo.getNoteIdCounter();
-            pojo.setNoteIdCounter(nextId + 1);
-        }
-        pojo.getNoteIds().add(nextId);
-        return nextId;
+    protected void addMindmapId(final int mindmapId) {
+        pojo.getMindmapIds().add(mindmapId);
     }
     protected void deleteMindmapId(final int mindmapId) {
         if (!pojo.getMindmapIds().contains(mindmapId))
             throw new InternalError("Tried to delete a unlisted Mindmap from a User!"); // TODO: Move to mediator
         pojo.getMindmapIds().remove(new Integer(mindmapId));
-        pojo.getDeletedMindmapIds().add(mindmapId);
     }
-    protected void deleteNoteId(final int noteId) {
-        if (!pojo.getNoteIds().contains(noteId))
-            throw new InternalError("Tried to delete a unlisted Note from a User!"); // TODO: Move to mediator
-        pojo.getNoteIds().remove(new Integer(noteId));
-        pojo.getDeletedNoteIds().add(noteId);
+    protected void addThemeId(final int themeId) {
+        pojo.getThemeIds().add(themeId);
+    }
+    protected void deleteThemeId(final int themeId) {
+        if (!pojo.getThemeIds().contains(themeId))
+            throw new InternalError("Tried to delete a unlisted Mindmap from a User!"); // TODO: Move to mediator
+        pojo.getThemeIds().remove(new Integer(themeId));
     }
 }

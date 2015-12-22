@@ -13,6 +13,9 @@ public class MagnetGroup {
     // The local pojo
     private MagnetGroupPojo pojo;
 
+    // List of magnets in the magnet group (Never null, use clear!)
+    private ArrayList<Magnet> magnets;
+
     // The model mediator reference
     private ModelMediator mediator;
     private void setMediator(ModelMediator modelMediator_) {
@@ -25,6 +28,7 @@ public class MagnetGroup {
     protected MagnetGroup(ModelMediator mediator_, final int x, final int y) {
         setMediator(mediator_);
         pojo = new MagnetGroupPojo();
+        magnets = new ArrayList<Magnet>();
 
         // Set identifiers and update other models
         pojo.setUserId(mediator.user.getId());
@@ -38,6 +42,10 @@ public class MagnetGroup {
     protected MagnetGroup(ModelMediator mediator_, final int magnetGroupId) throws IOException {
         setMediator(mediator_);
         //pojo = mediator.lsm.loadLine(mediator.user.getId(), mediator.mindmap.getId(), magnetGroupId);
+
+        for (int magnetId : pojo.getMagnetIds()) {
+            magnets.add(new Magnet(mediator, magnetId));
+        }
     }
 
     //----------------------------------------------------------------------------------------------
@@ -53,16 +61,18 @@ public class MagnetGroup {
     }
 
     public ArrayList<Magnet> getMagnets() {
-        ArrayList<Magnet> magnets = new ArrayList<Magnet>();
-        for (Magnet magnet : mediator.mindmap.getMagnets())
-            if (pojo.getMagnetIds().contains(magnet.getId()))
-                magnets.add(magnet);
         return magnets;
     }
+
+    public int getX() { return pojo.getX(); }
+    public int getY() { return pojo.getY(); }
+    public String getTitle() { return pojo.getTitle(); }
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
+        for (Magnet magnet : magnets)
+            magnet.savePojo();
        // mediator.lsm.saveMagnetGroup(pojo);
     }
 
