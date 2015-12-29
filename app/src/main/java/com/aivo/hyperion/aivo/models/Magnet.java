@@ -1,5 +1,7 @@
 package com.aivo.hyperion.aivo.models;
 
+import android.support.annotation.Nullable;
+
 import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
 
 import java.io.IOException;
@@ -28,7 +30,7 @@ public class Magnet {
         // Set identifiers and update other models
         pojo.setUserId(mediator.user.getId());
         pojo.setMindmapId(mediator.mindmap.getId());
-        pojo.setMagnetId(mediator.mindmap.getAddNextFreeMagnetId());
+        pojo.setMagnetId(mediator.user.getNextObjectId());
 
         pojo.setMagnetGroupId(magnetGroup.getId());
     }
@@ -59,5 +61,12 @@ public class Magnet {
     // Protected model functions
     protected void savePojo() throws IOException {
         mediator.lsm.saveMagnet(pojo);
+    }
+    protected void changeGroupTo(@Nullable MagnetGroup magnetGroup) {
+        getMagnetGroup().removeMagnet(this);
+        if ( !(magnetGroup == null) ) {
+            pojo.setMagnetGroupId(magnetGroup.getId());
+            magnetGroup.addMagnet(this);
+        }
     }
 }

@@ -25,7 +25,7 @@ public class Line {
 
         pojo.setUserId(mediator.user.getId());
         pojo.setMindmapId(mediator.mindmap.getId());
-        pojo.setLineId(mediator.mindmap.getAddNextFreeLineId());
+        pojo.setLineId(mediator.user.getNextObjectId());
         pojo.setMagnetGroup1(magnetGroup1.getId());
         pojo.setMagnetGroup2(magnetGroup2.getId());
 
