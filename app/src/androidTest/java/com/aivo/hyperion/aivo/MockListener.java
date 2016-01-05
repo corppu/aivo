@@ -11,8 +11,6 @@ import com.aivo.hyperion.aivo.models.User;
 
 public class MockListener implements ModelListener {
 
-
-
     private Exception exception;
     private ModelMediator mediator;
     private User user;
