@@ -68,6 +68,12 @@ public class MagnetGroup {
     public int getY() { return pojo.getY(); }
     public String getTitle() { return pojo.getTitle(); }
 
+
+    public void moveGroup(final int newX, final int newY) {
+        pojo.setX(newX);
+        pojo.setY(newY);
+    }
+
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
@@ -108,11 +114,10 @@ public class MagnetGroup {
         // If we remove the last magnet, remove the group as well
         if (magnets.isEmpty()) {
             for (Line line : mediator.mindmap.getLines())
-                mediator.mindmap.deleteLineConnection(line);
+                line.deleteLine();
 
             mediator.mindmap.getMagnetGroups().remove(this);
         }
     }
-
 
 }

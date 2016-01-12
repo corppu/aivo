@@ -56,17 +56,24 @@ public class Magnet {
                 return magnetGroup;
         throw new InternalError("Could not find Magnets MagnetGroup from Mindmap!");
     }
+    public void moveToMagnetGroup(MagnetGroup newMagnetGroup) {
+        getMagnetGroup().removeMagnet(this);
+
+        pojo.setMagnetGroupId(newMagnetGroup.getId());
+        newMagnetGroup.addMagnet(this);
+    }
+    public void moveToMagnetGroupNew(final int x, final int y) {
+        MagnetGroup magnetGroup = new MagnetGroup(mediator, x, y);
+        mediator.mindmap.magnetGroups.add(magnetGroup);
+        moveToMagnetGroup(magnetGroup);
+    }
+    public void deleteMagnet() {
+        getMagnetGroup().removeMagnet(this);
+    }
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
         mediator.lsm.saveMagnet(pojo);
-    }
-    protected void changeGroupTo(@Nullable MagnetGroup magnetGroup) {
-        getMagnetGroup().removeMagnet(this);
-        if ( !(magnetGroup == null) ) {
-            pojo.setMagnetGroupId(magnetGroup.getId());
-            magnetGroup.addMagnet(this);
-        }
     }
 }

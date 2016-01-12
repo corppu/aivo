@@ -10,10 +10,10 @@ public class Mindmap {
     private MindmapPojo pojo;
 
     // List of magnet groups in the mindmap (Never null, use clear!)
-    private ArrayList<MagnetGroup> magnetGroups;
+    protected ArrayList<MagnetGroup> magnetGroups;
 
     // List of lines in the mindmap (Never null, use clear!)
-    private ArrayList<Line> lines;
+    protected ArrayList<Line> lines;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -36,7 +36,10 @@ public class Mindmap {
         // Set identifiers
         pojo.setUserId(mediator.user.getId());
         pojo.setMindmapId(mediator.user.getNextObjectId());
+
+        // Update user
         mediator.user.addMindmapId(pojo.getMindmapId());
+        mediator.user.setRecent(pojo.getMindmapId());
     }
 
     /** Create a Mindmap from a existing file.
@@ -52,6 +55,9 @@ public class Mindmap {
         for (int magnetGroupId : pojo.getMagnetGroupIds()) {
             magnetGroups.add(new MagnetGroup(mediator, magnetGroupId));
         }
+
+        // Update user
+        mediator.user.setRecent(pojo.getMindmapId());
     }
 
     //----------------------------------------------------------------------------------------------
@@ -72,48 +78,18 @@ public class Mindmap {
         parentGroup.addMagnet(magnet);
     }
 
-    public void createMagnet(final int x_, final int y_) {
-        MagnetGroup magnetGroup = new MagnetGroup(mediator, x_, y_);
+    public void createMagnet(final int x, final int y) {
+        MagnetGroup magnetGroup = new MagnetGroup(mediator, x, y);
         magnetGroups.add(magnetGroup);
         createMagnet(magnetGroup);
     }
 
-    public void moveMagnet(Magnet magnet, MagnetGroup newMagnetGroup) {  // TODO: Position within new groups magnets?
-        if (!magnetGroups.contains(newMagnetGroup))
-            throw new InternalError("Tried to move a Magnet into a unlisted MagnetGroup!!!");
-
-        magnet.changeGroupTo(newMagnetGroup);
-    }
-
-    public void moveMagnet(Magnet magnet, final int x_, final int y_) {
-
-        MagnetGroup magnetGroup = new MagnetGroup(mediator, x_, y_);
-        magnetGroups.add(magnetGroup);
-
-        magnet.changeGroupTo(magnetGroup);
-    }
-
-    public void deleteMagnet(Magnet magnet) {
-
-        magnet.changeGroupTo(null);
-    }
-
-    public void addLine(MagnetGroup group1, MagnetGroup group2) {
+    public void createLine(MagnetGroup group1, MagnetGroup group2) {
         if (group1.isConnectedTo(group2))
             throw new InternalError("Tried to connect MagnetGroups that were already connected!");
 
         Line line = new Line(mediator, group1, group2);
         lines.add(line);
-    }
-
-    public void deleteLineConnection(Line line) {
-        if (!lines.contains(line))
-            throw new InternalError("Tried to remove a unlisted Line!!!");
-
-        line.getMagnetGroup1().removeLine(line);
-        line.getMagnetGroup2().removeLine(line);
-
-        lines.remove(line);
     }
 
     //----------------------------------------------------------------------------------------------

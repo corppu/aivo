@@ -55,7 +55,11 @@ public class Line {
                 else return magnetGroup;
         throw new InternalError("Could not find a Lines second MagnetGroup from Mindmap!");
     }
-
+    public void deleteLine() {
+        getMagnetGroup1().removeLine(this);
+        getMagnetGroup2().removeLine(this);
+        mediator.mindmap.lines.remove(this);
+    }
     //----------------------------------------------------------------------------------------------
     // Protected model functions
     protected void savePojo() throws IOException {
