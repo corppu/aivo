@@ -28,12 +28,12 @@ public class MagnetGroup {
     protected MagnetGroup(ModelMediator mediator_, final int x, final int y) {
         setMediator(mediator_);
         pojo = new MagnetGroupPojo();
-        magnets = new ArrayList<Magnet>();
+        magnets = new ArrayList<>();
 
         // Set identifiers and update other models
         pojo.setUserId(mediator.user.getId());
         pojo.setMindmapId(mediator.mindmap.getId());
-        pojo.setMagnetGroupId(mediator.mindmap.getAddNextFreeMagnetGroupId());
+        pojo.setMagnetGroupId(mediator.user.getNextObjectId());
 
         // Set other pojo data
         pojo.setX(x); pojo.setY(y);
@@ -52,9 +52,10 @@ public class MagnetGroup {
     // Public interface
 
     public int getId() { return pojo.getMagnetGroupId(); }
+
     public ArrayList<Line> getLines() {
-        ArrayList<Line> lines = new ArrayList<Line>();
-        for (Line line : mediator.mindmap.getLines())
+        ArrayList<Line> lines = new ArrayList<>();
+        for (Line line : mediator.mindmap.lines)
             if (pojo.getLineIds().contains(line.getId()))
                 lines.add(line);
         return lines;
@@ -67,6 +68,12 @@ public class MagnetGroup {
     public int getX() { return pojo.getX(); }
     public int getY() { return pojo.getY(); }
     public String getTitle() { return pojo.getTitle(); }
+
+
+    public void moveGroup(final int newX, final int newY) {
+        pojo.setX(newX);
+        pojo.setY(newY);
+    }
 
     //----------------------------------------------------------------------------------------------
     // Protected model functions
@@ -98,9 +105,20 @@ public class MagnetGroup {
 
     protected void addMagnet(Magnet magnet) {
         pojo.getMagnetIds().add(magnet.getId());
+        magnets.add(magnet);
     }
 
     protected void removeMagnet(Magnet magnet) {
         pojo.getMagnetIds().remove(new Integer(magnet.getId()));
+        magnets.remove(magnet);
+
+        // If we remove the last magnet, remove the group as well
+        if (magnets.isEmpty()) {
+            for (Line line : getLines())
+                line.deleteLine();
+
+            mediator.mindmap.magnetGroups.remove(this);
+        }
     }
+
 }

@@ -10,10 +10,10 @@ public class Mindmap {
     private MindmapPojo pojo;
 
     // List of magnet groups in the mindmap (Never null, use clear!)
-    private ArrayList<MagnetGroup> magnetGroups;
+    protected ArrayList<MagnetGroup> magnetGroups;
 
     // List of lines in the mindmap (Never null, use clear!)
-    private ArrayList<Line> lines;
+    protected ArrayList<Line> lines;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -30,13 +30,16 @@ public class Mindmap {
     protected Mindmap(ModelMediator mediator_) {
         setMediator(mediator_);
         pojo = new MindmapPojo();
-        magnetGroups = new ArrayList<MagnetGroup>();
-        lines = new ArrayList<Line>();
+        magnetGroups = new ArrayList<>();
+        lines = new ArrayList<>();
 
         // Set identifiers
         pojo.setUserId(mediator.user.getId());
         pojo.setMindmapId(mediator.user.getNextObjectId());
+
+        // Update user
         mediator.user.addMindmapId(pojo.getMindmapId());
+        mediator.user.setRecent(pojo.getMindmapId());
     }
 
     /** Create a Mindmap from a existing file.
@@ -52,6 +55,9 @@ public class Mindmap {
         for (int magnetGroupId : pojo.getMagnetGroupIds()) {
             magnetGroups.add(new MagnetGroup(mediator, magnetGroupId));
         }
+
+        // Update user
+        mediator.user.setRecent(pojo.getMindmapId());
     }
 
     //----------------------------------------------------------------------------------------------
@@ -60,11 +66,11 @@ public class Mindmap {
     public int getId() { return pojo.getMindmapId(); }
 
     public ArrayList<MagnetGroup> getMagnetGroups() {
-        return new ArrayList<MagnetGroup>(magnetGroups);
+        return new ArrayList<>(magnetGroups);
     }
 
     public ArrayList<Line> getLines() {
-        return new ArrayList<Line>(lines);
+        return new ArrayList<>(lines);
     }
 
     public void createMagnet(MagnetGroup parentGroup) { // TODO: Position within groups magnets?
@@ -72,57 +78,23 @@ public class Mindmap {
         parentGroup.addMagnet(magnet);
     }
 
-    public void createMagnet(final int x_, final int y_) {
-        MagnetGroup magnetGroup = new MagnetGroup(mediator, x_, y_);
+    public void createMagnet(final int x, final int y) {
+        MagnetGroup magnetGroup = new MagnetGroup(mediator, x, y);
+        pojo.getMagnetGroupIds().add(magnetGroup.getId());
         magnetGroups.add(magnetGroup);
+
         createMagnet(magnetGroup);
     }
 
-    public void moveMagnet(Magnet magnet, MagnetGroup newMagnetGroup) {  // TODO: Position within new groups magnets?
-        if (!magnetGroups.contains(newMagnetGroup))
-            throw new InternalError("Tried to move a Magnet into a unlisted MagnetGroup!!!");
-
-        removeMagnetFromItsGroup(magnet);
-        newMagnetGroup.addMagnet(magnet);
-    }
-/*
-    public void moveMagnet(Magnet magnet, final int x_, final int y_) {
-        if (!magnets.contains(magnet))
-            throw new InternalError("Tried to move a unlisted Magnet!!!");
-
-        MagnetGroup magnetGroup = new MagnetGroup(mediator, x_, y_);
-        magnetGroups.add(magnetGroup);
-
-        removeMagnetFromItsGroup(magnet);
-        magnetGroup.addMagnet(magnet);
-    }
-
-    public void deleteMagnet(Magnet magnet) {
-        if (!magnets.contains(magnet))
-            throw new InternalError("Tried to remove a unlisted Magnet!!!");
-
-        removeMagnetFromItsGroup(magnet);
-        pojo.getRemovedMagnetIds().add(magnet.getId());
-        magnets.remove(magnet);
-    }
-*/
-    public void addLine(MagnetGroup group1, MagnetGroup group2) {
-        if (group1.isConnectedTo(group2))
-            throw new InternalError("Tried to connect MagnetGroups that were already connected!");
+    public void createLine(MagnetGroup group1, MagnetGroup group2) {
+        if (group1.isConnectedTo(group2)) return;
 
         Line line = new Line(mediator, group1, group2);
+        pojo.getLineIds().add(line.getId());
         lines.add(line);
-    }
 
-    public void deleteLineConnection(Line line) {
-        if (!lines.contains(line))
-            throw new InternalError("Tried to remove a unlisted Line!!!");
-
-        line.getMagnetGroup1().removeLine(line);
-        line.getMagnetGroup2().removeLine(line);
-
-        pojo.getRemovedLineIds().add(line.getId());
-        lines.remove(line);
+        group1.addLine(line);
+        group2.addLine(line);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -133,58 +105,5 @@ public class Mindmap {
             magnetGroup.savePojo();
         for (Line line : lines)
             line.savePojo();
-    }
-    protected int getAddNextFreeMagnetId() {
-        int nextId;
-        if (pojo.getRemovedMagnetIds().size() > 0) {
-            nextId = pojo.getRemovedMagnetIds().remove(0);
-        } else {
-            nextId = pojo.getMagnetIdCounter();
-            pojo.setMagnetIdCounter(nextId + 1);
-        }
-        pojo.getMagnetIds().add(nextId);
-        return nextId;
-    }
-    protected int getAddNextFreeMagnetGroupId() {
-        int nextId;
-        if (pojo.getRemovedMagnetGroupIds().size() > 0) {
-            nextId = pojo.getRemovedMagnetGroupIds().remove(0);
-        } else {
-            nextId = pojo.getMagnetGroupIdCounter();
-            pojo.setMagnetGroupIdCounter(nextId + 1);
-        }
-        pojo.getMagnetGroupIds().add(nextId);
-        return nextId;
-    }
-    protected int getAddNextFreeLineId() {
-        int nextId;
-        if (pojo.getRemovedLineIds().size() > 0) {
-            nextId = pojo.getRemovedLineIds().remove(0);
-        } else {
-            nextId = pojo.getLineIdCounter();
-            pojo.setLineIdCounter(nextId + 1);
-        }
-        pojo.getLineIds().add(nextId);
-        return nextId;
-    }
-    protected void removeMagnetFromItsGroup(Magnet magnet) {
-
-        MagnetGroup magnetGroup = magnet.getMagnetGroup();
-
-        // Remove the magnet from its group
-        magnetGroup.removeMagnet(magnet);
-
-        // If the MagnetGroup is now empty, we must remove it
-        if (magnetGroup.getMagnets().isEmpty())
-            removeMagnetGroup(magnetGroup);
-    }
-    protected void removeMagnetGroup(MagnetGroup magnetGroup) {
-
-        // Remove connected lines first
-        for (Line line : magnetGroup.getLines())
-            deleteLineConnection(line);
-
-        pojo.getRemovedMagnetGroupIds().add(magnetGroup.getId());
-        magnetGroups.remove(magnetGroup);
     }
 }

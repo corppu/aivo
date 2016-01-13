@@ -3,6 +3,7 @@ package com.aivo.hyperion.aivo.models;
 import com.aivo.hyperion.aivo.models.pojos.UserPojo;
 
 import java.io.IOException;
+import java.util.List;
 
 public class User {
     // The local pojo
@@ -43,9 +44,9 @@ public class User {
 
     public Theme getDefaultTheme() {
         if (pojo.getDefaultThemeId() < 0) {
-            return new Theme();
+            return new Theme(); // Program default
         } else {
-            return new Theme();
+            return new Theme(); // User default, TODO: Get theme (or something)...
         }
     }
 
@@ -66,6 +67,7 @@ public class User {
         if (!pojo.getMindmapIds().contains(mindmapId))
             throw new InternalError("Tried to delete a unlisted Mindmap from a User!"); // TODO: Move to mediator
         pojo.getMindmapIds().remove(new Integer(mindmapId));
+        pojo.getRecentMindmapIds().remove(new Integer(mindmapId));
     }
     protected void addThemeId(final int themeId) {
         pojo.getThemeIds().add(themeId);
@@ -74,5 +76,24 @@ public class User {
         if (!pojo.getThemeIds().contains(themeId))
             throw new InternalError("Tried to delete a unlisted Mindmap from a User!"); // TODO: Move to mediator
         pojo.getThemeIds().remove(new Integer(themeId));
+    }
+
+    protected void setRecent(final int mindmapId) {
+        List<Integer> recentMindmapIds = pojo.getRecentMindmapIds();
+        final int index = recentMindmapIds.indexOf(mindmapId);
+
+        if (index >= 0) {
+            // Already in recent mindmaps list, swap to end of list
+            Integer temp = recentMindmapIds.get(recentMindmapIds.size()-1);
+            recentMindmapIds.set(recentMindmapIds.size()-1, pojo.getRecentMindmapIds().get(index));
+            recentMindmapIds.set(index, temp);
+
+        } else {
+            recentMindmapIds.add(new Integer(mindmapId));
+            if (recentMindmapIds.size() > 5)
+                recentMindmapIds.remove(0);
+        }
+
+        pojo.setRecentMindmapIds(recentMindmapIds);
     }
 }

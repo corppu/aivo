@@ -1,5 +1,7 @@
 package com.aivo.hyperion.aivo.models;
 
+import android.support.annotation.Nullable;
+
 import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
 
 import java.io.IOException;
@@ -28,7 +30,7 @@ public class Magnet {
         // Set identifiers and update other models
         pojo.setUserId(mediator.user.getId());
         pojo.setMindmapId(mediator.mindmap.getId());
-        pojo.setMagnetId(mediator.mindmap.getAddNextFreeMagnetId());
+        pojo.setMagnetId(mediator.user.getNextObjectId());
 
         pojo.setMagnetGroupId(magnetGroup.getId());
     }
@@ -53,6 +55,20 @@ public class Magnet {
             if (magnetGroup.getId() == pojo.getMagnetGroupId())
                 return magnetGroup;
         throw new InternalError("Could not find Magnets MagnetGroup from Mindmap!");
+    }
+    public void moveToMagnetGroup(MagnetGroup newMagnetGroup) {
+        getMagnetGroup().removeMagnet(this);
+
+        pojo.setMagnetGroupId(newMagnetGroup.getId());
+        newMagnetGroup.addMagnet(this);
+    }
+    public void moveToMagnetGroupNew(final int x, final int y) {
+        MagnetGroup magnetGroup = new MagnetGroup(mediator, x, y);
+        mediator.mindmap.magnetGroups.add(magnetGroup);
+        moveToMagnetGroup(magnetGroup);
+    }
+    public void deleteMagnet() {
+        getMagnetGroup().removeMagnet(this);
     }
 
     //----------------------------------------------------------------------------------------------
