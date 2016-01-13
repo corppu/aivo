@@ -53,7 +53,7 @@ public class ModelMediator {
      */
     public void openUser(final int userId) {
         // Close any opened User
-        closeUser();
+        if (!closeUser()) return;
 
         // Do we want to create a new user?
         if (userId < 0) {
@@ -83,7 +83,7 @@ public class ModelMediator {
             throw new InternalError("Tried to open a Mindmap without first opening a User!");
 
         // Close any opened Mindmap
-        closeMindmap();
+        if (!closeMindmap()) return;
 
         // Do we want to create a new Mindmap?
         if (mindMapId < 0) {

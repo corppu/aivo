@@ -14,14 +14,7 @@ public class MindmapPojo {
     private String updateAt;
     private int userId;
     private int mindmapId;
-    private int magnetIdCounter;
-    private List<Integer> removedMagnetIds;
-    private List<Integer> magnetIds;
-    private int magnetGroupIdCounter;
-    private List<Integer> removedMagnetGroupIds;
     private List<Integer> magnetGroupIds;
-    private int lineIdCounter;
-    private List<Integer> removedLineIds;
     private List<Integer> lineIds;
     private int color;
     private String title;
@@ -32,14 +25,7 @@ public class MindmapPojo {
         this.updateAt = "1970-01-01T00:00:00.000Z";
         this.userId = -1;
         this.mindmapId = -1;
-        this.magnetIdCounter = 0;
-        this.removedMagnetIds = new ArrayList<>();
-        this.magnetIds = new ArrayList<>();
-        this.magnetGroupIdCounter = 0;
-        this.removedMagnetGroupIds = new ArrayList<>();
         this.magnetGroupIds = new ArrayList<>();
-        this.lineIdCounter = 0;
-        this.removedLineIds = new ArrayList<>();
         this.lineIds = new ArrayList<>();
         this.color = Color.WHITE;
         this.title = "";
@@ -78,68 +64,12 @@ public class MindmapPojo {
         this.mindmapId = mindmapId;
     }
 
-    public int getMagnetIdCounter() {
-        return magnetIdCounter;
-    }
-
-    public void setMagnetIdCounter(int magnetIdCounter) {
-        this.magnetIdCounter = magnetIdCounter;
-    }
-
-    public List<Integer> getRemovedMagnetIds() {
-        return removedMagnetIds;
-    }
-
-    public void setRemovedMagnetIds(List<Integer> removedMagnetIds) {
-        this.removedMagnetIds = removedMagnetIds;
-    }
-
-    public List<Integer> getMagnetIds() {
-        return magnetIds;
-    }
-
-    public void setMagnetIds(List<Integer> magnetIds) {
-        this.magnetIds = magnetIds;
-    }
-
-    public int getMagnetGroupIdCounter() {
-        return magnetGroupIdCounter;
-    }
-
-    public void setMagnetGroupIdCounter(int magnetGroupIdCounter) {
-        this.magnetGroupIdCounter = magnetGroupIdCounter;
-    }
-
-    public List<Integer> getRemovedMagnetGroupIds() {
-        return removedMagnetGroupIds;
-    }
-
-    public void setRemovedMagnetGroupIds(List<Integer> removedMagnetGroupIds) {
-        this.removedMagnetGroupIds = removedMagnetGroupIds;
-    }
-
     public List<Integer> getMagnetGroupIds() {
         return magnetGroupIds;
     }
 
     public void setMagnetGroupIds(List<Integer> magnetGroupIds) {
         this.magnetGroupIds = magnetGroupIds;
-    }
-
-    public int getLineIdCounter() {
-        return lineIdCounter;
-    }
-
-    public void setLineIdCounter(int lineIdCounter) {
-        this.lineIdCounter = lineIdCounter;
-    }
-
-    public List<Integer> getRemovedLineIds() {
-        return removedLineIds;
-    }
-
-    public void setRemovedLineIds(List<Integer> removedLineIds) {
-        this.removedLineIds = removedLineIds;
     }
 
     public List<Integer> getLineIds() {
