@@ -47,57 +47,69 @@ public class ModelMediator {
 
     //----------------------------------------------------------------------------------------------
     // Public open/close functions for User, Note and Magnet
-    /** Open a existing User, or create and open a new User.
+
+    /** Create a new User and open it.
      *
-     * @param userId    User identifier. If negative, new User is created with unique id.
+     */
+    public void createUser() {
+        // Close any opened User
+        if (!closeUser()) return;
+
+        user = new User(this);
+        for (ModelListener listener : listeners) listener.onUserOpened(user);
+    }
+    /** Open a existing User.
+     *
+     * @param userId    User identifier.
      */
     public void openUser(final int userId) {
         // Close any opened User
         if (!closeUser()) return;
 
-        // Do we want to create a new user?
-        if (userId < 0) {
-            user = new User(this);
-
-        } else {
-            // Try to open a existing User file
-            try {
-                user = new User(this, userId);
-            } catch (IOException e) {
-                user = null;
-                for (ModelListener listener : listeners) listener.onException(e);
-                return;
-            }
+        // Try to open a existing User file
+        try {
+            user = new User(this, userId);
+        } catch (IOException e) {
+            user = null;
+            for (ModelListener listener : listeners) listener.onException(e);
+            return;
         }
 
         for (ModelListener listener : listeners) listener.onUserOpened(user);
     }
 
-    /** Open a existing Mindmap, or create and open a new Mindmap.
+    /** Create a new Mindmap and open it.
      *
-     * @param mindMapId     Mindmap identifier. If negative, new Mindmap is created with unique id.
+     */
+    public void createMindmap() {
+        if (user==null)
+            throw new InternalError("Tried to create a Mindmap without first opening a User!");
+
+        // Close any opened Mindmap
+        if (!closeMindmap()) return;
+
+        mindmap = new Mindmap(this);
+        for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
+    }
+
+    /** Open a existing Mindmap.
+     *
+     * @param mindMapId     Mindmap identifier.
      */
     public void openMindmap(final int mindMapId) {
-        // Can't open a Mindmap without first opening a User
         if (user==null)
             throw new InternalError("Tried to open a Mindmap without first opening a User!");
 
         // Close any opened Mindmap
         if (!closeMindmap()) return;
 
-        // Do we want to create a new Mindmap?
-        if (mindMapId < 0) {
-            mindmap = new Mindmap(this);
-
-        } else {
-            // Try to open the Mindmap file
-            try {
-                mindmap = new Mindmap(this, mindMapId);
-            } catch (IOException e) {
-                mindmap = null;
-                for (ModelListener listener : listeners) listener.onException(e);
-                return;
-            }
+        // Try to open the Mindmap file
+        try {
+            mindmap = new Mindmap(this, mindMapId);
+        } catch (IOException e) {
+            mindmap = null;
+            for (ModelListener listener : listeners) listener.onException(e);
+            return;
         }
 
         for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
