@@ -67,6 +67,7 @@ public class User {
         if (!pojo.getMindmapIds().contains(mindmapId))
             throw new InternalError("Tried to delete a unlisted Mindmap from a User!"); // TODO: Move to mediator
         pojo.getMindmapIds().remove(new Integer(mindmapId));
+        pojo.getRecentMindmapIds().remove(new Integer(mindmapId));
     }
     protected void addThemeId(final int themeId) {
         pojo.getThemeIds().add(themeId);
@@ -92,5 +93,7 @@ public class User {
             if (recentMindmapIds.size() > 5)
                 recentMindmapIds.remove(0);
         }
+
+        pojo.setRecentMindmapIds(recentMindmapIds);
     }
 }

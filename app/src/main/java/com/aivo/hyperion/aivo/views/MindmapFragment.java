@@ -3,10 +3,11 @@ package com.aivo.hyperion.aivo.views;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,6 +33,7 @@ public class MindmapFragment extends Fragment implements View.OnTouchListener, M
 
     private ModelMediator mediator;
 
+    private MindmapPresenter presenter;
 
     /**
      * Use this factory method to create a new instance of
@@ -74,7 +76,9 @@ public class MindmapFragment extends Fragment implements View.OnTouchListener, M
 
         mediator = new ModelMediator();
         mediator.registerListener(this);
-        mediator.openUser(-1);
+        mediator.createUser();
+
+        presenter = new MindmapPresenter();
 
         return view;
     }
@@ -90,12 +94,27 @@ public class MindmapFragment extends Fragment implements View.OnTouchListener, M
     public void onStart() {
         super.onStart();
 
-        try {
+        /*try {
             mListener = (OnMindmapFragmentInteractionListener) this.getActivity();
         } catch (ClassCastException e) {
             throw new ClassCastException(this.getActivity().toString()
                     + " must implement OnMindmapFragmentInteractionListener");
-        }
+        }*/
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        presenter.pause();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        presenter.setView((SurfaceView) getActivity().findViewById(R.id.surfaceView));
+        presenter.resume();
     }
 
     @Override
@@ -132,20 +151,20 @@ public class MindmapFragment extends Fragment implements View.OnTouchListener, M
     @Override
     public void onUserOpened(User user) {
         Log.d(TAG, "onUserOpened " + user.toString());
-        mediator.openMindmap(-1);
+        mediator.createMindmap();
     }
 
     @Override
     public void onMindmapOpened(Mindmap mindmap) {
         Log.d(TAG, "onMindmapOpened " + mindmap.toString());
-        ((MindmapView) this.getView()).setMindmap(mindmap);
-        this.getView().invalidate();
+        //((MindmapView) this.getView()).setMindmap(mindmap);
+        //this.getView().invalidate();
     }
 
     @Override
     public void onUserChanged(User user) {
         Log.d(TAG, "onUserChanged " + user.toString());
-        mediator.openMindmap(-1);
+        mediator.createMindmap();
     }
 
     @Override

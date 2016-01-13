@@ -1,5 +1,7 @@
 package com.aivo.hyperion.aivo.models;
 
+import android.util.Log;
+
 import com.aivo.hyperion.aivo.models.pojos.LinePojo;
 
 import java.io.IOException;
@@ -28,9 +30,6 @@ public class Line {
         pojo.setLineId(mediator.user.getNextObjectId());
         pojo.setMagnetGroup1(magnetGroup1.getId());
         pojo.setMagnetGroup2(magnetGroup2.getId());
-
-        magnetGroup1.addLine(this);
-        magnetGroup2.addLine(this);
     }
 
     protected Line(ModelMediator mediator_, final int lineId) throws IOException {
@@ -42,17 +41,19 @@ public class Line {
     // Public interface
     public int getId() { return pojo.getLineId(); }
     public MagnetGroup getMagnetGroup1() {
-        for (MagnetGroup magnetGroup : mediator.mindmap.getMagnetGroups())
+        for (MagnetGroup magnetGroup : mediator.mindmap.magnetGroups)
             if (magnetGroup.getLines().contains(this))
                 return magnetGroup;
         throw new InternalError("Could not find a Lines first MagnetGroup from Mindmap!");
     }
     public MagnetGroup getMagnetGroup2() {
         boolean firstFound = false;
-        for (MagnetGroup magnetGroup : mediator.mindmap.getMagnetGroups())
-            if (magnetGroup.getLines().contains(this))
-                if (!firstFound) firstFound = true;
+        Log.d("AAA", new Integer(mediator.mindmap.magnetGroups.size()).toString());
+        for (MagnetGroup magnetGroup : mediator.mindmap.magnetGroups)
+            if (magnetGroup.getLines().contains(this)) {
+                if (firstFound == false) firstFound = true;
                 else return magnetGroup;
+            }
         throw new InternalError("Could not find a Lines second MagnetGroup from Mindmap!");
     }
     public void deleteLine() {

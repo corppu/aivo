@@ -52,9 +52,10 @@ public class MagnetGroup {
     // Public interface
 
     public int getId() { return pojo.getMagnetGroupId(); }
+
     public ArrayList<Line> getLines() {
         ArrayList<Line> lines = new ArrayList<>();
-        for (Line line : mediator.mindmap.getLines())
+        for (Line line : mediator.mindmap.lines)
             if (pojo.getLineIds().contains(line.getId()))
                 lines.add(line);
         return lines;
@@ -113,10 +114,10 @@ public class MagnetGroup {
 
         // If we remove the last magnet, remove the group as well
         if (magnets.isEmpty()) {
-            for (Line line : mediator.mindmap.getLines())
+            for (Line line : getLines())
                 line.deleteLine();
 
-            mediator.mindmap.getMagnetGroups().remove(this);
+            mediator.mindmap.magnetGroups.remove(this);
         }
     }
 

@@ -80,16 +80,21 @@ public class Mindmap {
 
     public void createMagnet(final int x, final int y) {
         MagnetGroup magnetGroup = new MagnetGroup(mediator, x, y);
+        pojo.getMagnetGroupIds().add(magnetGroup.getId());
         magnetGroups.add(magnetGroup);
+
         createMagnet(magnetGroup);
     }
 
     public void createLine(MagnetGroup group1, MagnetGroup group2) {
-        if (group1.isConnectedTo(group2))
-            throw new InternalError("Tried to connect MagnetGroups that were already connected!");
+        if (group1.isConnectedTo(group2)) return;
 
         Line line = new Line(mediator, group1, group2);
+        pojo.getLineIds().add(line.getId());
         lines.add(line);
+
+        group1.addLine(line);
+        group2.addLine(line);
     }
 
     //----------------------------------------------------------------------------------------------
