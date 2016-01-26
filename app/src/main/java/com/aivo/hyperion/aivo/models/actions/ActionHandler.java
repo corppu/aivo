@@ -6,15 +6,15 @@ import java.util.Stack;
  * The class to be called from undo and redo button presenter.
  */
 public class ActionHandler {
-    private Stack<IAction> mRedoStack;
-    private Stack<IAction> mUndoStack;
+    private Stack<Action> mRedoStack;
+    private Stack<Action> mUndoStack;
 
     public ActionHandler() {
         mRedoStack = new Stack<>();
         mUndoStack = new Stack<>();
     }
 
-    public void executeAction(IAction action) {
+    public void executeAction(Action action) {
         mUndoStack.add(action);
         mRedoStack.clear();
         action.execute();
@@ -26,7 +26,7 @@ public class ActionHandler {
 
     public void undo() {
         if (canUndo()) {
-            IAction action = mUndoStack.pop();
+            Action action = mUndoStack.pop();
             action.undo();
             mRedoStack.add(action);
         }
@@ -38,7 +38,7 @@ public class ActionHandler {
 
     public void redo() {
         if (canRedo()) {
-            IAction action = mRedoStack.pop();
+            Action action = mRedoStack.pop();
             action.execute();
             mUndoStack.add(action);
         }

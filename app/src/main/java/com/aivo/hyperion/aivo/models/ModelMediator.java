@@ -1,5 +1,6 @@
 package com.aivo.hyperion.aivo.models;
 
+import com.aivo.hyperion.aivo.models.actions.ActionHandler;
 import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
 
 import java.io.IOException;
@@ -7,6 +8,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class ModelMediator {
+    // The ActioHandler
+    protected ActionHandler actionHandler;
+    
     // Create one LSM to be used by all model classes in the package
     protected LocalStorageModule lsm;
 
@@ -16,6 +20,7 @@ public class ModelMediator {
     // The currently open Mindmap (null if none opened)
     protected Mindmap mindmap;
 
+    // The registered listeners of this ModelMediator
     protected ArrayList<ModelListener> listeners;
 
     public ModelMediator() {

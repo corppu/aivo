@@ -26,8 +26,8 @@ public class Line {
         mediator = modelMediator_;
     }
 
-    public Line() {
-
+    public Line(ModelMediator mediator_) {
+        setMediator(mediator_);
     }
 
     public MagnetGroup getMagnetGroup1() {

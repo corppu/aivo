@@ -15,7 +15,7 @@ public class MagnetGroup {
     private PointF point;
 
     // List of magnets in the magnet group (Never null, use clear!)
-    protected ArrayList<Magnet> magnets;
+    protected List< List<Magnet> > magnets;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -25,15 +25,16 @@ public class MagnetGroup {
         mediator = modelMediator_;
     }
 
-    public MagnetGroup() {
-
+    public MagnetGroup(ModelMediator mediator_) {
+        setMediator(mediator_);
+        magnets = new ArrayList<>();
     }
 
-    public ArrayList<Magnet> getMagnets() {
-        return new ArrayList<Magnet>(magnets);
+    public List< List<Magnet> > getMagnets() {
+        return magnets;
     }
 
-    public void setMagnets(ArrayList<Magnet> magnets) {
+    public void setMagnets(List< List<Magnet> > magnets) {
         this.magnets = magnets;
     }
 

@@ -4,6 +4,7 @@ import com.aivo.hyperion.aivo.models.pojos.MindmapPojo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Mindmap {
 
@@ -11,10 +12,10 @@ public class Mindmap {
     private String title;
     
     // List of magnet groups in the mindmap (Never null, use clear!)
-    protected ArrayList<MagnetGroup> magnetGroups;
+    protected List<MagnetGroup> magnetGroups;
 
     // List of lines in the mindmap (Never null, use clear!)
-    protected ArrayList<Line> lines;
+    protected List<Line> lines;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -24,16 +25,18 @@ public class Mindmap {
         mediator = modelMediator_;
     }
 
-    public Mindmap() {
-
+    public Mindmap(ModelMediator mediator_) {
+        setMediator(mediator_);
+        magnetGroups = new ArrayList<>();
+        lines = new ArrayList<>();
     }
 
-    public ArrayList<MagnetGroup> getMagnetGroups() {
-        return new ArrayList<MagnetGroup>(magnetGroups);
+    public List<MagnetGroup> getMagnetGroups() {
+        return magnetGroups;
     }
 
-    public ArrayList<Line> getLines() {
-        return new ArrayList<Line>(lines);
+    public List<Line> getLines() {
+        return lines;
     }
 
     public String getTitle() {
@@ -44,11 +47,11 @@ public class Mindmap {
         this.title = title;
     }
 
-    public void setMagnetGroups(ArrayList<MagnetGroup> magnetGroups) {
+    public void setMagnetGroups(List<MagnetGroup> magnetGroups) {
         this.magnetGroups = magnetGroups;
     }
 
-    public void setLines(ArrayList<Line> lines) {
+    public void setLines(List<Line> lines) {
         this.lines = lines;
     }
 }

@@ -15,8 +15,8 @@ public class Magnet {
         mediator = modelMediator_;
     }
 
-    public Magnet() {
-
+    public Magnet(ModelMediator mediator_) {
+        setMediator(mediator_);
     }
 
     public String getTitle() {
