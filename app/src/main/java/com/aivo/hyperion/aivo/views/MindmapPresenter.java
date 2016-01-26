@@ -4,22 +4,15 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.util.ArraySet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
-import android.view.Surface;
-import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import com.aivo.hyperion.aivo.models.Mindmap;
+import com.aivo.hyperion.aivo.models.Theme;
+
 import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -27,31 +20,35 @@ import java.util.concurrent.locks.ReentrantLock;
  * Created by corpp on 8.1.2016.
  */
 public class MindmapPresenter implements Runnable, View.OnTouchListener{
+    private final String TAG = "MindmapPresenter";
 
     // Thread
     private volatile boolean mRunning;
     private Thread mThread;
     private Lock mLock;
 
-    private SurfaceView mView;
+    // View
+    private SurfaceView mSurfaceView;
+    private MindmapView mMindmapView;
 
-    private String mContent;
-    private Paint mPaint;
+    private Paint mPaint = new Paint();
+
+    // Model
 
     public MindmapPresenter() {
         mRunning = false;
         mThread = null;
         mLock = new ReentrantLock();
 
-        mView = null;
-
-        mContent = "My test application";
-        mPaint = new Paint();
+        mSurfaceView = null;
+        mMindmapView = null;
     }
 
-    public void setView(SurfaceView view) {
-        mView = view;
-        view.setOnTouchListener(this);
+    public void setViews(SurfaceView surfaceView, MindmapView mindmapView) {
+        this.mSurfaceView = surfaceView;
+        this.mMindmapView = mindmapView;
+
+        surfaceView.setOnTouchListener(this);
     }
 
     public void resume() {
@@ -76,19 +73,21 @@ public class MindmapPresenter implements Runnable, View.OnTouchListener{
     @Override
     public void run() {
         while (mRunning) {
-            if (mView.getHolder().getSurface().isValid()) {
-                Canvas canvas = mView.getHolder().lockCanvas();
+            if (mSurfaceView.getHolder().getSurface().isValid()) {
+
+                Canvas canvas = mSurfaceView.getHolder().lockCanvas();
                 // Draw here...
 
                 canvas.drawColor(Color.BLACK);
 
-                mPaint.setTextAlign(Paint.Align.CENTER);
-                mPaint.setColor(Color.BLUE);
-                canvas.drawText(mContent, canvas.getWidth() / 2, canvas.getHeight() / 2, mPaint);
+                mMindmapView.draw(canvas);
+                //mPaint.setTextAlign(Paint.Align.CENTER);
+                //mPaint.setColor(Color.BLUE);
+                //canvas.drawText(mContent, canvas.getWidth() / 2, canvas.getHeight() / 2, mPaint);
 
                 drawPointers(canvas, mPaint);
                 // ... end drawing
-                mView.getHolder().unlockCanvasAndPost(canvas);
+                mSurfaceView.getHolder().unlockCanvasAndPost(canvas);
             }
         }
     }

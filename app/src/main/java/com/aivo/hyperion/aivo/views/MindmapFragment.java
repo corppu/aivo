@@ -113,7 +113,9 @@ public class MindmapFragment extends Fragment implements View.OnTouchListener, M
     public void onResume() {
         super.onResume();
 
-        presenter.setView((SurfaceView) getActivity().findViewById(R.id.surfaceView));
+        presenter.setViews(
+                (SurfaceView) getActivity().findViewById(R.id.surfaceView),
+                new MindmapView(new Theme(), new Mindmap()));
         presenter.resume();
     }
 
@@ -170,8 +172,6 @@ public class MindmapFragment extends Fragment implements View.OnTouchListener, M
     @Override
     public void onMindmapChanged(Mindmap mindmap) {
         Log.d(TAG, "onMindmapChanged " + mindmap.toString());
-        ((MindmapView) this.getView()).setMindmap(mindmap);
-        this.getView().invalidate();
     }
 
     @Override
@@ -182,8 +182,6 @@ public class MindmapFragment extends Fragment implements View.OnTouchListener, M
     @Override
     public void onMindmapClosed() {
         Log.d(TAG, "onMindmapClosed");
-        ((MindmapView) this.getView()).setMindmap(null);
-        this.getView().invalidate();
     }
 
     @Override
