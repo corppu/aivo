@@ -12,8 +12,8 @@ public class Theme {
     private int colorLine;
 
     private int colorMenuDefault;
-    private int colorMenuContext;
     private int colorMenuText;
+    private int colorMenuIcon;
 
     private int colorMagnetGroup;
     private int colorMagnetGroupTitle;
@@ -28,8 +28,8 @@ public class Theme {
         mediator = modelMediator_;
     }
 
-    public Theme() {
-
+    public Theme(ModelMediator mediator_) {
+        setMediator(mediator_);
     }
 
     public String getTitle() {
@@ -64,16 +64,16 @@ public class Theme {
         this.colorMenuDefault = colorMenuDefault;
     }
 
-    public int getColorMenuContext() {
-        return colorMenuContext;
-    }
-
-    public void setColorMenuContext(int colorMenuContext) {
-        this.colorMenuContext = colorMenuContext;
-    }
-
     public int getColorMenuText() {
         return colorMenuText;
+    }
+
+    public int getColorMenuIcon() {
+        return colorMenuIcon;
+    }
+
+    public void setColorMenuIcon(int colorMenuIcon) {
+        this.colorMenuIcon = colorMenuIcon;
     }
 
     public void setColorMenuText(int colorMenuText) {

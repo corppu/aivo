@@ -18,8 +18,8 @@ public class User {
         mediator = modelMediator_;
     }
 
-    public User() {
-
+    public User(ModelMediator mediator_) {
+        setMediator(mediator_);
     }
 
 }
