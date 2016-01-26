@@ -1,17 +1,22 @@
 package com.aivo.hyperion.aivo.models;
 
+import android.graphics.PointF;
 import android.util.Log;
 
 import com.aivo.hyperion.aivo.models.pojos.LinePojo;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * Created by MicroLoota on 11.11.2015.
- */
 public class Line {
-    // The local pojo
-    private LinePojo pojo;
+
+    // Local properties
+    private MagnetGroup magnetGroup1;
+    private MagnetGroup magnetGroup2;
+    private ArrayList<PointF> points;
+    private int type;
+    private int thickness;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -21,49 +26,47 @@ public class Line {
         mediator = modelMediator_;
     }
 
-    protected Line(ModelMediator mediator_, MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
-        setMediator(mediator_);
-        pojo = new LinePojo();
+    public Line() {
 
-        pojo.setUserId(mediator.user.getId());
-        pojo.setMindmapId(mediator.mindmap.getId());
-        pojo.setLineId(mediator.user.getNextObjectId());
-        pojo.setMagnetGroup1(magnetGroup1.getId());
-        pojo.setMagnetGroup2(magnetGroup2.getId());
     }
 
-    protected Line(ModelMediator mediator_, final int lineId) throws IOException {
-        setMediator(mediator_);
-        pojo = mediator.lsm.loadLine(mediator.user.getId(), mediator.mindmap.getId(), lineId);
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // Public interface
-    public int getId() { return pojo.getLineId(); }
     public MagnetGroup getMagnetGroup1() {
-        for (MagnetGroup magnetGroup : mediator.mindmap.magnetGroups)
-            if (magnetGroup.getLines().contains(this))
-                return magnetGroup;
-        throw new InternalError("Could not find a Lines first MagnetGroup from Mindmap!");
+        return magnetGroup1;
     }
+
+    public void setMagnetGroup1(MagnetGroup magnetGroup1) {
+        this.magnetGroup1 = magnetGroup1;
+    }
+
     public MagnetGroup getMagnetGroup2() {
-        boolean firstFound = false;
-        Log.d("AAA", new Integer(mediator.mindmap.magnetGroups.size()).toString());
-        for (MagnetGroup magnetGroup : mediator.mindmap.magnetGroups)
-            if (magnetGroup.getLines().contains(this)) {
-                if (firstFound == false) firstFound = true;
-                else return magnetGroup;
-            }
-        throw new InternalError("Could not find a Lines second MagnetGroup from Mindmap!");
+        return magnetGroup2;
     }
-    public void deleteLine() {
-        getMagnetGroup1().removeLine(this);
-        getMagnetGroup2().removeLine(this);
-        mediator.mindmap.lines.remove(this);
+
+    public void setMagnetGroup2(MagnetGroup magnetGroup2) {
+        this.magnetGroup2 = magnetGroup2;
     }
-    //----------------------------------------------------------------------------------------------
-    // Protected model functions
-    protected void savePojo() throws IOException {
-        mediator.lsm.saveLine(pojo);
+
+    public ArrayList<PointF> getPoints() {
+        return points;
+    }
+
+    public void setPoints(ArrayList<PointF> points) {
+        this.points = points;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public int getThickness() {
+        return thickness;
+    }
+
+    public void setThickness(int thickness) {
+        this.thickness = thickness;
     }
 }

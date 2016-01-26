@@ -5,12 +5,20 @@ import com.aivo.hyperion.aivo.models.pojos.ThemePojo;
 import java.io.IOException;
 import java.util.ArrayList;
 
-/**
- * Created by MicroLoota on 22.12.2015.
- */
 public class Theme {
-    // The local pojo
-    private ThemePojo pojo;
+
+    private String title;
+    private int colorBackground;
+    private int colorLine;
+
+    private int colorMenuDefault;
+    private int colorMenuContext;
+    private int colorMenuText;
+
+    private int colorMagnetGroup;
+    private int colorMagnetGroupTitle;
+
+    private int colorMagnetBackground;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -20,36 +28,81 @@ public class Theme {
         mediator = modelMediator_;
     }
 
-    /** Create a new Theme. Gets required information from the Mediator.
-     *
-     * @param mediator_  ModelMediator reference. Required!
-     */
-    protected Theme(ModelMediator mediator_) {
-        setMediator(mediator_);
-        pojo = new ThemePojo();
+    public Theme() {
 
-        // Set identifiers and update other models
-        pojo.setUserId(mediator.user.getId());
-        pojo.setThemeId(mediator.user.getNextObjectId());
-        mediator.user.addThemeId(pojo.getThemeId());
     }
 
-    /** Create a Theme from a existing file.
-     *
-     * @param mediator_  ModelMediator reference. Required!
-     * @param themeId    Theme identifier.
-     * @throws IOException  If unable to read from or close the file.
-     */
-    protected Theme(ModelMediator mediator_, final int themeId) throws IOException {
-        setMediator(mediator_);
-        //pojo = mediator.lsm.loadTheme(mediator.user.getId(), themeId);
+    public String getTitle() {
+        return title;
     }
 
-    // For default theme
-    protected Theme() {}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    //----------------------------------------------------------------------------------------------
-    // Public interface
-    public int getId() { return pojo.getThemeId(); }
+    public int getColorBackground() {
+        return colorBackground;
+    }
+
+    public void setColorBackground(int colorBackground) {
+        this.colorBackground = colorBackground;
+    }
+
+    public int getColorLine() {
+        return colorLine;
+    }
+
+    public void setColorLine(int colorLine) {
+        this.colorLine = colorLine;
+    }
+
+    public int getColorMenuDefault() {
+        return colorMenuDefault;
+    }
+
+    public void setColorMenuDefault(int colorMenuDefault) {
+        this.colorMenuDefault = colorMenuDefault;
+    }
+
+    public int getColorMenuContext() {
+        return colorMenuContext;
+    }
+
+    public void setColorMenuContext(int colorMenuContext) {
+        this.colorMenuContext = colorMenuContext;
+    }
+
+    public int getColorMenuText() {
+        return colorMenuText;
+    }
+
+    public void setColorMenuText(int colorMenuText) {
+        this.colorMenuText = colorMenuText;
+    }
+
+    public int getColorMagnetGroup() {
+        return colorMagnetGroup;
+    }
+
+    public void setColorMagnetGroup(int colorMagnetGroup) {
+        this.colorMagnetGroup = colorMagnetGroup;
+    }
+
+    public int getColorMagnetGroupTitle() {
+        return colorMagnetGroupTitle;
+    }
+
+    public void setColorMagnetGroupTitle(int colorMagnetGroupTitle) {
+        this.colorMagnetGroupTitle = colorMagnetGroupTitle;
+    }
+
+    public int getColorMagnetBackground() {
+        return colorMagnetBackground;
+    }
+
+    public void setColorMagnetBackground(int colorMagnetBackground) {
+        this.colorMagnetBackground = colorMagnetBackground;
+    }
+
 
 }

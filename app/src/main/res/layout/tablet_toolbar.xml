@@ -21,8 +21,10 @@
         >
 
         <Button
+            android:id="@+id/side_note_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:clickable="true"
             android:layout_marginRight="15dp"
             android:layout_gravity="center_vertical"
             android:background="@drawable/sidenote_button"
