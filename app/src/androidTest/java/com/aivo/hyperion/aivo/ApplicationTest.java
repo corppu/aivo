@@ -117,6 +117,8 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
         listener1.getMindmap().createLine(magnetGroups.get(0), magnetGroups.get(1));
         listener1.getMindmap().createLine(magnetGroups.get(0), magnetGroups.get(1));
         assertEquals(true, listener1.getMindmap().getLines().size() == 1);
+        assertEquals(true, magnetGroups.get(0).getLines().get(0) != null);
+        assertEquals(true, magnetGroups.get(1).getLines().get(0) != null);
 
         Line line = listener1.getMindmap().getLines().get(0);
         assertEquals(true, magnetGroups.contains(line.getMagnetGroup1()));

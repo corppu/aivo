@@ -1,14 +1,11 @@
 package com.aivo.hyperion.aivo.models;
 
-import android.support.annotation.Nullable;
-
-import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
-
-import java.io.IOException;
-
 public class Magnet {
-    // The local pojo
-    private MagnetPojo pojo;
+
+    // Local properties
+    private String title;
+    private String content;
+    private int color;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -18,62 +15,41 @@ public class Magnet {
         mediator = modelMediator_;
     }
 
-    /** Create a new Magnet. Gets required information from the mediator.
-     *
-     * @param mediator_     LocalStorageModule reference. Required!
-     * @param magnetGroup   MagnetGroup to create this magnet into. Required!
-     */
-    protected Magnet(ModelMediator mediator_, MagnetGroup magnetGroup) {
-        setMediator(mediator_);
-        pojo = new MagnetPojo();
+    public Magnet() {
 
-        // Set identifiers and update other models
-        pojo.setUserId(mediator.user.getId());
-        pojo.setMindmapId(mediator.mindmap.getId());
-        pojo.setMagnetId(mediator.user.getNextObjectId());
-
-        pojo.setMagnetGroupId(magnetGroup.getId());
     }
 
-    /** Create a Magnet from a existing file.
-     *
-     * @param mediator_     LocalStorageModule reference. Required!
-     * @param magnetId      Magnet identifier.
-     * @throws IOException  If unable to read from or close the file.
-     */
-    protected Magnet(ModelMediator mediator_, final int magnetId) throws IOException {
-        setMediator(mediator_);
-        pojo = mediator.lsm.loadMagnet(mediator.user.getId(),
-                                            mediator.mindmap.getId(), magnetId);
+    public String getTitle() {
+        return title;
     }
 
-    //----------------------------------------------------------------------------------------------
-    // Public interface
-    public int getId() { return pojo.getMagnetId(); }
-    public MagnetGroup getMagnetGroup() {
-        for (MagnetGroup magnetGroup : mediator.mindmap.getMagnetGroups())
-            if (magnetGroup.getId() == pojo.getMagnetGroupId())
-                return magnetGroup;
-        throw new InternalError("Could not find Magnets MagnetGroup from Mindmap!");
-    }
-    public void moveToMagnetGroup(MagnetGroup newMagnetGroup) {
-        getMagnetGroup().removeMagnet(this);
-
-        pojo.setMagnetGroupId(newMagnetGroup.getId());
-        newMagnetGroup.addMagnet(this);
-    }
-    public void moveToMagnetGroupNew(final int x, final int y) {
-        MagnetGroup magnetGroup = new MagnetGroup(mediator, x, y);
-        mediator.mindmap.magnetGroups.add(magnetGroup);
-        moveToMagnetGroup(magnetGroup);
-    }
-    public void deleteMagnet() {
-        getMagnetGroup().removeMagnet(this);
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    //----------------------------------------------------------------------------------------------
-    // Protected model functions
-    protected void savePojo() throws IOException {
-        mediator.lsm.saveMagnet(pojo);
+    public String getContent() {
+        return content;
     }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public int getColor() {
+        return color;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
+    public boolean hasImage() {
+        return false; // TODO
+    }
+
+    public boolean hasVideo() {
+        return false; // TODO
+    }
+
+
 }
