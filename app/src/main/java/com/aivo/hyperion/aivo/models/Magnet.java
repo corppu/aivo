@@ -1,11 +1,14 @@
 package com.aivo.hyperion.aivo.models;
 
+import android.graphics.PointF;
+
 public class Magnet {
 
     // Local properties
     private String title;
     private String content;
     private int color;
+    private MagnetGroup magnetGroup;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -19,37 +22,56 @@ public class Magnet {
         setMediator(mediator_);
     }
 
-    public String getTitle() {
-        return title;
-    }
+    // Debug (or not) functions
 
     public void setTitle(String title) {
         this.title = title;
     }
-
-    public String getContent() {
-        return content;
-    }
-
     public void setContent(String content) {
         this.content = content;
     }
-
-    public int getColor() {
-        return color;
-    }
-
     public void setColor(int color) {
         this.color = color;
     }
 
+    // End of debug functions
+
+    public String getTitle() {
+        return title;
+    }
+    public String getContent() {
+        return content;
+    }
+    public int getColor() {
+        return color;
+    }
+    public MagnetGroup getMagnetGroup() {
+        return magnetGroup;
+    }
     public boolean hasImage() {
         return false; // TODO
     }
-
     public boolean hasVideo() {
         return false; // TODO
     }
 
+    public void changeTitle(String newTitle) {
 
+    }
+
+    public void changeContent(String newContent) {
+
+    }
+
+    public void changeColor(final int newColor) {
+
+    }
+
+    public void moveToMagnetGroup(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
+
+    }
+
+    public void moveToPoint(PointF newPoint) {
+
+    }
 }
