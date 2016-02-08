@@ -45,6 +45,51 @@
             android:background="@drawable/edit_text_note"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+        <com.ogaclejapan.arclayout.ArcLayout
+            android:id="@+id/arc_layout"
+            android:visibility="invisible"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="0dp"
+            android:layout_marginRight="-35dp"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            app:arc_axisRadius="51dp"
+            app:arc_freeAngle="true"
+            app:arc_origin="center"
+            app:arc_radius="75dp">
+
+            <ImageButton android:id="@+id/imageButton"
+                android:background="@drawable/ic_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:arc_angle="330"
+                />
+            <ImageButton android:id="@+id/videoButton"
+                android:background="@drawable/ic_video"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:arc_angle="280"
+                />
+            <ImageButton android:id="@+id/fileButton"
+                android:background="@drawable/ic_file"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                app:arc_angle="20"
+                />
+
+
+        </com.ogaclejapan.arclayout.ArcLayout>
+
+        <ImageButton android:id="@+id/attachFile"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="65dp"
+            android:layout_marginRight="32dp"
+            android:background="@drawable/ic_attach_file"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            />
         <ImageButton android:id="@+id/saveImageButton"
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"

@@ -1,5 +1,9 @@
 package com.aivo.hyperion.aivo.views;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,9 +13,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.AnticipateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 
 import com.aivo.hyperion.aivo.R;
+import com.ogaclejapan.arclayout.ArcLayout;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -22,7 +32,7 @@ import com.aivo.hyperion.aivo.R;
  * create an instance of this fragment.
  *
  */
-public class NoteFragment extends Fragment implements OnTouchListener {
+public class NoteFragment extends Fragment implements OnTouchListener, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -31,6 +41,9 @@ public class NoteFragment extends Fragment implements OnTouchListener {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private View attachFile;
+    private ArcLayout arcLayout;
 
     private OnFragmentInteractionListener mListener;
 
@@ -70,35 +83,23 @@ public class NoteFragment extends Fragment implements OnTouchListener {
         // Inflate the layout for this fragment
         View noteView = inflater.inflate(R.layout.fragment_note, container, false);
 
+        // Set onClick listeners for the Arc layout items (attach file/video/image buttons)
+        arcLayout = (ArcLayout) noteView.findViewById(R.id.arc_layout);
+        for (int i = 0, size = arcLayout.getChildCount(); i < size; i++) {
+            arcLayout.getChildAt(i).setOnClickListener(this);
+        }
+
+        attachFile = noteView.findViewById(R.id.attachFile);
+        attachFile.setOnClickListener(this);
+
         ImageButton resizeButton = (ImageButton) noteView.findViewById(R.id.expandImageButton);
-        resizeButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                // TODO: Resize fragment
-            }
-        });
+        resizeButton.setOnClickListener(this);
 
         ImageButton saveButton = (ImageButton) noteView.findViewById(R.id.saveImageButton);
-        saveButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                // TODO: Save changes
-            }
-        });
+        saveButton.setOnClickListener(this);
 
         ImageButton cancelButton = (ImageButton) noteView.findViewById(R.id.cancelImageButton);
-        cancelButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                // TODO: Cancel editing
-            }
-        });
+        cancelButton.setOnClickListener(this);
 
         return noteView;
     }
@@ -145,5 +146,126 @@ public class NoteFragment extends Fragment implements OnTouchListener {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.saveImageButton:
+                // TODO: Save changes
+                break;
+            case R.id.cancelImageButton:
+                // TODO: Cancel editing
+                break;
+            case R.id.attachFile:
+                onAttachClick(view);
+                break;
+            case R.id.fileButton:
+                // TODO: Attach a file
+                break;
+            case R.id.videoButton:
+                // TODO: Attach a video
+                break;
+            case R.id.imageButton:
+                // TODO: Attach an image
+                break;
+            case R.id.expandImageButton:
+                // TODO: Resize note
+                break;
+            default:
+                break;
+        }
+
+    }
+
+    private void onAttachClick(View view) {
+        if (view.isSelected()) {
+            hideMenu();
+        } else {
+            showMenu();
+        }
+        view.setSelected(!view.isSelected());
+    }
+
+    @SuppressWarnings("NewApi")
+    private void showMenu() {
+        arcLayout.setVisibility(View.VISIBLE);
+
+        List<Animator> animList = new ArrayList<>();
+
+        for (int i = 0, len = arcLayout.getChildCount(); i < len; i++) {
+            animList.add(createShowItemAnimator(arcLayout.getChildAt(i)));
+        }
+
+        AnimatorSet animSet = new AnimatorSet();
+        animSet.setDuration(400);
+        animSet.setInterpolator(new OvershootInterpolator());
+        animSet.playTogether(animList);
+        animSet.start();
+    }
+
+    @SuppressWarnings("NewApi")
+    private void hideMenu() {
+
+        List<Animator> animList = new ArrayList<>();
+
+        for (int i = arcLayout.getChildCount() - 1; i >= 0; i--) {
+            animList.add(createHideItemAnimator(arcLayout.getChildAt(i)));
+        }
+
+        AnimatorSet animSet = new AnimatorSet();
+        animSet.setDuration(400);
+        animSet.setInterpolator(new AnticipateInterpolator());
+        animSet.playTogether(animList);
+        animSet.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                arcLayout.setVisibility(View.INVISIBLE);
+            }
+        });
+        animSet.start();
+    }
+
+    private Animator createShowItemAnimator(View item) {
+
+        float dx = attachFile.getX() - item.getX();
+        float dy = attachFile.getY() - item.getY();
+
+        item.setRotation(0f);
+        item.setTranslationX(dx);
+        item.setTranslationY(dy);
+
+        Animator anim = ObjectAnimator.ofPropertyValuesHolder(
+                item,
+                AnimatorUtils.rotation(0f, 0f),
+                AnimatorUtils.translationX(dx, 0f),
+                AnimatorUtils.translationY(dy, 0f)
+        );
+
+        return anim;
+    }
+
+    private Animator createHideItemAnimator(final View item) {
+        float dx = attachFile.getX() - item.getX();
+        float dy = attachFile.getY() - item.getY();
+
+        Animator anim = ObjectAnimator.ofPropertyValuesHolder(
+                item,
+                AnimatorUtils.rotation(0f, 0f),
+                AnimatorUtils.translationX(0f, dx),
+                AnimatorUtils.translationY(0f, dy)
+        );
+
+        anim.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                super.onAnimationEnd(animation);
+                item.setTranslationX(0f);
+                item.setTranslationY(0f);
+            }
+        });
+
+        return anim;
     }
 }
