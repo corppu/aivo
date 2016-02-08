@@ -2,16 +2,65 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:background="@color/noteBackground"
+    android:background="@drawable/ic_note_shadow"
+    android:fadingEdge="horizontal"
+    android:fadingEdgeLength="5dp"
     android:layout_width="332dp"
     android:layout_height="447dp">
 
-    <EditText android:hint="Title"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp" />
-    <EditText android:hint="Contents"
+        android:layout_height="50dp">
+        <EditText android:hint="Title"
+            android:id="@+id/titleEditText"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="50dp"
+            android:singleLine="true"
+            android:textColor="@color/textGrayColor"
+            android:background="@drawable/edit_text_note"
+            android:layout_width="match_parent"
+            android:layout_height="50dp" />
+        <ImageButton android:id="@+id/expandImageButton"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:layout_centerVertical="true"
+            android:background="@drawable/ic_expand"
+            android:layout_width="25dp"
+            android:layout_height="25dp" />
+    </RelativeLayout>
+    <View
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="1dp"
+        android:background="@color/textGrayColor" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <EditText android:hint="Contents"
+            android:layout_marginTop="15dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="15dp"
+            android:textColor="@color/textGrayColor"
+            android:gravity="top"
+            android:background="@drawable/edit_text_note"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <ImageButton android:id="@+id/saveImageButton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="25dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/ic_done"
+            android:layout_width="35dp"
+            android:layout_height="35dp" />
+        <ImageButton android:id="@+id/cancelImageButton"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginRight="60dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/ic_cancel"
+            android:layout_width="35dp"
+            android:layout_height="35dp" />
+    </RelativeLayout>
 
 </LinearLayout>
