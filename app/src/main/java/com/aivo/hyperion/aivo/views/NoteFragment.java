@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 
 import com.aivo.hyperion.aivo.R;
 
@@ -67,7 +68,39 @@ public class NoteFragment extends Fragment implements OnTouchListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_note, container, false);
+        View noteView = inflater.inflate(R.layout.fragment_note, container, false);
+
+        ImageButton resizeButton = (ImageButton) noteView.findViewById(R.id.expandImageButton);
+        resizeButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // TODO: Resize fragment
+            }
+        });
+
+        ImageButton saveButton = (ImageButton) noteView.findViewById(R.id.saveImageButton);
+        saveButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // TODO: Save changes
+            }
+        });
+
+        ImageButton cancelButton = (ImageButton) noteView.findViewById(R.id.cancelImageButton);
+        cancelButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // TODO: Cancel editing
+            }
+        });
+
+        return noteView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
