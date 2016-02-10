@@ -1,14 +1,14 @@
 package com.aivo.hyperion.aivo.models;
 
-import android.support.annotation.Nullable;
-
-import com.aivo.hyperion.aivo.models.pojos.MagnetPojo;
-
-import java.io.IOException;
+import android.graphics.PointF;
 
 public class Magnet {
-    // The local pojo
-    private MagnetPojo pojo;
+
+    // Local properties
+    private String title;
+    private String content;
+    private int color;
+    private MagnetGroup magnetGroup;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -18,62 +18,60 @@ public class Magnet {
         mediator = modelMediator_;
     }
 
-    /** Create a new Magnet. Gets required information from the mediator.
-     *
-     * @param mediator_     LocalStorageModule reference. Required!
-     * @param magnetGroup   MagnetGroup to create this magnet into. Required!
-     */
-    protected Magnet(ModelMediator mediator_, MagnetGroup magnetGroup) {
+    public Magnet(ModelMediator mediator_) {
         setMediator(mediator_);
-        pojo = new MagnetPojo();
-
-        // Set identifiers and update other models
-        pojo.setUserId(mediator.user.getId());
-        pojo.setMindmapId(mediator.mindmap.getId());
-        pojo.setMagnetId(mediator.user.getNextObjectId());
-
-        pojo.setMagnetGroupId(magnetGroup.getId());
     }
 
-    /** Create a Magnet from a existing file.
-     *
-     * @param mediator_     LocalStorageModule reference. Required!
-     * @param magnetId      Magnet identifier.
-     * @throws IOException  If unable to read from or close the file.
-     */
-    protected Magnet(ModelMediator mediator_, final int magnetId) throws IOException {
-        setMediator(mediator_);
-        pojo = mediator.lsm.loadMagnet(mediator.user.getId(),
-                                            mediator.mindmap.getId(), magnetId);
+    // Debug (or not) functions
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public void setContent(String content) {
+        this.content = content;
+    }
+    public void setColor(int color) {
+        this.color = color;
     }
 
-    //----------------------------------------------------------------------------------------------
-    // Public interface
-    public int getId() { return pojo.getMagnetId(); }
+    // End of debug functions
+
+    public String getTitle() {
+        return title;
+    }
+    public String getContent() {
+        return content;
+    }
+    public int getColor() {
+        return color;
+    }
     public MagnetGroup getMagnetGroup() {
-        for (MagnetGroup magnetGroup : mediator.mindmap.getMagnetGroups())
-            if (magnetGroup.getId() == pojo.getMagnetGroupId())
-                return magnetGroup;
-        throw new InternalError("Could not find Magnets MagnetGroup from Mindmap!");
+        return magnetGroup;
     }
-    public void moveToMagnetGroup(MagnetGroup newMagnetGroup) {
-        getMagnetGroup().removeMagnet(this);
-
-        pojo.setMagnetGroupId(newMagnetGroup.getId());
-        newMagnetGroup.addMagnet(this);
+    public boolean hasImage() {
+        return false; // TODO
     }
-    public void moveToMagnetGroupNew(final int x, final int y) {
-        MagnetGroup magnetGroup = new MagnetGroup(mediator, x, y);
-        mediator.mindmap.magnetGroups.add(magnetGroup);
-        moveToMagnetGroup(magnetGroup);
-    }
-    public void deleteMagnet() {
-        getMagnetGroup().removeMagnet(this);
+    public boolean hasVideo() {
+        return false; // TODO
     }
 
-    //----------------------------------------------------------------------------------------------
-    // Protected model functions
-    protected void savePojo() throws IOException {
-        mediator.lsm.saveMagnet(pojo);
+    public void changeTitle(String newTitle) {
+
+    }
+
+    public void changeContent(String newContent) {
+
+    }
+
+    public void changeColor(final int newColor) {
+
+    }
+
+    public void moveToMagnetGroup(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
+
+    }
+
+    public void moveToPoint(PointF newPoint) {
+
     }
 }

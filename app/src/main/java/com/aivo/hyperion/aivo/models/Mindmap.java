@@ -1,19 +1,23 @@
 package com.aivo.hyperion.aivo.models;
 
+import android.graphics.PointF;
+
 import com.aivo.hyperion.aivo.models.pojos.MindmapPojo;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Mindmap {
-    // The local pojo
-    private MindmapPojo pojo;
 
+    // Local properties
+    private String title;
+    
     // List of magnet groups in the mindmap (Never null, use clear!)
-    protected ArrayList<MagnetGroup> magnetGroups;
+    protected List<MagnetGroup> magnetGroups;
 
     // List of lines in the mindmap (Never null, use clear!)
-    protected ArrayList<Line> lines;
+    protected List<Line> lines;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -23,87 +27,45 @@ public class Mindmap {
         mediator = modelMediator_;
     }
 
-    /** Create a new Mindmap. Gets required information from the Mediator.
-     *
-     * @param mediator_  ModelMediator reference. Required!
-     */
-    protected Mindmap(ModelMediator mediator_) {
+    public Mindmap(ModelMediator mediator_) {
         setMediator(mediator_);
-        pojo = new MindmapPojo();
         magnetGroups = new ArrayList<>();
         lines = new ArrayList<>();
-
-        // Set identifiers
-        pojo.setUserId(mediator.user.getId());
-        pojo.setMindmapId(mediator.user.getNextObjectId());
-
-        // Update user
-        mediator.user.addMindmapId(pojo.getMindmapId());
-        mediator.user.setRecent(pojo.getMindmapId());
     }
 
-    /** Create a Mindmap from a existing file.
-     *
-     * @param mediator_     ModelMediator reference. Required!
-     * @param mindmapId     Mindmap identifier.
-     * @throws IOException  If unable to read from or close the file.
-     */
-    protected Mindmap(ModelMediator mediator_, final int mindmapId) throws IOException {
-        setMediator(mediator_);
-        pojo = mediator.lsm.loadMindmap(mediator.user.getId(), mindmapId);
+    // Debug (or not) functions
 
-        for (int magnetGroupId : pojo.getMagnetGroupIds()) {
-            magnetGroups.add(new MagnetGroup(mediator, magnetGroupId));
-        }
-
-        // Update user
-        mediator.user.setRecent(pojo.getMindmapId());
+    public void setMagnetGroups(List<MagnetGroup> magnetGroups) {
+        this.magnetGroups = magnetGroups;
+    }
+    public void setLines(List<Line> lines) {
+        this.lines = lines;
     }
 
-    //----------------------------------------------------------------------------------------------
-    // Public interface
+    // End of debug functions
 
-    public int getId() { return pojo.getMindmapId(); }
-
-    public ArrayList<MagnetGroup> getMagnetGroups() {
-        return new ArrayList<>(magnetGroups);
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public List<MagnetGroup> getMagnetGroups() {
+        return magnetGroups;
+    }
+    public List<Line> getLines() {
+        return lines;
     }
 
-    public ArrayList<Line> getLines() {
-        return new ArrayList<>(lines);
+    public void createMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
+
     }
 
-    public void createMagnet(MagnetGroup parentGroup) { // TODO: Position within groups magnets?
-        Magnet magnet = new Magnet(mediator, parentGroup);
-        parentGroup.addMagnet(magnet);
+    public void createMagnet(PointF point) {
+
     }
 
-    public void createMagnet(final int x, final int y) {
-        MagnetGroup magnetGroup = new MagnetGroup(mediator, x, y);
-        pojo.getMagnetGroupIds().add(magnetGroup.getId());
-        magnetGroups.add(magnetGroup);
+    public void createLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
 
-        createMagnet(magnetGroup);
-    }
-
-    public void createLine(MagnetGroup group1, MagnetGroup group2) {
-        if (group1.isConnectedTo(group2)) return;
-
-        Line line = new Line(mediator, group1, group2);
-        pojo.getLineIds().add(line.getId());
-        lines.add(line);
-
-        group1.addLine(line);
-        group2.addLine(line);
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // Protected model functions
-    protected void savePojo() throws IOException {
-        mediator.lsm.saveMindmap(pojo);
-        for (MagnetGroup magnetGroup : magnetGroups)
-            magnetGroup.savePojo();
-        for (Line line : lines)
-            line.savePojo();
     }
 }
