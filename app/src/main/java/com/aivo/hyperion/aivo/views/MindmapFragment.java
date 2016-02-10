@@ -151,7 +151,7 @@ public class MindmapFragment extends Fragment implements View.OnTouchListener, M
     @Override
     public void onUserOpened(User user) {
         Log.d(TAG, "onUserOpened " + user.toString());
-        mediator.createMindmap();
+        mediator.createMindmap("New Mindmap");
     }
 
     @Override
@@ -164,7 +164,7 @@ public class MindmapFragment extends Fragment implements View.OnTouchListener, M
     @Override
     public void onUserChanged(User user) {
         Log.d(TAG, "onUserChanged " + user.toString());
-        mediator.createMindmap();
+        mediator.createMindmap("New Mindmap");
     }
 
     @Override

@@ -31,10 +31,10 @@ public class MagnetGroupCanvas {
         float deltaX = sizeModifier * BORDER_THICKNESS + sizeModifier * MAGNET_WIDTH;
         float deltaY = sizeModifier * BORDER_THICKNESS + sizeModifier * MAGNET_HEIGHT;
         this.outerRectF = new RectF(
-                magnetGroup.getX() - deltaX,
-                magnetGroup.getY() - deltaY,
-                magnetGroup.getX() + deltaX,
-                magnetGroup.getY() + deltaY);
+                magnetGroup.getPoint().x - deltaX,
+                magnetGroup.getPoint().y - deltaY,
+                magnetGroup.getPoint().x + deltaX,
+                magnetGroup.getPoint().y + deltaY);
     }
 
     public void draw(Canvas canvas, Paint paint) {

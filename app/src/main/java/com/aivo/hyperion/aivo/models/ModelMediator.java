@@ -1,9 +1,8 @@
 package com.aivo.hyperion.aivo.models;
 
+import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.ActionHandler;
 import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
-
-import java.io.IOException;
 
 import java.util.ArrayList;
 
@@ -63,62 +62,6 @@ public class ModelMediator {
         user = new User(this);
         for (ModelListener listener : listeners) listener.onUserOpened(user);
     }
-    /** Open a existing User.
-     *
-     * @param userId    User identifier.
-     */
-    public void openUser(final int userId) {
-        // Close any opened User
-        if (!closeUser()) return;
-
-        // Try to open a existing User file
-        try {
-            user = new User(this, userId);
-        } catch (IOException e) {
-            user = null;
-            for (ModelListener listener : listeners) listener.onException(e);
-            return;
-        }
-
-        for (ModelListener listener : listeners) listener.onUserOpened(user);
-    }
-
-    /** Create a new Mindmap and open it.
-     *
-     */
-    public void createMindmap() {
-        if (user==null)
-            throw new InternalError("Tried to create a Mindmap without first opening a User!");
-
-        // Close any opened Mindmap
-        if (!closeMindmap()) return;
-
-        mindmap = new Mindmap(this);
-        for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
-    }
-
-    /** Open a existing Mindmap.
-     *
-     * @param mindMapId     Mindmap identifier.
-     */
-    public void openMindmap(final int mindMapId) {
-        if (user==null)
-            throw new InternalError("Tried to open a Mindmap without first opening a User!");
-
-        // Close any opened Mindmap
-        if (!closeMindmap()) return;
-
-        // Try to open the Mindmap file
-        try {
-            mindmap = new Mindmap(this, mindMapId);
-        } catch (IOException e) {
-            mindmap = null;
-            for (ModelListener listener : listeners) listener.onException(e);
-            return;
-        }
-
-        for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
-    }
 
     /** First saves and closes any opened Note, then Mindmap and finally the User.
      *
@@ -131,18 +74,38 @@ public class ModelMediator {
         if (!closeMindmap())
             return false;
 
-        try {
+        /*try {
             user.savePojo();
         } catch (IOException e) {
             for (ModelListener listener : listeners) listener.onException(e);
             return false;
-        }
+        }*/
 
         // Saved successfully, close user
         user = null;
 
         for (ModelListener listener : listeners) listener.onUserClosed();
         return true;
+    }
+
+    /** Create a new Mindmap and open it.
+     *
+     * @param title     Unique identifier for the new Mindmap.
+     */
+    public void createMindmap(String title) {
+        if (user==null)
+            throw new InternalError("Tried to create a Mindmap without first opening a User!");
+
+        // Check that the title isn't used
+        if (isMindmapTitleUsed(title)) return;
+
+        // Close any opened Mindmap
+        if (!closeMindmap()) return;
+
+        // Create the mindmap
+        mindmap = new Mindmap(this, title);
+        actionHandler.clearAll();
+        for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
     }
 
     /** Save and close any open Mindmap.
@@ -152,12 +115,12 @@ public class ModelMediator {
     public boolean closeMindmap() {
         if (mindmap == null) return true;
 
-        try {
+        /*try {
             mindmap.savePojo();
         } catch (IOException e) {
             for (ModelListener listener : listeners) listener.onException(e);
             return false;
-        }
+        }*/
 
         // Saved successfully, close mindmap
         mindmap = null;
@@ -166,4 +129,11 @@ public class ModelMediator {
         return true;
     }
 
+    public boolean isMindmapTitleUsed(String title) {
+        return false;
+    }
+
+    public boolean isFavoriteMagnetTitleUsed(String title) {
+        return false;
+    }
 }
