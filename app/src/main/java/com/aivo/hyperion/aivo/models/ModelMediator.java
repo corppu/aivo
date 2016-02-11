@@ -127,6 +127,7 @@ public class ModelMediator {
 
         // Saved successfully, close mindmap
         mindmap = null;
+        actionHandler.clearAll();
 
         for (ModelListener listener : listeners) listener.onMindmapClosed();
         return true;
