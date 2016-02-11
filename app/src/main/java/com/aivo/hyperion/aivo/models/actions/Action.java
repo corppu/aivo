@@ -10,7 +10,7 @@ public abstract class Action {
 
     abstract void execute();
     abstract void undo();
-    protected void setMediator(final ModelMediator mediator_) {
+    final protected void setMediator(final ModelMediator mediator_) {
         if (mediator_ == null)
             throw new InternalError("Action created without a valid ModelMediator reference!");
         mediator = mediator_;

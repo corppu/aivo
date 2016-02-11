@@ -2,6 +2,9 @@ package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
 
+import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.MagnetMove;
+
 public class Magnet {
 
     // Local properties
@@ -61,11 +64,13 @@ public class Magnet {
     }
 
     public void actionMoveTo(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
-
+        Action action = new MagnetMove(mediator, this, magnetGroup, rowIndex, colIndex);
+        mediator.actionHandler.executeAction(action);
     }
 
     public void actionMoveTo(PointF newPoint) {
-
+        Action action = new MagnetMove(mediator, this, newPoint);
+        mediator.actionHandler.executeAction(action);
     }
 
     public void delete() {

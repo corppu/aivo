@@ -2,6 +2,9 @@ package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
 
+import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.LineCreate;
+import com.aivo.hyperion.aivo.models.actions.MagnetCreate;
 import com.aivo.hyperion.aivo.models.pojos.MindmapPojo;
 
 import java.io.IOException;
@@ -54,7 +57,8 @@ public class Mindmap {
      *                      If greater than element count in row, magnet is created in the end.
      */
     public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
-
+        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
+        mediator.actionHandler.executeAction(action);
     }
 
     /** Creates a magnet through an action.
@@ -62,7 +66,8 @@ public class Mindmap {
      * @param pointF        Where a new MagnetGroup is created, to contain the new Magnet.
      */
     public void actionCreateMagnet(PointF pointF) {
-
+        Action action = new MagnetCreate(mediator, pointF);
+        mediator.actionHandler.executeAction(action);
     }
 
     /** Creates a new line through an action.
@@ -71,7 +76,8 @@ public class Mindmap {
      * @param magnetGroup2  Connecting magnet group.
      */
     public void actionCreateLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
-
+        Action action = new LineCreate(mediator, magnetGroup1, magnetGroup2);
+        mediator.actionHandler.executeAction(action);
     }
 
     /** Removes this Mindmap. IRREVERSIBLE!

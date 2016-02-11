@@ -7,17 +7,17 @@ import com.aivo.hyperion.aivo.models.ModelMediator;
 /**
  * Created by MicroLoota on 8.2.2016.
  */
-public class CreateLine extends Action {
+public class LineCreate extends Action {
 
     private Line line;
 
-    public CreateLine(ModelMediator mediator, MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
+    public LineCreate(ModelMediator mediator, MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
         if (magnetGroup1 == magnetGroup2)
-            throw new InternalError("Tried to CreateLine from a group to the same group!");
+            throw new InternalError("Tried to LineCreate from a group to the same group!");
         else {
             for (Line line : magnetGroup1.getLines())
                 if (line.getMagnetGroup1() == magnetGroup2 || line.getMagnetGroup2() == magnetGroup2)
-                    throw new InternalError("Tried to CreateLine between already connected groups!");
+                    throw new InternalError("Tried to LineCreate between already connected groups!");
         }
 
         setMediator(mediator);
