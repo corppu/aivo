@@ -32,19 +32,6 @@ public class Line {
         this.magnetGroup2 = magnetGroup2;
     }
 
-    // Debug (or not) functions
-
-    public void setPoints(ArrayList<PointF> points) {
-        this.points = points;
-    }
-    public void setType(int type) {
-        this.type = type;
-    }
-    public void setThickness(int thickness) {
-        this.thickness = thickness;
-    }
-
-    // End of debug functions
 
     public MagnetGroup getMagnetGroup1() { return magnetGroup1; }
     public MagnetGroup getMagnetGroup2() { return magnetGroup2; }
@@ -54,17 +41,21 @@ public class Line {
 
     public void actionChangeType(final int newType) {
 
+        mediator.notifyMindmapChanged();
     }
 
     public void actionChangeThickness(final int newThickness) {
 
+        mediator.notifyMindmapChanged();
     }
 
     public void actionAddPoint(PointF newPoint, final int targetIndex) {
 
+        mediator.notifyMindmapChanged();
     }
 
     public void actionRemovePoint(PointF point) {
 
+        mediator.notifyMindmapChanged();
     }
 }

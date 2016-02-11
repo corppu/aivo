@@ -4,7 +4,7 @@ import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.ChangeData;
-import com.aivo.hyperion.aivo.models.actions.MagnetMove;
+import com.aivo.hyperion.aivo.models.actions.MagnetGroupMove;
 import com.aivo.hyperion.aivo.models.pojos.MagnetGroupPojo;
 
 import java.io.IOException;
@@ -55,15 +55,19 @@ public class MagnetGroup {
 
     public void actionChangeData(String newTitle) {
         Action action = new ChangeData(this, newTitle);
-        mediator.actionHandler.executeAction(action);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+        mediator.notifyMindmapChanged();
     }
 
     public void actionMoveTo(PointF newPoint) {
-        this.getPoint().set(newPoint);
+        Action action = new MagnetGroupMove(this, newPoint);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+        mediator.notifyMindmapChanged();
     }
 
     public void actionMoveTo(MagnetGroup magnetGroupToMergeInto, final boolean keepLines) {
 
+        mediator.notifyMindmapChanged();
     }
 
     public void delete() {
