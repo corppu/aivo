@@ -55,6 +55,7 @@ public class Mindmap {
     public void actionChangeData(String newTitle) {
         Action action = new ChangeData(this, newTitle);
         mediator.actionHandler.executeAction(action);
+        mediator.notifyMindmapChanged();
     }
 
     /** Creates a magnet through an action.
@@ -67,6 +68,7 @@ public class Mindmap {
     public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
         Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
         mediator.actionHandler.executeAction(action);
+        mediator.notifyMindmapChanged();
     }
 
     /** Creates a magnet through an action.
@@ -76,6 +78,7 @@ public class Mindmap {
     public void actionCreateMagnet(PointF pointF) {
         Action action = new MagnetCreate(mediator, pointF);
         mediator.actionHandler.executeAction(action);
+        mediator.notifyMindmapChanged();
     }
 
     /** Creates a new line through an action.
@@ -86,6 +89,7 @@ public class Mindmap {
     public void actionCreateLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
         Action action = new LineCreate(mediator, magnetGroup1, magnetGroup2);
         mediator.actionHandler.executeAction(action);
+        mediator.notifyMindmapChanged();
     }
 
     /** Removes this Mindmap. IRREVERSIBLE!

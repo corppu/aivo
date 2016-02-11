@@ -42,12 +42,14 @@ public class ModelMediator {
         listeners.remove(listener);
     }
 
-    public User getUser() {
-        return user;
-    }
+    public User getUser() { return user; }
 
-    public Mindmap getMindmap() {
-        return mindmap;
+    public Mindmap getMindmap() { return mindmap; }
+
+    public ActionHandler getActionHandler() { return actionHandler; }
+
+    protected void notifyMindmapChanged() {
+        for (ModelListener listener : listeners) listener.onMindmapChanged(mindmap);
     }
 
     //----------------------------------------------------------------------------------------------
