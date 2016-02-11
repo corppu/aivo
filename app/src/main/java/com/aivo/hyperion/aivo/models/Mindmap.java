@@ -1,5 +1,7 @@
 package com.aivo.hyperion.aivo.models;
 
+import android.graphics.PointF;
+
 import com.aivo.hyperion.aivo.models.pojos.MindmapPojo;
 
 import java.io.IOException;
@@ -31,27 +33,39 @@ public class Mindmap {
         lines = new ArrayList<>();
     }
 
-    public List<MagnetGroup> getMagnetGroups() {
-        return magnetGroups;
-    }
-
-    public List<Line> getLines() {
-        return lines;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
+    // Debug (or not) functions
 
     public void setMagnetGroups(List<MagnetGroup> magnetGroups) {
         this.magnetGroups = magnetGroups;
     }
-
     public void setLines(List<Line> lines) {
         this.lines = lines;
+    }
+
+    // End of debug functions
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public List<MagnetGroup> getMagnetGroups() {
+        return magnetGroups;
+    }
+    public List<Line> getLines() {
+        return lines;
+    }
+
+    public void createMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
+
+    }
+
+    public void createMagnet(PointF point) {
+
+    }
+
+    public void createLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
+
     }
 }

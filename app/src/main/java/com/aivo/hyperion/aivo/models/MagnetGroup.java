@@ -30,29 +30,39 @@ public class MagnetGroup {
         magnets = new ArrayList<>();
     }
 
-    public List< List<Magnet> > getMagnets() {
-        return magnets;
-    }
+    // Debug (or not) functions
 
     public void setMagnets(List< List<Magnet> > magnets) {
         this.magnets = magnets;
     }
-
-    public String getTitle() {
-        return title;
-    }
-
     public void setTitle(String title) {
         this.title = title;
     }
-
-    public PointF getPoint() {
-        return point;
-    }
-
     public void setPoint(PointF point) {
         this.point = point;
     }
 
+    // End of debug functions
 
+    public PointF getPoint() {
+        return point;
+    }
+    public String getTitle() {
+        return title;
+    }
+    public List< List<Magnet> > getMagnets() {
+        return magnets;
+    }
+
+    public void changeTitle(String newTitle) {
+
+    }
+
+    public void moveToPoint(PointF newPoint) {
+
+    }
+
+    public void moveToMagnetGroup(MagnetGroup magnetGroupToMergeInto, final boolean keepLines) {
+
+    }
 }
