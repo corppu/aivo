@@ -7,8 +7,6 @@ import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
 import java.util.ArrayList;
 
 public class ModelMediator {
-    // The ActioHandler
-    protected ActionHandler actionHandler;
     
     // Create one LSM to be used by all model classes in the package
     protected LocalStorageModule lsm;
@@ -23,7 +21,6 @@ public class ModelMediator {
     protected ArrayList<ModelListener> listeners;
 
     public ModelMediator() {
-        actionHandler = new ActionHandler();
         lsm = new LocalStorageModule();
         user = null;
         mindmap = null;
@@ -45,8 +42,6 @@ public class ModelMediator {
     public User getUser() { return user; }
 
     public Mindmap getMindmap() { return mindmap; }
-
-    public ActionHandler getActionHandler() { return actionHandler; }
 
     protected void notifyMindmapChanged() {
         for (ModelListener listener : listeners) listener.onMindmapChanged(mindmap);
@@ -107,7 +102,6 @@ public class ModelMediator {
 
         // Create the mindmap
         mindmap = new Mindmap(this, title);
-        actionHandler.clearAll();
         for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
     }
 
@@ -127,7 +121,6 @@ public class ModelMediator {
 
         // Saved successfully, close mindmap
         mindmap = null;
-        actionHandler.clearAll();
 
         for (ModelListener listener : listeners) listener.onMindmapClosed();
         return true;

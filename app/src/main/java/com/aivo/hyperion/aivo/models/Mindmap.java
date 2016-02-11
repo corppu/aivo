@@ -3,6 +3,7 @@ package com.aivo.hyperion.aivo.models;
 import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.ActionHandler;
 import com.aivo.hyperion.aivo.models.actions.ChangeData;
 import com.aivo.hyperion.aivo.models.actions.LineCreate;
 import com.aivo.hyperion.aivo.models.actions.MagnetCreate;
@@ -13,6 +14,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Mindmap {
+
+    // The ActioHandler
+    protected ActionHandler actionHandler;
 
     // Is this dirty?
     private boolean isDirty;
@@ -36,6 +40,7 @@ public class Mindmap {
 
     public Mindmap(ModelMediator mediator_, String title) {
         setMediator(mediator_);
+        this.actionHandler = new ActionHandler();
         this.magnetGroups = new ArrayList<>();
         this.lines = new ArrayList<>();
         this.title = title;
@@ -47,6 +52,7 @@ public class Mindmap {
     public String getTitle() { return title; }
     public List<MagnetGroup> getMagnetGroups() { return magnetGroups; }
     public List<Line> getLines() { return lines; }
+    public ActionHandler getActionHandler() { return actionHandler; }
 
     /** Change mindmap title through an action.
      *
@@ -54,7 +60,7 @@ public class Mindmap {
      */
     public void actionChangeData(String newTitle) {
         Action action = new ChangeData(this, newTitle);
-        mediator.actionHandler.executeAction(action);
+        getActionHandler().executeAction(action);
         mediator.notifyMindmapChanged();
     }
 
@@ -67,7 +73,7 @@ public class Mindmap {
      */
     public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
         Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
-        mediator.actionHandler.executeAction(action);
+        getActionHandler().executeAction(action);
         mediator.notifyMindmapChanged();
     }
 
@@ -77,7 +83,7 @@ public class Mindmap {
      */
     public void actionCreateMagnet(PointF pointF) {
         Action action = new MagnetCreate(mediator, pointF);
-        mediator.actionHandler.executeAction(action);
+        getActionHandler().executeAction(action);
         mediator.notifyMindmapChanged();
     }
 
@@ -88,7 +94,7 @@ public class Mindmap {
      */
     public void actionCreateLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
         Action action = new LineCreate(mediator, magnetGroup1, magnetGroup2);
-        mediator.actionHandler.executeAction(action);
+        getActionHandler().executeAction(action);
         mediator.notifyMindmapChanged();
     }
 

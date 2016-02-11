@@ -54,13 +54,13 @@ public class MagnetGroup {
 
     public void actionChangeData(String newTitle) {
         Action action = new ChangeData(this, newTitle);
-        mediator.actionHandler.executeAction(action);
+        mediator.getMindmap().getActionHandler().executeAction(action);
         mediator.notifyMindmapChanged();
     }
 
     public void actionMoveTo(PointF newPoint) {
         Action action = new MagnetGroupMove(this, newPoint);
-        mediator.actionHandler.executeAction(action);
+        mediator.getMindmap().getActionHandler().executeAction(action);
         mediator.notifyMindmapChanged();
     }
 
