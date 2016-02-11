@@ -34,12 +34,6 @@ public class Line {
 
     // Debug (or not) functions
 
-    public void setMagnetGroup1(MagnetGroup magnetGroup1) {
-        this.magnetGroup1 = magnetGroup1;
-    }
-    public void setMagnetGroup2(MagnetGroup magnetGroup2) {
-        this.magnetGroup2 = magnetGroup2;
-    }
     public void setPoints(ArrayList<PointF> points) {
         this.points = points;
     }
@@ -52,35 +46,25 @@ public class Line {
 
     // End of debug functions
 
-    public MagnetGroup getMagnetGroup1() {
-        return magnetGroup1;
-    }
-    public MagnetGroup getMagnetGroup2() {
-        return magnetGroup2;
-    }
-    public ArrayList<PointF> getPoints() {
-        return points;
-    }
-    public int getType() {
-        return type;
-    }
-    public int getThickness() {
-        return thickness;
-    }
+    public MagnetGroup getMagnetGroup1() { return magnetGroup1; }
+    public MagnetGroup getMagnetGroup2() { return magnetGroup2; }
+    public ArrayList<PointF> getPoints() { return points; }
+    public int getType() { return type; }
+    public int getThickness() { return thickness; }
 
-    public void changeType(final int newType) {
+    public void actionChangeType(final int newType) {
 
     }
 
-    public void changeThickness(final int newThickness) {
+    public void actionChangeThickness(final int newThickness) {
 
     }
 
-    public void addPoint(PointF newPoint, final int targetIndex) {
+    public void actionAddPoint(PointF newPoint, final int targetIndex) {
 
     }
 
-    public void removePoint(PointF point) {
+    public void actionRemovePoint(PointF point) {
 
     }
 }

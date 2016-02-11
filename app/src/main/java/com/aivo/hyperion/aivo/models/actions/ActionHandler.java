@@ -14,6 +14,11 @@ public class ActionHandler {
         mUndoStack = new Stack<>();
     }
 
+    public void clearAll() {
+        mRedoStack.clear();
+        mUndoStack.clear();
+    }
+
     public void executeAction(Action action) {
         mUndoStack.add(action);
         mRedoStack.clear();

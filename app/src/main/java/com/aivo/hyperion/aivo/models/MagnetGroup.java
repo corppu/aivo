@@ -17,6 +17,9 @@ public class MagnetGroup {
     // List of magnets in the magnet group (Never null, use clear!)
     protected List< List<Magnet> > magnets;
 
+    // List of lines that are connected to this group
+    protected List< Line > lines;
+
     // The model mediator reference
     private ModelMediator mediator;
     private void setMediator(ModelMediator modelMediator_) {
@@ -25,9 +28,10 @@ public class MagnetGroup {
         mediator = modelMediator_;
     }
 
-    public MagnetGroup(ModelMediator mediator_) {
+    public MagnetGroup(ModelMediator mediator_, PointF point) {
         setMediator(mediator_);
-        magnets = new ArrayList<>();
+        this.magnets = new ArrayList<>();
+        this.point = point;
     }
 
     // Debug (or not) functions
@@ -44,25 +48,32 @@ public class MagnetGroup {
 
     // End of debug functions
 
-    public PointF getPoint() {
-        return point;
-    }
-    public String getTitle() {
-        return title;
-    }
-    public List< List<Magnet> > getMagnets() {
-        return magnets;
-    }
+    public PointF getPoint() { return point; }
+    public String getTitle() { return title;  }
+    public List< List<Magnet> > getMagnets() { return magnets; }
+    public List< Line > getLines() { return lines; }
 
-    public void changeTitle(String newTitle) {
-
+    public void actionCreateLine(MagnetGroup magnetGroup) {
+        mediator.getMindmap().actionCreateLine(this, magnetGroup);
     }
 
-    public void moveToPoint(PointF newPoint) {
+    public void actionCreateMagnet(final int rowIndex, final int colIndex) {
+        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex);
+    }
+
+    public void actionChangeTitle(String newTitle) {
 
     }
 
-    public void moveToMagnetGroup(MagnetGroup magnetGroupToMergeInto, final boolean keepLines) {
+    public void actionMoveTo(PointF newPoint) {
+
+    }
+
+    public void actionMoveTo(MagnetGroup magnetGroupToMergeInto, final boolean keepLines) {
+
+    }
+
+    public void delete() {
 
     }
 }

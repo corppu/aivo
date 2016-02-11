@@ -2,6 +2,9 @@ package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
 
+import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.MagnetMove;
+
 public class Magnet {
 
     // Local properties
@@ -18,8 +21,9 @@ public class Magnet {
         mediator = modelMediator_;
     }
 
-    public Magnet(ModelMediator mediator_) {
+    public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup) {
         setMediator(mediator_);
+        this.magnetGroup = magnetGroup;
     }
 
     // Debug (or not) functions
@@ -36,18 +40,10 @@ public class Magnet {
 
     // End of debug functions
 
-    public String getTitle() {
-        return title;
-    }
-    public String getContent() {
-        return content;
-    }
-    public int getColor() {
-        return color;
-    }
-    public MagnetGroup getMagnetGroup() {
-        return magnetGroup;
-    }
+    public String getTitle() { return title; }
+    public String getContent() { return content; }
+    public int getColor() { return color; }
+    public MagnetGroup getMagnetGroup() { return magnetGroup; }
     public boolean hasImage() {
         return false; // TODO
     }
@@ -55,23 +51,29 @@ public class Magnet {
         return false; // TODO
     }
 
-    public void changeTitle(String newTitle) {
+    public void actionChangeTitle(String newTitle) {
 
     }
 
-    public void changeContent(String newContent) {
+    public void actionChangeContent(String newContent) {
 
     }
 
-    public void changeColor(final int newColor) {
+    public void actionChangeColor(final int newColor) {
 
     }
 
-    public void moveToMagnetGroup(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
-
+    public void actionMoveTo(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
+        Action action = new MagnetMove(mediator, this, magnetGroup, rowIndex, colIndex);
+        mediator.actionHandler.executeAction(action);
     }
 
-    public void moveToPoint(PointF newPoint) {
+    public void actionMoveTo(PointF newPoint) {
+        Action action = new MagnetMove(mediator, this, newPoint);
+        mediator.actionHandler.executeAction(action);
+    }
+
+    public void delete() {
 
     }
 }
