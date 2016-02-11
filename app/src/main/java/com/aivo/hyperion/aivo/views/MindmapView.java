@@ -59,7 +59,7 @@ public class MindmapView {
         for (Line line : mMindmap.getLines()) {
             group1 = line.getMagnetGroup1();
             group2 = line.getMagnetGroup2();
-            mCanvas.drawLine(group1.getX(), group1.getY(), group2.getX(), group2.getY(), mPaint);
+//            mCanvas.drawLine(group1.getX(), group1.getY(), group2.getX(), group2.getY(), mPaint);
         }
     }
 

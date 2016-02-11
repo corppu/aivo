@@ -4,6 +4,7 @@ import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.ChangeData;
+import com.aivo.hyperion.aivo.models.actions.MagnetMove;
 import com.aivo.hyperion.aivo.models.pojos.MagnetGroupPojo;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class MagnetGroup {
         setMediator(mediator_);
         this.magnets = new ArrayList<>();
         this.point = point;
+        this.lines = new ArrayList<>();
     }
 
     // DO NOT USE! Only for ChangeData action!
@@ -57,7 +59,7 @@ public class MagnetGroup {
     }
 
     public void actionMoveTo(PointF newPoint) {
-
+        this.getPoint().set(newPoint);
     }
 
     public void actionMoveTo(MagnetGroup magnetGroupToMergeInto, final boolean keepLines) {

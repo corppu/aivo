@@ -54,9 +54,9 @@ public class MagnetGroupCanvas {
         paint.setColor(Color.CYAN);
         canvas.drawRoundRect(outerRectF, 24, 24, paint);
 
-        for(Magnet magnet : mMagnetGroup.getMagnets()) {
-            drawMagnet("Title", new PointF(mMagnetGroup.getX(), mMagnetGroup.getY()));
-        }
+//        for(Magnet magnet : mMagnetGroup.getMagnets()) {
+//           // drawMagnet("Title", new PointF(mMagnetGroup.getX(), mMagnetGroup.getY()));
+//        }
 
         mCanvas = null;
         mPaint = null;

@@ -1,17 +1,24 @@
 package com.aivo.hyperion.aivo.views;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.support.v4.view.GestureDetectorCompat;
 import android.util.SparseArray;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.SurfaceView;
 import android.view.View;
 
+import com.aivo.hyperion.aivo.models.Line;
+import com.aivo.hyperion.aivo.models.Magnet;
+import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
-import com.aivo.hyperion.aivo.models.Theme;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -19,7 +26,16 @@ import java.util.concurrent.locks.ReentrantLock;
 /**
  * Created by corpp on 8.1.2016.
  */
-public class MindmapPresenter implements Runnable, View.OnTouchListener{
+public class MindmapPresenter
+        extends GestureDetector.SimpleOnGestureListener
+        implements Runnable, View.OnTouchListener {
+
+    private class MindmapPointer {
+        public PointF selectedPointF = null;
+        public MagnetGroup selectedMagnetGroup = null;
+        public Magnet selectedMagnet = null;
+    }
+
     private final String TAG = "MindmapPresenter";
 
     // Thread
@@ -29,8 +45,14 @@ public class MindmapPresenter implements Runnable, View.OnTouchListener{
 
     // View
     private SurfaceView mSurfaceView;
-    private MindmapView mMindmapView;
+    private GestureDetectorCompat mGestureDetector;
 
+    // Model
+    private Mindmap mMindmap;
+    private MagnetViewModel mMagnetViewModel;
+    private MagnetGroupViewModel mMagnetGroupViewModel;
+    private MagnetGroup mSelectedMagnetGroup;
+    private SparseArray<MindmapPointer> pointerSparseArray = new SparseArray<>();
     private Paint mPaint = new Paint();
 
     // Model
@@ -39,16 +61,29 @@ public class MindmapPresenter implements Runnable, View.OnTouchListener{
         mRunning = false;
         mThread = null;
         mLock = new ReentrantLock();
-
+        mMindmap = null;
         mSurfaceView = null;
-        mMindmapView = null;
+        mGestureDetector = null;
+        mSelectedMagnetGroup = null;
     }
 
-    public void setViews(SurfaceView surfaceView, MindmapView mindmapView) {
+    public void setView(SurfaceView surfaceView) {
         this.mSurfaceView = surfaceView;
-        this.mMindmapView = mindmapView;
+        mGestureDetector = new GestureDetectorCompat(surfaceView.getContext(), this);
+        mGestureDetector.setOnDoubleTapListener(this);
+        mGestureDetector.setIsLongpressEnabled(true);
 
+        //mScaleGestureDetector = new ScaleGestureDetector(surfaceView.getContext(), null);
         surfaceView.setOnTouchListener(this);
+    }
+
+    public void setModel(Mindmap mindmap) {
+        mLock.lock();
+        this.mMindmap = mindmap;
+        mindmap.actionCreateMagnet(new PointF(150, 150));
+        mMagnetViewModel = new MagnetViewModel();
+        mMagnetGroupViewModel = new MagnetGroupViewModel();
+        mLock.unlock();
     }
 
     public void resume() {
@@ -72,32 +107,61 @@ public class MindmapPresenter implements Runnable, View.OnTouchListener{
 
     @Override
     public void run() {
+        PointF point1;
+        PointF point2;
         while (mRunning) {
             if (mSurfaceView.getHolder().getSurface().isValid()) {
 
                 Canvas canvas = mSurfaceView.getHolder().lockCanvas();
-                // Draw here...
 
-                canvas.drawColor(Color.BLACK);
+                // Draw background...
+                canvas.drawColor(Color.WHITE);
 
-                mMindmapView.draw(canvas);
-                //mPaint.setTextAlign(Paint.Align.CENTER);
-                //mPaint.setColor(Color.BLUE);
-                //canvas.drawText(mContent, canvas.getWidth() / 2, canvas.getHeight() / 2, mPaint);
+                mLock.lock();
+                if (mMindmap != null) {
+
+                    mPaint.setColor(Color.BLACK);
+                    for (Line line : mMindmap.getLines()) {
+                        point1 = line.getMagnetGroup1().getPoint();
+                        point2 = line.getMagnetGroup2().getPoint();
+                        canvas.drawLine(point1.x, point1.y, point2.x, point2.y, mPaint);
+                    }
+                    for (MagnetGroup group : mMindmap.getMagnetGroups()) {
+                        mMagnetViewModel.pointF = group.getPoint();
+                        mMagnetViewModel.bottomIconPressed = false;
+                        mMagnetViewModel.hasImg = true;
+                        mMagnetViewModel.hasVid = true;
+                        mMagnetViewModel.isSelected = false;
+
+                        for (int i = 0; i < pointerSparseArray.size(); i++) {
+                            if (!(group != pointerSparseArray.valueAt(i).selectedMagnetGroup)) {
+                                mMagnetViewModel.isSelected = true;
+                                break;
+                            }
+                        }
+                        if (mSelectedMagnetGroup == group) {
+                            mMagnetViewModel.isSelected = true;
+                        }
+
+                        mMagnetViewModel.topIconPressed = false;
+
+                        MagnetViewModel.draw(mMagnetViewModel, canvas, mPaint);
+                    }
+                }
+                mLock.unlock();
 
                 drawPointers(canvas, mPaint);
+
                 // ... end drawing
                 mSurfaceView.getHolder().unlockCanvasAndPost(canvas);
             }
         }
     }
 
-    SparseArray<PointF> pointerSparseArray = new SparseArray<>();
-
-
     private void drawPointers(Canvas canvas, Paint paint) {
         PointF pointF;
         Random random = new Random();
+
         mLock.lock();
         for (int i = 0; i < pointerSparseArray.size(); i++) {
             random.setSeed(pointerSparseArray.keyAt(i));
@@ -105,7 +169,7 @@ public class MindmapPresenter implements Runnable, View.OnTouchListener{
                     random.nextInt(255),
                     random.nextInt(255),
                     random.nextInt(255)));
-            pointF = pointerSparseArray.valueAt(i);
+            pointF = pointerSparseArray.valueAt(i).selectedPointF;
             canvas.drawCircle(pointF.x, pointF.y, 32, paint);
         }
         mLock.unlock();
@@ -113,25 +177,48 @@ public class MindmapPresenter implements Runnable, View.OnTouchListener{
 
     private void putPointer(MotionEvent event) {
         int pointerIndex = event.getActionIndex();
-        PointF pointF = new PointF(event.getX(pointerIndex), event.getY(pointerIndex));
+
+        MindmapPointer mindmapPointer = new MindmapPointer();
+        mindmapPointer.selectedPointF = new PointF(event.getX(pointerIndex), event.getY(pointerIndex));
+        mindmapPointer.selectedMagnetGroup = null;
+        mindmapPointer.selectedMagnet = null;
+
         mLock.lock();
-        pointerSparseArray.put(pointerIndex, pointF);
+        for (MagnetGroup magnetGroup : mMindmap.getMagnetGroups()) {
+            if (MagnetViewModel.checkSelection(magnetGroup.getPoint(), mindmapPointer.selectedPointF)) {
+                mindmapPointer.selectedMagnetGroup = magnetGroup;
+
+                /*
+                for (int i = 0; i < magnetGroup.getMagnets().size(); i++) {
+                    for (Magnet magnet : magnetGroup.getMagnets().get(i)) {
+                        if (MagnetViewModel.checkSelection(magnet.getPointF(), mindmapPointer.selectedPointF)) {
+                            mindmapPointer.selectedMagnet = magnet;
+                            break;
+                        }
+                    }
+                }*/
+
+                break;
+            }
+        }
+
+        pointerSparseArray.put(pointerIndex, mindmapPointer);
         mLock.unlock();
     }
 
     private void movePointer(MotionEvent event) {
         int pointerIndex;
-        PointF pointF;
 
         mLock.lock();
+
         for (pointerIndex = 0; pointerIndex < event.getPointerCount(); pointerIndex++) {
-            pointF = pointerSparseArray.get(event.getPointerId(pointerIndex));
-            if (pointF != null) {
-                pointF.set(event.getX(pointerIndex), event.getY(pointerIndex));
-            } else {
-                //pointerSparseArray.removeAt(pointerIndex);
+            MindmapPointer pointer = pointerSparseArray.get(event.getPointerId(pointerIndex));
+            if (pointer != null) {
+                pointer.selectedPointF.set(event.getX(pointerIndex), event.getY(pointerIndex));
+                if (pointer.selectedMagnetGroup != null) pointer.selectedMagnetGroup.actionMoveTo(pointer.selectedPointF);
             }
         }
+
         mLock.unlock();
     }
 
@@ -146,7 +233,6 @@ public class MindmapPresenter implements Runnable, View.OnTouchListener{
         pointerSparseArray.clear();
         mLock.unlock();
     }
-
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
@@ -172,6 +258,59 @@ public class MindmapPresenter implements Runnable, View.OnTouchListener{
                 break;
         }
 
+        mGestureDetector.onTouchEvent(event);
         return true;
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+
+        PointF newPointF = new PointF(e.getX(), e.getY());
+        mLock.lock();
+        for (MagnetGroup magnetGroup: mMindmap.getMagnetGroups()) {
+            if (MagnetViewModel.checkSelection(magnetGroup.getPoint(), newPointF)) {
+                mSelectedMagnetGroup = magnetGroup;
+                mLock.unlock();
+                return true;
+            }
+        }
+
+        mSelectedMagnetGroup = null;
+        mLock.unlock();
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+
+        PointF newPointF = new PointF(e.getX(), e.getY());
+
+        mLock.lock();
+        for (MagnetGroup magnetGroup: mMindmap.getMagnetGroups()) {
+            if (MagnetViewModel.checkSelection(magnetGroup.getPoint(), newPointF)) {
+
+                if (mSelectedMagnetGroup != null && mSelectedMagnetGroup != magnetGroup) {
+
+                    for (Line line1 : mSelectedMagnetGroup.getLines()) {
+                        for (Line line2: magnetGroup.getLines()) {
+                            if (line1 == line2) {
+                                mLock.unlock();
+                                return true;
+                            }
+                        }
+                    }
+                    mMindmap.actionCreateLine(magnetGroup, mSelectedMagnetGroup);
+
+                }
+
+                //TODO: open and return
+                mLock.unlock();
+                return true;
+            }
+        }
+
+        mMindmap.actionCreateMagnet(newPointF);
+        mLock.unlock();
+        return  true;
     }
 }
