@@ -3,6 +3,7 @@ package com.aivo.hyperion.aivo.models;
 import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.ChangeData;
 import com.aivo.hyperion.aivo.models.actions.MagnetMove;
 
 public class Magnet {
@@ -26,19 +27,11 @@ public class Magnet {
         this.magnetGroup = magnetGroup;
     }
 
-    // Debug (or not) functions
-
-    public void setTitle(String title) {
-        this.title = title;
+    // DO NOT USE! Only for ChangeData action!
+    public void setData(String newTitle, String newContent) {
+        title = newTitle;
+        content = newContent;
     }
-    public void setContent(String content) {
-        this.content = content;
-    }
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    // End of debug functions
 
     public String getTitle() { return title; }
     public String getContent() { return content; }
@@ -51,12 +44,14 @@ public class Magnet {
         return false; // TODO
     }
 
-    public void actionChangeTitle(String newTitle) {
-
+    public void actionChangeData(String newTitle) {
+        Action action = new ChangeData(this, newTitle);
+        mediator.actionHandler.executeAction(action);
     }
 
-    public void actionChangeContent(String newContent) {
-
+    public void actionChangeData(String newTitle, String newContent) {
+        Action action = new ChangeData(this, newTitle, newContent);
+        mediator.actionHandler.executeAction(action);
     }
 
     public void actionChangeColor(final int newColor) {

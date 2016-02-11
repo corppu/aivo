@@ -3,6 +3,7 @@ package com.aivo.hyperion.aivo.models;
 import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.ChangeData;
 import com.aivo.hyperion.aivo.models.actions.LineCreate;
 import com.aivo.hyperion.aivo.models.actions.MagnetCreate;
 import com.aivo.hyperion.aivo.models.pojos.MindmapPojo;
@@ -13,14 +14,17 @@ import java.util.List;
 
 public class Mindmap {
 
+    // Is this dirty?
+    private boolean isDirty;
+
     // Local properties
     private String title;
     
     // List of magnet groups in the mindmap (Never null, use clear!)
-    protected List<MagnetGroup> magnetGroups;
+    private List<MagnetGroup> magnetGroups;
 
     // List of lines in the mindmap (Never null, use clear!)
-    protected List<Line> lines;
+    private List<Line> lines;
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -35,8 +39,11 @@ public class Mindmap {
         this.magnetGroups = new ArrayList<>();
         this.lines = new ArrayList<>();
         this.title = title;
+        this.isDirty = true;
     }
 
+    // DO NOT USE! Only for ChangeData action!
+    public void setData(String newTitle) { title = newTitle; }
     public String getTitle() { return title; }
     public List<MagnetGroup> getMagnetGroups() { return magnetGroups; }
     public List<Line> getLines() { return lines; }
@@ -45,8 +52,9 @@ public class Mindmap {
      *
      * @param newTitle
      */
-    public void actionChangeTitle(String newTitle) {
-
+    public void actionChangeData(String newTitle) {
+        Action action = new ChangeData(this, newTitle);
+        mediator.actionHandler.executeAction(action);
     }
 
     /** Creates a magnet through an action.

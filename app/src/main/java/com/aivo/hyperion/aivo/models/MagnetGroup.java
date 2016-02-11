@@ -2,6 +2,8 @@ package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
 
+import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.ChangeData;
 import com.aivo.hyperion.aivo.models.pojos.MagnetGroupPojo;
 
 import java.io.IOException;
@@ -34,20 +36,8 @@ public class MagnetGroup {
         this.point = point;
     }
 
-    // Debug (or not) functions
-
-    public void setMagnets(List< List<Magnet> > magnets) {
-        this.magnets = magnets;
-    }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public void setPoint(PointF point) {
-        this.point = point;
-    }
-
-    // End of debug functions
-
+    // DO NOT USE! Only for ChangeData action!
+    public void setData(String newTitle) { title = newTitle; }
     public PointF getPoint() { return point; }
     public String getTitle() { return title;  }
     public List< List<Magnet> > getMagnets() { return magnets; }
@@ -61,8 +51,9 @@ public class MagnetGroup {
         mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex);
     }
 
-    public void actionChangeTitle(String newTitle) {
-
+    public void actionChangeData(String newTitle) {
+        Action action = new ChangeData(this, newTitle);
+        mediator.actionHandler.executeAction(action);
     }
 
     public void actionMoveTo(PointF newPoint) {
