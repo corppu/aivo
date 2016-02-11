@@ -23,6 +23,7 @@ public class ModelMediator {
     protected ArrayList<ModelListener> listeners;
 
     public ModelMediator() {
+        actionHandler = new ActionHandler();
         lsm = new LocalStorageModule();
         user = null;
         mindmap = null;
