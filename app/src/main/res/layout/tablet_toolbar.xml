@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-    <android.support.v7.widget.Toolbar
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/toolbar"
+<android.support.v7.widget.Toolbar
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/toolbar"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    android:background="@color/colorToolBarBackground"
+    app:popupTheme="@style/AppTheme.AppBarOverlay">
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="@color/colorToolBarBackground"
-        app:popupTheme="@style/AppTheme.AppBarOverlay"
-        android:gravity="right"
+        android:layout_height="match_parent">
 
+        <Button android:layout_centerVertical="true"
+            android:id="@+id/main_menu_button"
+            android:layout_width="37dp"
+            android:layout_height="25dp"
+            android:clickable="true"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/ic_contents" />
 
-        >
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"
-        android:gravity="right"
-        >
-
-        <Button
+        <Button android:layout_alignParentRight="true"
             android:id="@+id/side_note_button"
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:clickable="true"
-            android:layout_marginRight="15dp"
-            android:layout_gravity="center_vertical"
+            android:layout_marginRight="35dp"
             android:background="@drawable/sidenote_button"
+            android:layout_centerVertical="true" />
+
+    </RelativeLayout>
 
 
-            />
-    </LinearLayout>
-
-
-    </android.support.v7.widget.Toolbar>
+</android.support.v7.widget.Toolbar>
 
