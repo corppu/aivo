@@ -32,55 +32,30 @@ public class Line {
         this.magnetGroup2 = magnetGroup2;
     }
 
-    // Debug (or not) functions
 
-    public void setMagnetGroup1(MagnetGroup magnetGroup1) {
-        this.magnetGroup1 = magnetGroup1;
-    }
-    public void setMagnetGroup2(MagnetGroup magnetGroup2) {
-        this.magnetGroup2 = magnetGroup2;
-    }
-    public void setPoints(ArrayList<PointF> points) {
-        this.points = points;
-    }
-    public void setType(int type) {
-        this.type = type;
-    }
-    public void setThickness(int thickness) {
-        this.thickness = thickness;
+    public MagnetGroup getMagnetGroup1() { return magnetGroup1; }
+    public MagnetGroup getMagnetGroup2() { return magnetGroup2; }
+    public ArrayList<PointF> getPoints() { return points; }
+    public int getType() { return type; }
+    public int getThickness() { return thickness; }
+
+    public void actionChangeType(final int newType) {
+
+        mediator.notifyMindmapChanged();
     }
 
-    // End of debug functions
+    public void actionChangeThickness(final int newThickness) {
 
-    public MagnetGroup getMagnetGroup1() {
-        return magnetGroup1;
-    }
-    public MagnetGroup getMagnetGroup2() {
-        return magnetGroup2;
-    }
-    public ArrayList<PointF> getPoints() {
-        return points;
-    }
-    public int getType() {
-        return type;
-    }
-    public int getThickness() {
-        return thickness;
+        mediator.notifyMindmapChanged();
     }
 
-    public void changeType(final int newType) {
+    public void actionAddPoint(PointF newPoint, final int targetIndex) {
 
+        mediator.notifyMindmapChanged();
     }
 
-    public void changeThickness(final int newThickness) {
+    public void actionRemovePoint(PointF point) {
 
-    }
-
-    public void addPoint(PointF newPoint, final int targetIndex) {
-
-    }
-
-    public void removePoint(PointF point) {
-
+        mediator.notifyMindmapChanged();
     }
 }

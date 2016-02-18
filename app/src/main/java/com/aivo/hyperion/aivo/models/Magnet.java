@@ -2,6 +2,10 @@ package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
 
+import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.ChangeData;
+import com.aivo.hyperion.aivo.models.actions.MagnetMove;
+
 public class Magnet {
 
     // Local properties
@@ -18,36 +22,21 @@ public class Magnet {
         mediator = modelMediator_;
     }
 
-    public Magnet(ModelMediator mediator_) {
+    public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup) {
         setMediator(mediator_);
+        this.magnetGroup = magnetGroup;
     }
 
-    // Debug (or not) functions
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public void setContent(String content) {
-        this.content = content;
-    }
-    public void setColor(int color) {
-        this.color = color;
+    // DO NOT USE! Only for ChangeData action!
+    public void setData(String newTitle, String newContent) {
+        title = newTitle;
+        content = newContent;
     }
 
-    // End of debug functions
-
-    public String getTitle() {
-        return title;
-    }
-    public String getContent() {
-        return content;
-    }
-    public int getColor() {
-        return color;
-    }
-    public MagnetGroup getMagnetGroup() {
-        return magnetGroup;
-    }
+    public String getTitle() { return title; }
+    public String getContent() { return content; }
+    public int getColor() { return color; }
+    public MagnetGroup getMagnetGroup() { return magnetGroup; }
     public boolean hasImage() {
         return false; // TODO
     }
@@ -55,23 +44,37 @@ public class Magnet {
         return false; // TODO
     }
 
-    public void changeTitle(String newTitle) {
-
+    public void actionChangeData(String newTitle) {
+        Action action = new ChangeData(this, newTitle);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+        mediator.notifyMindmapChanged();
     }
 
-    public void changeContent(String newContent) {
-
+    public void actionChangeData(String newTitle, String newContent) {
+        Action action = new ChangeData(this, newTitle, newContent);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+        mediator.notifyMindmapChanged();
     }
 
-    public void changeColor(final int newColor) {
+    public void actionChangeColor(final int newColor) {
 
+        mediator.notifyMindmapChanged();
     }
 
-    public void moveToMagnetGroup(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
-
+    public void actionMoveTo(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
+        Action action = new MagnetMove(mediator, this, magnetGroup, rowIndex, colIndex);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+        mediator.notifyMindmapChanged();
     }
 
-    public void moveToPoint(PointF newPoint) {
+    public void actionMoveTo(PointF newPoint) {
+        Action action = new MagnetMove(mediator, this, newPoint);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+        mediator.notifyMindmapChanged();
+    }
 
+    public void actionDelete() {
+
+        mediator.notifyMindmapChanged();
     }
 }

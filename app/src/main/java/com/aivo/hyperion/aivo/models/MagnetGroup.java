@@ -2,6 +2,9 @@ package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
 
+import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.ChangeData;
+import com.aivo.hyperion.aivo.models.actions.MagnetGroupMove;
 import com.aivo.hyperion.aivo.models.pojos.MagnetGroupPojo;
 
 import java.io.IOException;
@@ -17,6 +20,9 @@ public class MagnetGroup {
     // List of magnets in the magnet group (Never null, use clear!)
     protected List< List<Magnet> > magnets;
 
+    // List of lines that are connected to this group
+    protected List< Line > lines;
+
     // The model mediator reference
     private ModelMediator mediator;
     private void setMediator(ModelMediator modelMediator_) {
@@ -25,44 +31,46 @@ public class MagnetGroup {
         mediator = modelMediator_;
     }
 
-    public MagnetGroup(ModelMediator mediator_) {
+    public MagnetGroup(ModelMediator mediator_, PointF point) {
         setMediator(mediator_);
-        magnets = new ArrayList<>();
-    }
-
-    // Debug (or not) functions
-
-    public void setMagnets(List< List<Magnet> > magnets) {
-        this.magnets = magnets;
-    }
-    public void setTitle(String title) {
-        this.title = title;
-    }
-    public void setPoint(PointF point) {
+        this.magnets = new ArrayList<>();
         this.point = point;
+        this.lines = new ArrayList<>();
     }
 
-    // End of debug functions
+    // DO NOT USE! Only for ChangeData action!
+    public void setData(String newTitle) { title = newTitle; }
+    public PointF getPoint() { return point; }
+    public String getTitle() { return title;  }
+    public List< List<Magnet> > getMagnets() { return magnets; }
+    public List< Line > getLines() { return lines; }
 
-    public PointF getPoint() {
-        return point;
-    }
-    public String getTitle() {
-        return title;
-    }
-    public List< List<Magnet> > getMagnets() {
-        return magnets;
-    }
-
-    public void changeTitle(String newTitle) {
-
+    public void actionCreateLine(MagnetGroup magnetGroup) {
+        mediator.getMindmap().actionCreateLine(this, magnetGroup);
     }
 
-    public void moveToPoint(PointF newPoint) {
-
+    public void actionCreateMagnet(final int rowIndex, final int colIndex) {
+        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex);
     }
 
-    public void moveToMagnetGroup(MagnetGroup magnetGroupToMergeInto, final boolean keepLines) {
+    public void actionChangeData(String newTitle) {
+        Action action = new ChangeData(this, newTitle);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+        mediator.notifyMindmapChanged();
+    }
+
+    public void actionMoveTo(PointF newPoint) {
+        Action action = new MagnetGroupMove(this, newPoint);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+        mediator.notifyMindmapChanged();
+    }
+
+    public void actionMoveTo(MagnetGroup magnetGroupToMergeInto, final boolean keepLines) {
+
+        mediator.notifyMindmapChanged();
+    }
+
+    public void delete() {
 
     }
 }

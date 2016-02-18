@@ -13,6 +13,7 @@ public interface ModelListener {
     void onUserClosed();
     void onMindmapClosed();
 
+
     void onException(Exception e);
 
 }

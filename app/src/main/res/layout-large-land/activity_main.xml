@@ -7,7 +7,7 @@
     >
 
     <include layout="@layout/tablet_toolbar"/>
-    <RelativeLayout
+    <RelativeLayout android:id="@+id/contentAreaParent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
@@ -20,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="left"
+            android:background="@android:color/white"
             android:id="@+id/contentArea">
 
 
