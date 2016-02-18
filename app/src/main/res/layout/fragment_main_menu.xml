@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_menu"
+    android:layout_width="167dp"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@color/colorBlueMainMenu">
+
+        <ImageView android:src="@drawable/ic_user_placeholder"
+            android:layout_marginTop="45dp"
+            android:layout_gravity="center"
+            android:layout_width="89dp"
+            android:layout_height="89dp" />
+        <TextView android:gravity="center"
+            android:layout_marginTop="13dp"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/user_text" />
+        <Button android:id="@+id/mindmapButton"
+            android:text="@string/mindmap_text"
+            android:textSize="20sp"
+            android:fontFamily="@string/user_text"
+            android:textAllCaps="false"
+            android:layout_marginTop="38dp"
+            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="52dp" />
+        <Button android:id="@+id/notesButton"
+            android:text="@string/notes_text"
+            android:textSize="20sp"
+            android:fontFamily="@string/user_text"
+            android:textAllCaps="false"
+            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="52dp" />
+        <Button android:id="@+id/favoriteButton"
+            android:text="@string/favorite_text"
+            android:textSize="20sp"
+            android:fontFamily="@string/user_text"
+            android:textAllCaps="false"
+            android:background="@android:color/transparent"
+            android:layout_width="match_parent"
+            android:layout_height="52dp" />
+
+</LinearLayout>

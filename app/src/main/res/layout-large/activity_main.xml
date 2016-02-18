@@ -8,7 +8,7 @@
     >
 
     <include layout="@layout/tablet_toolbar"/>
-    <RelativeLayout
+    <RelativeLayout android:id="@+id/contentAreaParent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal"
@@ -24,9 +24,8 @@
             android:background="@android:color/white"
             android:id="@+id/contentArea">
 
-            <include layout="@layout/side_note_view"/>
-
         </FrameLayout>
+        <include layout="@layout/side_note_view"/>
 
     </RelativeLayout>
 

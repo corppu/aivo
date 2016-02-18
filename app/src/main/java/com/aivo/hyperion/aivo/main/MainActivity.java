@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.aivo.hyperion.aivo.R;
@@ -21,6 +22,7 @@ import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.User;
+import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
 
@@ -41,8 +43,11 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         return sModelMediator;
     }
 
+    FragmentManager fragmentManager;
     Button sideBtn;
-    Boolean isSideNoteVisible=false;
+    Button mainMenuButton;
+    Boolean isSideNoteVisible = false;
+    Boolean isMainMenuVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,16 +56,13 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        sideBtn =(Button)findViewById(R.id.side_note_button);
-        buttonClicks();
-        FragmentManager fm = getSupportFragmentManager();
-        fm.beginTransaction().replace(R.id.contentArea, new NoteFragment()).commit();
-//        ft.replace(R.id.contentArea, new MindmapFragment());
-//        ft.replace(R.id.contentArea, new NoteFragment());
-//        ft.commit();
+        fragmentManager = getSupportFragmentManager();
+//        fragmentManager.beginTransaction().replace(R.id.contentArea, new NoteFragment()).commit();
+        fragmentManager.beginTransaction().add(R.id.contentAreaParent, new MainMenuFragment()).commit();
 
         sideBtn =(Button)findViewById(R.id.side_note_button);
-        buttonClicks();
+        mainMenuButton = (Button)findViewById(R.id.main_menu_button);
+        setButtonsOnClickListeners();
 
         sTheContext = MainActivity.this;
         sModelMediator = new ModelMediator();
@@ -68,38 +70,42 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         sModelMediator.createUser();
     }
 
-    public void buttonClicks(){
+    public void setButtonsOnClickListeners(){
 
         sideBtn.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
-                LinearLayout sidePAnel =(LinearLayout)findViewById(R.id.side_note_panel);
+                LinearLayout sidePanel = (LinearLayout) findViewById(R.id.side_note_panel);
                 // animate the side bar
                 if (isSideNoteVisible){
-
-// Start the animation
-
-                    //sidePAnel.animate().translationXBy(sidePAnel.getWidth());
-
-                    sidePAnel.animate()
-                            .translationX(sidePAnel.getWidth());
-                    sidePAnel.setVisibility(View.INVISIBLE);
-                    isSideNoteVisible=false;
-                }else {
-
-                   // sidePAnel.animate().translationXBy(-120);
-// Start the animation
-                    sidePAnel.animate()
-                            .translationX(0);
-                    sidePAnel.setVisibility(View.VISIBLE);
-                    isSideNoteVisible=true;
+                    // Start the animation
+//                    sidePanel.animate().translationXBy(sidePanel.getWidth());
+                    sidePanel.animate().translationX(sidePanel.getWidth());
+                    sidePanel.setVisibility(View.INVISIBLE);
+                    isSideNoteVisible = false;
+                } else {
+//                    sidePanel.animate().translationXBy(-120);
+                    // Start the animation
+                    sidePanel.animate().translationX(0);
+                    sidePanel.setVisibility(View.VISIBLE);
+                    isSideNoteVisible = true;
                 }
-
-
-
             }
 
         });
 
+        mainMenuButton.setOnClickListener(new Button.OnClickListener(){
+            public void onClick(View v) {
+                LinearLayout mainMenuPanel = (LinearLayout) findViewById(R.id.main_menu);
+                // animate the main menu panel
+                if (isMainMenuVisible) {
+                    mainMenuPanel.animate().translationX(-mainMenuPanel.getWidth());
+                    isMainMenuVisible = false;
+                } else {
+                    mainMenuPanel.animate().translationX(0);
+                    isMainMenuVisible = true;
+                }
+            }
+        });
     }
 
     @Override

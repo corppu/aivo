@@ -204,7 +204,6 @@ public class NoteFragment extends Fragment implements OnTouchListener, View.OnCl
         animSet.start();
     }
 
-    @SuppressWarnings("NewApi")
     private void hideMenu() {
 
         List<Animator> animList = new ArrayList<>();
