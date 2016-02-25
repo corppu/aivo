@@ -1,5 +1,8 @@
 package com.aivo.hyperion.aivo;
 
+import com.aivo.hyperion.aivo.models.Line;
+import com.aivo.hyperion.aivo.models.Magnet;
+import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
@@ -55,22 +58,22 @@ public class MockListener implements ModelListener {
     }
 
     @Override
-    public void onUserOpened(User user) {
+    public void onUserOpen(User user) {
         this.user = user;
     }
 
     @Override
-    public void onMindmapOpened(Mindmap mindmap) {
+    public void onMindmapOpen(Mindmap mindmap) {
         this.mindmap = mindmap;
     }
 
     @Override
-    public void onUserChanged(User user) {
+    public void onUserChange(User user) {
         this.user = user;
     }
 
     @Override
-    public void onMindmapChanged(Mindmap mindmap) {
+    public void onMindmapTitleChange(Mindmap mindmap) {
         this.mindmap = mindmap;
     }
 
@@ -85,7 +88,52 @@ public class MockListener implements ModelListener {
     }
 
     @Override
+    public void onMagnetGroupChange(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetCreate(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetChange(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetDelete(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onLineCreate(Line line) {
+
+    }
+
+    @Override
+    public void onLineChange(Line line) {
+
+    }
+
+    @Override
+    public void onLineDelete(Line line) {
+
+    }
+
+    @Override
     public void onException(Exception e) {
         this.exception = e;
+    }
+
+    @Override
+    public void onMagnetGroupCreate(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
+
     }
 }

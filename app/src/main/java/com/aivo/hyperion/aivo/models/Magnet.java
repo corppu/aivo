@@ -47,34 +47,28 @@ public class Magnet {
     public void actionChangeData(String newTitle) {
         Action action = new ChangeData(this, newTitle);
         mediator.getMindmap().getActionHandler().executeAction(action);
-        mediator.notifyMindmapChanged();
     }
 
     public void actionChangeData(String newTitle, String newContent) {
         Action action = new ChangeData(this, newTitle, newContent);
         mediator.getMindmap().getActionHandler().executeAction(action);
-        mediator.notifyMindmapChanged();
     }
 
     public void actionChangeColor(final int newColor) {
 
-        mediator.notifyMindmapChanged();
     }
 
     public void actionMoveTo(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
         Action action = new MagnetMove(mediator, this, magnetGroup, rowIndex, colIndex);
         mediator.getMindmap().getActionHandler().executeAction(action);
-        mediator.notifyMindmapChanged();
     }
 
     public void actionMoveTo(PointF newPoint) {
         Action action = new MagnetMove(mediator, this, newPoint);
         mediator.getMindmap().getActionHandler().executeAction(action);
-        mediator.notifyMindmapChanged();
     }
 
     public void actionDelete() {
 
-        mediator.notifyMindmapChanged();
     }
 }

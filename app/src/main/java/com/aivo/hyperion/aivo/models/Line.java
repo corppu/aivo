@@ -1,13 +1,8 @@
 package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
-import android.util.Log;
 
-import com.aivo.hyperion.aivo.models.pojos.LinePojo;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Line {
 
@@ -41,21 +36,21 @@ public class Line {
 
     public void actionChangeType(final int newType) {
 
-        mediator.notifyMindmapChanged();
     }
 
     public void actionChangeThickness(final int newThickness) {
 
-        mediator.notifyMindmapChanged();
     }
 
     public void actionAddPoint(PointF newPoint, final int targetIndex) {
 
-        mediator.notifyMindmapChanged();
     }
 
     public void actionRemovePoint(PointF point) {
 
-        mediator.notifyMindmapChanged();
+    }
+
+    public void actionDelete() {
+
     }
 }

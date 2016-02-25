@@ -1,12 +1,7 @@
 package com.aivo.hyperion.aivo.main;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +12,8 @@ import android.widget.LinearLayout;
 
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.models.Line;
+import com.aivo.hyperion.aivo.models.Magnet;
+import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
@@ -103,27 +100,27 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     }
 
     @Override
-    public void onUserOpened(User user) {
+    public void onUserOpen(User user) {
         sUser = user;
         sModelMediator.createMindmap("Default");
     }
 
     private MindmapFragment mMindmapFragment;
     @Override
-    public void onMindmapOpened(Mindmap mindmap) {
+    public void onMindmapOpen(Mindmap mindmap) {
         mMindmapFragment = new MindmapFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, mMindmapFragment).commit();
-        mMindmapFragment.onMindmapOpened(mindmap);
+        mMindmapFragment.onMindmapOpen(mindmap);
     }
 
     @Override
-    public void onUserChanged(User user) {
+    public void onUserChange(User user) {
         sUser = user;
     }
 
     @Override
-    public void onMindmapChanged(Mindmap mindmap) {
-        mMindmapFragment.onMindmapChanged(mindmap);
+    public void onMindmapTitleChange(Mindmap mindmap) {
+        mMindmapFragment.onMindmapTitleChange(mindmap);
     }
 
     @Override
@@ -140,5 +137,50 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     @Override
     public void onException(Exception e) {
         Log.d("MainActivity", e.toString());
+    }
+
+    @Override
+    public void onMagnetGroupChange(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetCreate(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetChange(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetDelete(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onLineCreate(Line line) {
+
+    }
+
+    @Override
+    public void onLineChange(Line line) {
+
+    }
+
+    @Override
+    public void onLineDelete(Line line) {
+
+    }
+
+    @Override
+    public void onMagnetGroupCreate(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
+
     }
 }

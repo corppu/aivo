@@ -3,6 +3,7 @@ package com.aivo.hyperion.aivo.models.actions;
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
+import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 
 /**
@@ -11,7 +12,6 @@ import com.aivo.hyperion.aivo.models.ModelMediator;
 public class ChangeData extends Action {
     private Magnet magnet;
     private MagnetGroup magnetGroup;
-    private Mindmap mindmap;
 
     private String titleNew;
     private String titleOld;
@@ -22,7 +22,6 @@ public class ChangeData extends Action {
         setMediator(mediator);
         this.magnet = magnet;
         this.magnetGroup = null;
-        this.mindmap = null;
 
         this.titleOld = magnet.getTitle();
         this.titleNew = newTitle;
@@ -34,7 +33,6 @@ public class ChangeData extends Action {
         setMediator(mediator);
         this.magnet = magnet;
         this.magnetGroup = null;
-        this.mindmap = null;
 
         this.titleOld = magnet.getTitle();
         this.titleNew = newTitle;
@@ -46,19 +44,8 @@ public class ChangeData extends Action {
         setMediator(mediator);
         this.magnet = null;
         this.magnetGroup = magnetGroup;
-        this.mindmap = null;
 
         this.titleOld = magnetGroup.getTitle();
-        this.titleNew = newTitle;
-    }
-
-    public ChangeData(Mindmap mindmap, final String newTitle) {
-        setMediator(mediator);
-        this.magnet = null;
-        this.magnetGroup = null;
-        this.mindmap = mindmap;
-
-        this.titleOld = mindmap.getTitle();
         this.titleNew = newTitle;
     }
 
@@ -66,10 +53,10 @@ public class ChangeData extends Action {
     void execute() {
         if (magnet != null)  {
             magnet.setData(titleNew, contentNew);
+            notifyMagnetChange();
         } else if (magnetGroup != null) {
             magnetGroup.setData(titleNew);
-        } else if (mindmap != null) {
-            mindmap.setData(titleNew);
+            notifyMagnetGroupChange();
         }
     }
 
@@ -77,10 +64,18 @@ public class ChangeData extends Action {
     void undo() {
         if (magnet != null)  {
             magnet.setData(titleOld, contentOld);
+            notifyMagnetChange();
         } else if (magnetGroup != null) {
             magnetGroup.setData(titleOld);
-        } else if (mindmap != null) {
-            mindmap.setData(titleOld);
+            notifyMagnetGroupChange();
         }
+    }
+
+    private void notifyMagnetChange() {
+        for (ModelListener listener : mediator.getListeners()) { listener.onMagnetChange(magnet); }
+    }
+
+    private void notifyMagnetGroupChange() {
+        for (ModelListener listener : mediator.getListeners()) { listener.onMagnetGroupChange(magnetGroup); }
     }
 }

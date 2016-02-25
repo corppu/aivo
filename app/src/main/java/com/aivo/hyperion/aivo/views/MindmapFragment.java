@@ -12,6 +12,9 @@ import android.view.ViewGroup;
 
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.main.MainActivity;
+import com.aivo.hyperion.aivo.models.Line;
+import com.aivo.hyperion.aivo.models.Magnet;
+import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.User;
@@ -115,22 +118,22 @@ public class MindmapFragment extends Fragment implements ModelListener {
     }
 
     @Override
-    public void onUserOpened(User user) {
+    public void onUserOpen(User user) {
     }
 
     @Override
-    public void onMindmapOpened(Mindmap mindmap) {
-        Log.d(TAG, "onMindmapOpened " + mindmap.toString());
+    public void onMindmapOpen(Mindmap mindmap) {
+        Log.d(TAG, "onMindmapOpen " + mindmap.toString());
         if (mPresenter != null) mPresenter.setModel(mindmap);
         else mMindmap = mindmap;
     }
 
     @Override
-    public void onUserChanged(User user) {
+    public void onUserChange(User user) {
     }
 
     @Override
-    public void onMindmapChanged(Mindmap mindmap) {
+    public void onMindmapTitleChange(Mindmap mindmap) {
 
     }
 
@@ -143,6 +146,51 @@ public class MindmapFragment extends Fragment implements ModelListener {
     public void onMindmapClosed() {
         Log.d(TAG, "onMindmapClosed");
         mPresenter.setModel(null);
+    }
+
+    @Override
+    public void onMagnetGroupChange(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetCreate(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetChange(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetDelete(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onLineCreate(Line line) {
+
+    }
+
+    @Override
+    public void onLineChange(Line line) {
+
+    }
+
+    @Override
+    public void onLineDelete(Line line) {
+
+    }
+
+    @Override
+    public void onMagnetGroupCreate(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
+
     }
 
     @Override

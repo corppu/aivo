@@ -1,27 +1,22 @@
 package com.aivo.hyperion.aivo.models;
 
-import com.aivo.hyperion.aivo.models.actions.Action;
-import com.aivo.hyperion.aivo.models.actions.ActionHandler;
 import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ModelMediator {
-    
-    // Create one LSM to be used by all model classes in the package
-    protected LocalStorageModule lsm;
 
     // The current User (null if none opened)
-    protected User user;
+    private User user;
 
     // The currently open Mindmap (null if none opened)
-    protected Mindmap mindmap;
+    private Mindmap mindmap;
 
     // The registered listeners of this ModelMediator
-    protected ArrayList<ModelListener> listeners;
+    private ArrayList<ModelListener> listeners;
 
     public ModelMediator() {
-        lsm = new LocalStorageModule();
         user = null;
         mindmap = null;
         listeners = new ArrayList<ModelListener>();
@@ -43,9 +38,7 @@ public class ModelMediator {
 
     public Mindmap getMindmap() { return mindmap; }
 
-    protected void notifyMindmapChanged() {
-        for (ModelListener listener : listeners) listener.onMindmapChanged(mindmap);
-    }
+    public List<ModelListener> getListeners() { return new ArrayList<ModelListener>(listeners); }
 
     //----------------------------------------------------------------------------------------------
     // Public open/close functions for User, Note and Magnet
@@ -58,7 +51,7 @@ public class ModelMediator {
         if (!closeUser()) return;
 
         user = new User(this);
-        for (ModelListener listener : listeners) listener.onUserOpened(user);
+        for (ModelListener listener : listeners) listener.onUserOpen(user);
     }
 
     /** First saves and closes any opened Note, then Mindmap and finally the User.
@@ -102,7 +95,7 @@ public class ModelMediator {
 
         // Create the mindmap
         mindmap = new Mindmap(this, title);
-        for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
+        for (ModelListener listener : listeners) listener.onMindmapOpen(mindmap);
     }
 
     /** Save and close any open Mindmap.
@@ -133,4 +126,5 @@ public class ModelMediator {
     public boolean isFavoriteMagnetTitleUsed(String title) {
         return false;
     }
+
 }

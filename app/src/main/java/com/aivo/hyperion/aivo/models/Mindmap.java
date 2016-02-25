@@ -7,9 +7,7 @@ import com.aivo.hyperion.aivo.models.actions.ActionHandler;
 import com.aivo.hyperion.aivo.models.actions.ChangeData;
 import com.aivo.hyperion.aivo.models.actions.LineCreate;
 import com.aivo.hyperion.aivo.models.actions.MagnetCreate;
-import com.aivo.hyperion.aivo.models.pojos.MindmapPojo;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,8 +45,6 @@ public class Mindmap {
         this.isDirty = true;
     }
 
-    // DO NOT USE! Only for ChangeData action!
-    public void setData(String newTitle) { title = newTitle; }
     public String getTitle() { return title; }
     public List<MagnetGroup> getMagnetGroups() { return magnetGroups; }
     public List<Line> getLines() { return lines; }
@@ -58,10 +54,9 @@ public class Mindmap {
      *
      * @param newTitle
      */
-    public void actionChangeData(String newTitle) {
-        Action action = new ChangeData(this, newTitle);
-        getActionHandler().executeAction(action);
-        mediator.notifyMindmapChanged();
+    public void changeTitle(String newTitle) {
+        title = newTitle;
+        for (ModelListener listener : mediator.getListeners()) listener.onMindmapTitleChange(this);
     }
 
     /** Creates a magnet through an action.
@@ -74,7 +69,6 @@ public class Mindmap {
     public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
         Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
         getActionHandler().executeAction(action);
-        mediator.notifyMindmapChanged();
     }
 
     /** Creates a magnet through an action.
@@ -84,7 +78,6 @@ public class Mindmap {
     public void actionCreateMagnet(PointF pointF) {
         Action action = new MagnetCreate(mediator, pointF);
         getActionHandler().executeAction(action);
-        mediator.notifyMindmapChanged();
     }
 
     /** Creates a new line through an action.
@@ -95,7 +88,6 @@ public class Mindmap {
     public void actionCreateLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
         Action action = new LineCreate(mediator, magnetGroup1, magnetGroup2);
         getActionHandler().executeAction(action);
-        mediator.notifyMindmapChanged();
     }
 
     /** Removes this Mindmap. IRREVERSIBLE!

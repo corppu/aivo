@@ -6,9 +6,6 @@ import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by corpp on 14.12.2015.
  */
@@ -23,8 +20,8 @@ public class MagnetCreate extends MagnetAction {
         setMediator(mediator);
         this.magnetGroup = new MagnetGroup(mediator, pointF);
         this.magnet = new Magnet(mediator, magnetGroup);
-        this.rowIndex = -1;
-        this.colIndex = -1;
+        this.rowIndex = 0;
+        this.colIndex = 0;
     }
 
     public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
@@ -43,10 +40,12 @@ public class MagnetCreate extends MagnetAction {
         // TODO: LSM: Write to file
 
         // Check if the magnetgroup was created for this action
-        if (rowIndex < 0)
+        if (magnetGroup.getMagnets().size() == 0)
             mediator.getMindmap().getMagnetGroups().add(magnetGroup);
 
         insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex);
+
+        notifyMagnetInsertedIntoGroup(magnet, magnetGroup);
     }
 
     @Override
@@ -57,7 +56,9 @@ public class MagnetCreate extends MagnetAction {
         removeMagnetFromGroup(magnet, magnetGroup);
 
         // Check if the magnetgroup was created for this action
-        if (rowIndex < 0)
+        if (magnetGroup.getMagnets().size() == 0)
             mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
+
+        notifyMagnetRemovedFromGroup(magnet, magnetGroup);
     }
 }
