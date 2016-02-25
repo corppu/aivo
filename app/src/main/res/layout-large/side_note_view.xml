@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="120dp"
+    android:layout_height="match_parent"
+    android:layout_gravity="right"
+    android:animateLayoutChanges="true"
+    android:layout_alignParentRight="true"
+    android:orientation="vertical"
+    android:visibility="invisible"
+    android:id="@+id/side_note_panel"
+    android:background="#ffffff"
+    >
+
+
+</LinearLayout>

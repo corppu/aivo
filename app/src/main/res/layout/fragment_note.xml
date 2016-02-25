@@ -11,7 +11,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="50dp">
-        <EditText android:hint="Title"
+        <EditText android:hint="@string/title_text"
             android:id="@+id/titleEditText"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="50dp"
@@ -36,7 +36,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <EditText android:hint="Contents"
+        <EditText android:hint="@string/contents_text"
             android:layout_marginTop="15dp"
             android:layout_marginLeft="20dp"
             android:layout_marginRight="15dp"

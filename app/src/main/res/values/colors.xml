@@ -6,4 +6,6 @@
     <color name="colorToolBarBackground">#f2f2f2</color>
     <color name="noteBackground">#F3F3F3</color>
     <color name="textGrayColor">#7C7C7C</color>
+    <color name="colorBlueMainMenu">#DFF2FF</color>
+    <color name="colorBlueMainMenuButton">#23B0FB</color>
 </resources>
