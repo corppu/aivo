@@ -45,7 +45,7 @@ public class MagnetCreate extends MagnetAction {
 
         insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex);
 
-        notifyMagnetInsertedIntoGroup(magnet, magnetGroup);
+        notifyMagnetCreatedIntoGroup(magnet, magnetGroup);
     }
 
     @Override
@@ -59,6 +59,6 @@ public class MagnetCreate extends MagnetAction {
         if (magnetGroup.getMagnets().size() == 0)
             mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
 
-        notifyMagnetRemovedFromGroup(magnet, magnetGroup);
+        notifyMagnetDeletedFromGroup(magnet, magnetGroup);
     }
 }

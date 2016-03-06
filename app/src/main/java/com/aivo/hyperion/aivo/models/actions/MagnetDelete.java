@@ -2,7 +2,6 @@ package com.aivo.hyperion.aivo.models.actions;
 
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
-import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 
 /**
@@ -31,7 +30,7 @@ public class MagnetDelete extends MagnetAction {
         if (magnetGroup.getMagnets().size() == 0)
             mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
 
-        notifyMagnetRemovedFromGroup(magnet, magnetGroup);
+        notifyMagnetDeletedFromGroup(magnet, magnetGroup);
     }
 
     @Override
@@ -42,6 +41,6 @@ public class MagnetDelete extends MagnetAction {
 
         insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex);
 
-        notifyMagnetInsertedIntoGroup(magnet, magnetGroup);
+        notifyMagnetCreatedIntoGroup(magnet, magnetGroup);
     }
 }
