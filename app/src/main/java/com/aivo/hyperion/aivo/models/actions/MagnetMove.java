@@ -14,8 +14,8 @@ public class MagnetMove extends MagnetAction {
     private MagnetGroup magnetGroupNew;
     private MagnetGroup magnetGroupOld;
     private Magnet magnet;
-    private int rowIndex;
-    private int colIndex;
+    private int rowIndexNew;
+    private int colIndexNew;
     private int rowIndexOld;
     private int colIndexOld;
 
@@ -24,27 +24,31 @@ public class MagnetMove extends MagnetAction {
         this.magnetGroupNew = new MagnetGroup(mediator, pointF);
         this.magnetGroupOld = magnet.getMagnetGroup();
         this.magnet = magnet;
-        rowIndex = -1;
-        colIndex = -1;
+        this.rowIndexNew = 0;
+        this.colIndexNew = 0;
+        final int[] rowcol = getMagnetRowCol(magnet);
+        this.rowIndexOld = rowcol[0];
+        this.colIndexOld = rowcol[1];
     }
 
     public MagnetMove(ModelMediator mediator, Magnet magnet, MagnetGroup magnetGroupNew,
-                      final int rowIndex, final int colIndex) {
-        if (rowIndex < 0 || colIndex < 0)
+                      final int rowIndexNew, final int colIndexNew) {
+        if (rowIndexNew < 0 || colIndexNew < 0)
             throw new InternalError("Tried to create a MagnetMove action with negative row/col indexes!");
 
         setMediator(mediator);
         this.magnetGroupNew = magnetGroupNew;
         this.magnetGroupOld = magnet.getMagnetGroup();
         this.magnet = magnet;
-        this.rowIndex = rowIndex;
-        this.colIndex = colIndex;
+        this.rowIndexNew = rowIndexNew;
+        this.colIndexNew = colIndexNew;
+        final int[] rowcol = getMagnetRowCol(magnet);
+        this.rowIndexOld = rowcol[0];
+        this.colIndexOld = rowcol[1];
     }
 
     @Override
     void execute() {
-        // TODO: LSM: Write to file
-
         // Remove from previous MagnetGroup
         removeMagnetFromGroup(magnet, magnetGroupOld);
 
@@ -56,15 +60,13 @@ public class MagnetMove extends MagnetAction {
         if (magnetGroupNew.getMagnets().size() == 0)
             mediator.getMindmap().getMagnetGroups().add(magnetGroupNew);
 
-        insertMagnetIntoGroup(magnet, magnetGroupNew, rowIndex, colIndex);
+        insertMagnetIntoGroup(magnet, magnetGroupNew, rowIndexNew, colIndexNew);
 
         notifyMagnetMoved(magnet, magnetGroupOld, magnetGroupNew);
     }
 
     @Override
     void undo() {
-        // TODO: LSM: Remove file
-
         // Remove magnet from group
         removeMagnetFromGroup(magnet, magnetGroupNew);
 

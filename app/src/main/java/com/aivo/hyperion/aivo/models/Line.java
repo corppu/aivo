@@ -2,6 +2,9 @@ package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
 
+import com.aivo.hyperion.aivo.models.actions.Action;
+import com.aivo.hyperion.aivo.models.actions.LineDelete;
+
 import java.util.ArrayList;
 
 public class Line {
@@ -51,6 +54,7 @@ public class Line {
     }
 
     public void actionDelete() {
-
+        Action action = new LineDelete(mediator, this);
+        mediator.getMindmap().getActionHandler().executeAction(action);
     }
 }

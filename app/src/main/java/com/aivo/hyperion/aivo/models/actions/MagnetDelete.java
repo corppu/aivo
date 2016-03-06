@@ -18,8 +18,9 @@ public class MagnetDelete extends MagnetAction {
         setMediator(mediator);
         this.magnet = magnet;
         this.magnetGroup = magnet.getMagnetGroup();
-        this.rowIndex = 0; //TODO: fix
-        this.colIndex = 0;
+        final int[] rowcol = getMagnetRowCol(magnet);
+        this.rowIndex = rowcol[0];
+        this.colIndex = rowcol[1];
     }
 
     @Override

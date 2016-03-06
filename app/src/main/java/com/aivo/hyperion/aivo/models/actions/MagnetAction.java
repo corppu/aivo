@@ -74,4 +74,19 @@ public abstract class MagnetAction extends Action {
                 listener.onMagnetGroupChange(magnetGroupOld);
         }
     }
+
+    protected int[] getMagnetRowCol(Magnet target) {
+        int rowIndex = -1;
+        int colIndex = -1;
+
+        for (List< Magnet > magnetRow : target.getMagnetGroup().getMagnets()) {
+            ++rowIndex;
+            for (Magnet magnet : magnetRow) {
+                ++colIndex;
+                if (magnet == target)
+                    return new int[] {rowIndex, colIndex};
+            }
+        }
+        throw new InternalError("Tried to find row/col of a magnet, that had no group or was not in its group!");
+    }
 }
