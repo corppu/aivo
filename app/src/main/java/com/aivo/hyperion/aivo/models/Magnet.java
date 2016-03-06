@@ -3,7 +3,8 @@ package com.aivo.hyperion.aivo.models;
 import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
-import com.aivo.hyperion.aivo.models.actions.ChangeData;
+import com.aivo.hyperion.aivo.models.actions.MagnetChangeData;
+import com.aivo.hyperion.aivo.models.actions.MagnetDelete;
 import com.aivo.hyperion.aivo.models.actions.MagnetMove;
 
 public class Magnet {
@@ -27,10 +28,11 @@ public class Magnet {
         this.magnetGroup = magnetGroup;
     }
 
-    // DO NOT USE! Only for ChangeData action!
-    public void setData(String newTitle, String newContent) {
+    // DO NOT USE! Only for MagnetChangeData action!
+    public void setData(String newTitle, String newContent, final int newColor) {
         title = newTitle;
         content = newContent;
+        color = newColor;
     }
 
     public String getTitle() { return title; }
@@ -45,17 +47,18 @@ public class Magnet {
     }
 
     public void actionChangeData(String newTitle) {
-        Action action = new ChangeData(this, newTitle);
+        Action action = new MagnetChangeData(this, newTitle, content, color);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
     public void actionChangeData(String newTitle, String newContent) {
-        Action action = new ChangeData(this, newTitle, newContent);
+        Action action = new MagnetChangeData(this, newTitle, newContent, color);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
     public void actionChangeColor(final int newColor) {
-
+        Action action = new MagnetChangeData(this, title, content, newColor);
+        mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
     public void actionMoveTo(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
@@ -69,6 +72,7 @@ public class Magnet {
     }
 
     public void actionDelete() {
-
+        Action action = new MagnetDelete(mediator, this);
+        mediator.getMindmap().getActionHandler().executeAction(action);
     }
 }

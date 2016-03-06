@@ -4,7 +4,6 @@ import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.ActionHandler;
-import com.aivo.hyperion.aivo.models.actions.ChangeData;
 import com.aivo.hyperion.aivo.models.actions.LineCreate;
 import com.aivo.hyperion.aivo.models.actions.MagnetCreate;
 
@@ -52,7 +51,7 @@ public class Mindmap {
 
     /** Change mindmap title through an action.
      *
-     * @param newTitle
+     * @param newTitle      New title
      */
     public void changeTitle(String newTitle) {
         title = newTitle;
