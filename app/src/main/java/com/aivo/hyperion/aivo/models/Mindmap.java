@@ -93,6 +93,7 @@ public class Mindmap {
      *
      */
     public void delete() {
-
+        mediator.closeMindmap();
+        // TODO: Remove from drive
     }
 }

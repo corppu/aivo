@@ -3,13 +3,11 @@ package com.aivo.hyperion.aivo.models.actions;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelListener;
 
-/**
- * Created by MicroLoota on 6.3.2016.
- */
 public class MagnetGroupChangeData extends Action {
-    MagnetGroup magnetGroup;
-    String titleNew;
-    String titleOld;
+
+    private MagnetGroup magnetGroup;
+    private String titleNew;
+    private String titleOld;
 
     public MagnetGroupChangeData(MagnetGroup magnetGroup, String titleNew) {
         this.magnetGroup = magnetGroup;

@@ -13,7 +13,7 @@ public class MagnetChangeData extends Action {
     private int colorNew;
     private int colorOld;
 
-    public MagnetChangeData(Magnet magnet, String titleNew, String contentNew, int colorNew) {
+    public MagnetChangeData(Magnet magnet, String titleNew, String contentNew, final int colorNew) {
         this.magnet = magnet;
 
         this.titleNew = titleNew;
