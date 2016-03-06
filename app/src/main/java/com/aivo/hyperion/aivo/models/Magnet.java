@@ -7,43 +7,21 @@ import com.aivo.hyperion.aivo.models.actions.MagnetChangeData;
 import com.aivo.hyperion.aivo.models.actions.MagnetDelete;
 import com.aivo.hyperion.aivo.models.actions.MagnetMove;
 
-public class Magnet {
+public class Magnet extends Note {
 
     // Local properties
-    private String title;
-    private String content;
-    private int color;
     private MagnetGroup magnetGroup;
-
-    // The model mediator reference
-    private ModelMediator mediator;
+    public MagnetGroup getMagnetGroup() { return magnetGroup; }
+    
     private void setMediator(ModelMediator modelMediator_) {
         if (modelMediator_ == null)
-            throw new InternalError("User created without a valid ModelMediator reference!");
+            throw new InternalError("Magnet created without a valid ModelMediator reference!");
         mediator = modelMediator_;
     }
 
     public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup) {
         setMediator(mediator_);
         this.magnetGroup = magnetGroup;
-    }
-
-    // DO NOT USE! Only for MagnetChangeData action!
-    public void setData(String newTitle, String newContent, final int newColor) {
-        title = newTitle;
-        content = newContent;
-        color = newColor;
-    }
-
-    public String getTitle() { return title; }
-    public String getContent() { return content; }
-    public int getColor() { return color; }
-    public MagnetGroup getMagnetGroup() { return magnetGroup; }
-    public boolean hasImage() {
-        return false; // TODO
-    }
-    public boolean hasVideo() {
-        return false; // TODO
     }
 
     public void actionChangeData(String newTitle) {

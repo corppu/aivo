@@ -18,6 +18,7 @@ import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
+import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.MindmapFragment;
@@ -187,6 +188,21 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
     @Override
     public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onNoteCreate(Note note) {
+
+    }
+
+    @Override
+    public void onNoteChange(Note note) {
+
+    }
+
+    @Override
+    public void onNoteDelete(Note note) {
 
     }
 }

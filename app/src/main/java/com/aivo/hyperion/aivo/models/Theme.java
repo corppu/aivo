@@ -24,7 +24,7 @@ public class Theme {
     private ModelMediator mediator;
     private void setMediator(ModelMediator modelMediator_) {
         if (modelMediator_ == null)
-            throw new InternalError("User created without a valid ModelMediator reference!");
+            throw new InternalError("Theme created without a valid ModelMediator reference!");
         mediator = modelMediator_;
     }
 

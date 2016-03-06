@@ -31,7 +31,7 @@ public class Mindmap {
     private ModelMediator mediator;
     private void setMediator(ModelMediator modelMediator_) {
         if (modelMediator_ == null)
-            throw new InternalError("User created without a valid ModelMediator reference!");
+            throw new InternalError("Mindmap created without a valid ModelMediator reference!");
         this.mediator = modelMediator_;
     }
 
@@ -94,6 +94,5 @@ public class Mindmap {
      */
     public void delete() {
         mediator.closeMindmap();
-        // TODO: Remove from drive
     }
 }

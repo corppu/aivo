@@ -13,13 +13,17 @@ public class ModelMediator {
     // The currently open Mindmap (null if none opened)
     private Mindmap mindmap;
 
+    // List of all the notes of the user
+    private ArrayList<Note> notes;
+
     // The registered listeners of this ModelMediator
     private ArrayList<ModelListener> listeners;
 
     public ModelMediator() {
         user = null;
         mindmap = null;
-        listeners = new ArrayList<ModelListener>();
+        notes = new ArrayList<>();
+        listeners = new ArrayList<>();
     }
 
     public void registerListener(ModelListener listener) {
@@ -38,10 +42,12 @@ public class ModelMediator {
 
     public Mindmap getMindmap() { return mindmap; }
 
-    public List<ModelListener> getListeners() { return new ArrayList<ModelListener>(listeners); }
+    public List<Note> getNotes() { return new ArrayList<>(notes); }
+
+    public List<ModelListener> getListeners() { return new ArrayList<>(listeners); }
 
     //----------------------------------------------------------------------------------------------
-    // Public open/close functions for User, Note and Magnet
+    // Public open/close functions for User, Mindmap and Note
 
     /** Create a new User and open it.
      *
@@ -117,6 +123,27 @@ public class ModelMediator {
 
         for (ModelListener listener : listeners) listener.onMindmapClosed();
         return true;
+    }
+
+    /** Creates a blank new Note.
+     *
+     * @return  the Note created.
+     */
+    public Note createNote() {
+        Note note = new Note(this);
+        notes.add(note);
+        for (ModelListener listener : listeners) listener.onNoteCreate(note);
+        return note;
+    }
+
+    /** Deletes the given Note from the mediator and google drive.
+     *
+     * @param note  the Note to be deleted.
+     */
+    public void deleteNote(Note note) {
+        if (!notes.remove(note))
+            throw new InternalError("Tried to remove a Note that was not found in ModelMediator!");
+        for (ModelListener listener : listeners) listener.onNoteDelete(note);
     }
 
     public boolean isMindmapTitleUsed(String title) {
