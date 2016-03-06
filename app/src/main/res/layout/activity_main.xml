@@ -31,6 +31,7 @@
 
         </FrameLayout>
         <include layout="@layout/side_note_view"/>
+        <include layout="@layout/fragment_search"/>
 
     </RelativeLayout>
 

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="1"
+    android:id="@+id/search_bar"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:layout_width="388dp"
+        android:layout_height="69dp"
+        android:background="#336094"
+        android:fadingEdge="horizontal"
+        android:fadingEdgeLength="5dp"
+        android:layout_weight="0.02">
+
+        <EditText
+            android:layout_width="350dp"
+            android:layout_height="35dp"
+            android:id="@+id/editText"
+            android:text="Java"
+            android:background="#DFF2FF"
+            android:layout_above="@+id/videoCheckBox"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/searchButton2"
+            android:layout_toStartOf="@+id/searchButton2"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:text="Search"
+            android:id="@+id/searchButton2"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:textColor="#FFFFFF"
+            style="?android:attr/borderlessButtonStyle" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Video"
+            android:id="@+id/videoCheckBox"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/imageCheckBox"
+            android:layout_toEndOf="@+id/imageCheckBox"
+            android:textColor="#FFFFFF"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Image"
+            android:id="@+id/imageCheckBox"
+            android:layout_weight="0.02"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:textColor="#FFFFFF"
+            android:checked="false" />
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="File"
+            android:id="@+id/fileCheckBox"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/videoCheckBox"
+            android:layout_toEndOf="@+id/videoCheckBox"
+            android:textColor="#FFFFFF"
+            android:checked="false" />
+
+    </RelativeLayout>
+
+</LinearLayout>

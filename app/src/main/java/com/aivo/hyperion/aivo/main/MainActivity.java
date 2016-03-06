@@ -1,23 +1,17 @@
 package com.aivo.hyperion.aivo.main;
 
-import android.app.Activity;
-import android.app.FragmentTransaction;
 import android.content.Context;
-import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.aivo.hyperion.aivo.R;
-import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
@@ -25,10 +19,15 @@ import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
+import com.aivo.hyperion.aivo.views.FloatingSearchMenu;
+import com.aivo.hyperion.aivo.views.SearchFragment;
+
+import static com.aivo.hyperion.aivo.R.id.contentAreaParent;
 
 public class MainActivity extends AppCompatActivity implements ModelListener {
 
     private static Context sTheContext;
+
     public static Context getContext() {
         return sTheContext;
     }
@@ -46,8 +45,10 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     FragmentManager fragmentManager;
     Button sideBtn;
     Button mainMenuButton;
+    Button searchButton;
     Boolean isSideNoteVisible = false;
     Boolean isMainMenuVisible = true;
+    Boolean isSearchPanelVisible = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +59,13 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
         fragmentManager = getSupportFragmentManager();
 //        fragmentManager.beginTransaction().replace(R.id.contentArea, new NoteFragment()).commit();
-        fragmentManager.beginTransaction().add(R.id.contentAreaParent, new MainMenuFragment()).commit();
+        fragmentManager.beginTransaction().add(contentAreaParent, new MainMenuFragment()).commit();
+        fragmentManager.beginTransaction().add(contentAreaParent, new SearchFragment()).commit();
+
 
         sideBtn =(Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
+        searchButton = (Button)findViewById(R.id.search_imagebutton);
         setButtonsOnClickListeners();
 
         sTheContext = MainActivity.this;
@@ -70,13 +74,13 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         sModelMediator.createUser();
     }
 
-    public void setButtonsOnClickListeners(){
+    public void setButtonsOnClickListeners() {
 
-        sideBtn.setOnClickListener(new Button.OnClickListener(){
-            public void onClick(View v){
+        sideBtn.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 LinearLayout sidePanel = (LinearLayout) findViewById(R.id.side_note_panel);
                 // animate the side bar
-                if (isSideNoteVisible){
+                if (isSideNoteVisible) {
                     // Start the animation
 //                    sidePanel.animate().translationXBy(sidePanel.getWidth());
                     sidePanel.animate().translationX(sidePanel.getWidth());
@@ -93,28 +97,54 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
         });
 
-        mainMenuButton.setOnClickListener(new Button.OnClickListener(){
+        mainMenuButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 LinearLayout mainMenuPanel = (LinearLayout) findViewById(R.id.main_menu);
                 // animate the main menu panel
                 if (isMainMenuVisible) {
-                    mainMenuPanel.animate().translationX(-mainMenuPanel.getWidth());
+                    mainMenuPanel.animate().translationY(-mainMenuPanel.getHeight());
                     isMainMenuVisible = false;
                 } else {
-                    mainMenuPanel.animate().translationX(0);
+                    mainMenuPanel.animate().translationY(0);
                     isMainMenuVisible = true;
                 }
             }
         });
+
+        searchButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                LinearLayout searchMenuPanel = (LinearLayout)findViewById(R.id.search_bar);
+                //getSupportFragmentManager().beginTransaction().replace(R.id.contentAreaParent,mSearchFragment).commit();
+                if (isSearchPanelVisible) {
+                    searchMenuPanel.animate().translationX(-searchMenuPanel.getWidth());
+                    isSearchPanelVisible = false;
+                } else {
+                    searchMenuPanel.animate().translationX(0);
+                    isSearchPanelVisible = true;
+                }
+            }
+            /*
+                @Override
+                public void onClick(View v) {
+
+                    startService(new Intent(MainActivity.this, SearchFragment.class));
+
+                }
+                */
+        });
     }
+
 
     @Override
     public void onUserOpened(User user) {
         sUser = user;
         sModelMediator.createMindmap("Default");
+        //sModelMediator.createSearch("Default");
     }
 
     private MindmapFragment mMindmapFragment;
+    //private SearchFragment mSearchFragment;
+
     @Override
     public void onMindmapOpened(Mindmap mindmap) {
         mMindmapFragment = new MindmapFragment();
@@ -142,6 +172,8 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         mMindmapFragment.onMindmapClosed();
         getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, new NoteFragment());
     }
+
+
 
     @Override
     public void onException(Exception e) {
