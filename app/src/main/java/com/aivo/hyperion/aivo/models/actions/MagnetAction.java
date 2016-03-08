@@ -35,10 +35,10 @@ public abstract class MagnetAction extends Action {
         for (List< Magnet > magnetRow : magnetGroup.getMagnets())
             if (magnetRow.remove(magnet))
                 return;
-        throw new InternalError("Tried to remove magnet from a group it wasn't inside!");
+        throw new InternalError("Tried to remove magnet from a group it wasn't inside in!");
     }
 
-    protected void notifyMagnetInsertedIntoGroup(Magnet magnet, MagnetGroup magnetGroup) {
+    protected void notifyMagnetCreatedIntoGroup(Magnet magnet, MagnetGroup magnetGroup) {
         for (ModelListener listener : mediator.getListeners()) {
             listener.onMagnetCreate(magnet);
             if (magnetGroup.getMagnets().size() == 1)
@@ -48,7 +48,7 @@ public abstract class MagnetAction extends Action {
         }
     }
 
-    protected void notifyMagnetRemovedFromGroup(Magnet magnet, MagnetGroup magnetGroup) {
+    protected void notifyMagnetDeletedFromGroup(Magnet magnet, MagnetGroup magnetGroup) {
         for (ModelListener listener : mediator.getListeners()) {
             listener.onMagnetDelete(magnet);
             if (magnetGroup.getMagnets().size() == 0)
@@ -60,17 +60,33 @@ public abstract class MagnetAction extends Action {
 
     protected void notifyMagnetMoved(Magnet magnet, MagnetGroup magnetGroupOld, MagnetGroup magnetGroupNew) {
         for (ModelListener listener : mediator.getListeners()) {
+
+            if (magnetGroupNew.getMagnets().size() == 1)
+                listener.onMagnetGroupCreate(magnetGroupNew);
+            else
+                listener.onMagnetGroupChange(magnetGroupNew);
+
             listener.onMagnetChange(magnet);
 
             if (magnetGroupOld.getMagnets().size() == 0)
                 listener.onMagnetGroupDelete(magnetGroupOld);
             else
                 listener.onMagnetGroupChange(magnetGroupOld);
-
-            if (magnetGroupOld.getMagnets().size() == 1)
-                listener.onMagnetGroupCreate(magnetGroupNew);
-            else
-                listener.onMagnetGroupChange(magnetGroupNew);
         }
+    }
+
+    protected int[] getMagnetRowCol(Magnet target) {
+        int rowIndex = -1;
+        int colIndex = -1;
+
+        for (List< Magnet > magnetRow : target.getMagnetGroup().getMagnets()) {
+            ++rowIndex;
+            for (Magnet magnet : magnetRow) {
+                ++colIndex;
+                if (magnet == target)
+                    return new int[] {rowIndex, colIndex};
+            }
+        }
+        throw new InternalError("Tried to find row/col of a magnet, that had no group or was not in its group!");
     }
 }

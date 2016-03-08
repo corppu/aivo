@@ -3,7 +3,7 @@ package com.aivo.hyperion.aivo.models;
 import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
-import com.aivo.hyperion.aivo.models.actions.ChangeData;
+import com.aivo.hyperion.aivo.models.actions.MagnetGroupChangeData;
 import com.aivo.hyperion.aivo.models.actions.MagnetGroupMove;
 
 import java.util.ArrayList;
@@ -36,7 +36,7 @@ public class MagnetGroup {
         this.lines = new ArrayList<>();
     }
 
-    // DO NOT USE! Only for ChangeData action!
+    // DO NOT USE! Only for x action!
     public void setData(String newTitle) { title = newTitle; }
     public PointF getPoint() { return point; }
     public String getTitle() { return title;  }
@@ -52,7 +52,7 @@ public class MagnetGroup {
     }
 
     public void actionChangeData(String newTitle) {
-        Action action = new ChangeData(this, newTitle);
+        Action action = new MagnetGroupChangeData(this, newTitle);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
@@ -62,6 +62,6 @@ public class MagnetGroup {
     }
 
     public void actionMoveTo(MagnetGroup magnetGroupToMergeInto, final boolean keepLines) {
-
+        throw new InternalError("MagnetGroup merging unimplemented for now!");
     }
 }

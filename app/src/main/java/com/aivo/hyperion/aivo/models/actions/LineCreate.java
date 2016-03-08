@@ -27,7 +27,6 @@ public class LineCreate extends Action {
 
     @Override
     public void execute() {
-        // TODO: LSM: Write to file
         mediator.getMindmap().getLines().add(line);
         line.getMagnetGroup1().getLines().add(line);
         line.getMagnetGroup2().getLines().add(line);
@@ -41,7 +40,6 @@ public class LineCreate extends Action {
 
     @Override
     public void undo() {
-        // TODO: LSM: Remove file
         mediator.getMindmap().getLines().remove(line);
         line.getMagnetGroup1().getLines().remove(line);
         line.getMagnetGroup2().getLines().remove(line);

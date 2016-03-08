@@ -4,7 +4,6 @@ import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
-import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 
 /**
@@ -12,40 +11,44 @@ import com.aivo.hyperion.aivo.models.ModelMediator;
  */
 public class MagnetMove extends MagnetAction {
 
-    private MagnetGroup magnetGroup;
-    private Magnet magnet;
-    private int rowIndex;
-    private int colIndex;
+    private MagnetGroup magnetGroupNew;
     private MagnetGroup magnetGroupOld;
+    private Magnet magnet;
+    private int rowIndexNew;
+    private int colIndexNew;
     private int rowIndexOld;
     private int colIndexOld;
 
     public MagnetMove(ModelMediator mediator, Magnet magnet, PointF pointF) {
         setMediator(mediator);
-        this.magnetGroup = new MagnetGroup(mediator, pointF);
-        this.magnet = magnet;
-        rowIndex = -1;
-        colIndex = -1;
+        this.magnetGroupNew = new MagnetGroup(mediator, pointF);
         this.magnetGroupOld = magnet.getMagnetGroup();
+        this.magnet = magnet;
+        this.rowIndexNew = 0;
+        this.colIndexNew = 0;
+        final int[] rowcol = getMagnetRowCol(magnet);
+        this.rowIndexOld = rowcol[0];
+        this.colIndexOld = rowcol[1];
     }
 
-    public MagnetMove(ModelMediator mediator, Magnet magnet, MagnetGroup magnetGroup,
-                      final int rowIndex, final int colIndex) {
-        if (rowIndex < 0 || colIndex < 0)
+    public MagnetMove(ModelMediator mediator, Magnet magnet, MagnetGroup magnetGroupNew,
+                      final int rowIndexNew, final int colIndexNew) {
+        if (rowIndexNew < 0 || colIndexNew < 0)
             throw new InternalError("Tried to create a MagnetMove action with negative row/col indexes!");
 
         setMediator(mediator);
-        this.magnetGroup = magnetGroup;
-        this.magnet = magnet;
-        this.rowIndex = rowIndex;
-        this.colIndex = colIndex;
+        this.magnetGroupNew = magnetGroupNew;
         this.magnetGroupOld = magnet.getMagnetGroup();
+        this.magnet = magnet;
+        this.rowIndexNew = rowIndexNew;
+        this.colIndexNew = colIndexNew;
+        final int[] rowcol = getMagnetRowCol(magnet);
+        this.rowIndexOld = rowcol[0];
+        this.colIndexOld = rowcol[1];
     }
 
     @Override
     void execute() {
-        // TODO: LSM: Write to file
-
         // Remove from previous MagnetGroup
         removeMagnetFromGroup(magnet, magnetGroupOld);
 
@@ -54,24 +57,22 @@ public class MagnetMove extends MagnetAction {
             mediator.getMindmap().getMagnetGroups().remove(magnetGroupOld);
 
         // Check if the magnetgroup was created for this action
-        if (magnetGroup.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().add(magnetGroup);
+        if (magnetGroupNew.getMagnets().size() == 0)
+            mediator.getMindmap().getMagnetGroups().add(magnetGroupNew);
 
-        insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex);
+        insertMagnetIntoGroup(magnet, magnetGroupNew, rowIndexNew, colIndexNew);
 
-        notifyMagnetMoved(magnet, magnetGroupOld, magnetGroup);
+        notifyMagnetMoved(magnet, magnetGroupOld, magnetGroupNew);
     }
 
     @Override
     void undo() {
-        // TODO: LSM: Remove file
-
         // Remove magnet from group
-        removeMagnetFromGroup(magnet, magnetGroup);
+        removeMagnetFromGroup(magnet, magnetGroupNew);
 
         // Check if the magnetgroup was created for this action
-        if (magnetGroup.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
+        if (magnetGroupNew.getMagnets().size() == 0)
+            mediator.getMindmap().getMagnetGroups().remove(magnetGroupNew);
 
         // Check if the old group was removed due to emptiness
         if (magnetGroupOld.getMagnets().size() == 0)
@@ -79,6 +80,6 @@ public class MagnetMove extends MagnetAction {
 
         insertMagnetIntoGroup(magnet, magnetGroupOld, rowIndexOld, colIndexOld);
 
-        notifyMagnetMoved(magnet, magnetGroup, magnetGroupOld);
+        notifyMagnetMoved(magnet, magnetGroupNew, magnetGroupOld);
     }
 }
