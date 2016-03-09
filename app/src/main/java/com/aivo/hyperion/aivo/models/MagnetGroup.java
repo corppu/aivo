@@ -48,7 +48,11 @@ public class MagnetGroup {
     }
 
     public void actionCreateMagnet(final int rowIndex, final int colIndex) {
-        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex);
+        mediator.getMindmap().actionCreateMagnetChild(this, rowIndex, colIndex);
+    }
+
+    public void actionCreateMagnetChild(PointF pointF) {
+        mediator.getMindmap().actionCreateMagnetChild(this, pointF);
     }
 
     public void actionChangeData(String newTitle) {

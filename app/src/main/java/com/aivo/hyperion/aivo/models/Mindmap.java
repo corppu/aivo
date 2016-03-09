@@ -6,6 +6,7 @@ import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.ActionHandler;
 import com.aivo.hyperion.aivo.models.actions.LineCreate;
 import com.aivo.hyperion.aivo.models.actions.MagnetCreate;
+import com.aivo.hyperion.aivo.models.actions.MagnetCreateChild;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,24 +59,35 @@ public class Mindmap {
         for (ModelListener listener : mediator.getListeners()) listener.onMindmapTitleChange(this);
     }
 
-    /** Creates a magnet through an action.
+    /** Creates a magnet through an action into a existing magnet group.
      *
      * @param magnetGroup   Group to create magnet into.
      * @param rowIndex      Group row to create magnet into. If greater than count, creates new row.
      * @param colIndex      Group row position to create magnet into. Shifts elements right.
      *                      If greater than element count in row, magnet is created in the end.
      */
-    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
+    public void actionCreateMagnetChild(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
         Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
         getActionHandler().executeAction(action);
     }
 
-    /** Creates a magnet through an action.
+    /** Creates a magnet through an action into a new magnet group.
      *
      * @param pointF        Where a new MagnetGroup is created, to contain the new Magnet.
      */
-    public void actionCreateMagnet(PointF pointF) {
+    public void actionCreateMagnetChild(PointF pointF) {
         Action action = new MagnetCreate(mediator, pointF);
+        getActionHandler().executeAction(action);
+    }
+
+    /** Creates a magnet through an action into a new magnet group,
+     *  that will be connected to a parent magnet group.
+     *
+     * @param parentMagnetGroup Group to connect the new group to
+     * @param pointF            Where a new MagnetGroup is created, to contain the new Magnet.
+     */
+    public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF) {
+        Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF);
         getActionHandler().executeAction(action);
     }
 
