@@ -3,6 +3,7 @@ package com.aivo.hyperion.aivo.main;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
+import com.aivo.hyperion.aivo.views.SideNoteFragment;
 
 public class MainActivity extends AppCompatActivity implements ModelListener {
 
@@ -42,10 +44,12 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     }
 
     FragmentManager fragmentManager;
+    SideNoteFragment sideNoteFragment;
     Button sideBtn;
     Button mainMenuButton;
     Boolean isSideNoteVisible = false;
     Boolean isMainMenuVisible = true;
+    FrameLayout sidePanel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +58,14 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        sideNoteFragment=new SideNoteFragment();
         fragmentManager = getSupportFragmentManager();
+
+        
 //        fragmentManager.beginTransaction().replace(R.id.contentArea, new NoteFragment()).commit();
-        fragmentManager.beginTransaction().add(R.id.contentAreaParent, new MainMenuFragment()).commit();
+        fragmentManager.beginTransaction().replace(R.id.contentAreaParent, new MainMenuFragment()).commit();
+        fragmentManager.beginTransaction().add(R.id.contentAreaParent, sideNoteFragment).commit();
+
 
         sideBtn =(Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
@@ -66,25 +75,37 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         sModelMediator = new ModelMediator();
         sModelMediator.registerListener(this);
         sModelMediator.createUser();
+
+
+
+    }
+    @Override
+    public void onStart(){
+        super.onStart();
+        sidePanel = (FrameLayout) findViewById(R.id.side_note_fragment);
+       // sidePanel.animate().translationX(sidePanel.getWidth());
+        //sidePanel.setX(sidePanel.getWidth());
+        sidePanel.setVisibility(View.GONE);
+
     }
 
     public void setButtonsOnClickListeners(){
 
         sideBtn.setOnClickListener(new Button.OnClickListener(){
             public void onClick(View v){
-                LinearLayout sidePanel = (LinearLayout) findViewById(R.id.side_note_panel);
+               // FrameLayout sidePanel = (FrameLayout) findViewById(R.id.side_note_fragment);
                 // animate the side bar
                 if (isSideNoteVisible){
                     // Start the animation
 //                    sidePanel.animate().translationXBy(sidePanel.getWidth());
                     sidePanel.animate().translationX(sidePanel.getWidth());
-                    sidePanel.setVisibility(View.INVISIBLE);
                     isSideNoteVisible = false;
                 } else {
 //                    sidePanel.animate().translationXBy(-120);
                     // Start the animation
-                    sidePanel.animate().translationX(0);
                     sidePanel.setVisibility(View.VISIBLE);
+                    sidePanel.animate().translationX(0);
+
                     isSideNoteVisible = true;
                 }
             }
@@ -191,6 +212,17 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
     }
 
+    @Override
+    public void onPause(){
+        super.onPause();
+        fragmentManager.beginTransaction().remove(sideNoteFragment).commitAllowingStateLoss();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+///   fragment trasaction cant be here cause it will crash
+    }
     @Override
     public void onNoteCreate(Note note) {
 
