@@ -66,7 +66,7 @@ public class Mindmap {
      * @param colIndex      Group row position to create magnet into. Shifts elements right.
      *                      If greater than element count in row, magnet is created in the end.
      */
-    public void actionCreateMagnetChild(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
+    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
         Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
         getActionHandler().executeAction(action);
     }
@@ -75,13 +75,13 @@ public class Mindmap {
      *
      * @param pointF        Where a new MagnetGroup is created, to contain the new Magnet.
      */
-    public void actionCreateMagnetChild(PointF pointF) {
+    public void actionCreateMagnet(PointF pointF) {
         Action action = new MagnetCreate(mediator, pointF);
         getActionHandler().executeAction(action);
     }
 
     /** Creates a magnet through an action into a new magnet group,
-     *  that will be connected to a parent magnet group.
+     *  that will be connected by a line to a parent magnet group.
      *
      * @param parentMagnetGroup Group to connect the new group to
      * @param pointF            Where a new MagnetGroup is created, to contain the new Magnet.
