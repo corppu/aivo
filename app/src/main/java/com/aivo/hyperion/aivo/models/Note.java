@@ -1,11 +1,18 @@
 package com.aivo.hyperion.aivo.models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Note {
 
     // These have to be protected, so Magnet can access them
     protected String title;
     protected String content;
     protected int color;
+
+    public String getTitle() { return title; }
+    public String getContent() { return content; }
+    public int getColor() { return color; }
 
     // The model mediator reference
     protected ModelMediator mediator;
@@ -25,10 +32,16 @@ public class Note {
         this.content = magnetReference.getContent();
         this.color = magnetReference.getColor();
     }
+    protected Note(ModelMediator mediator_, JSONObject json) {
+        try {
+            this.title = json.getString("title");
+            this.content = json.getString("content");
+            this.color = json.getInt("color");
 
-    public String getTitle() { return title; }
-    public String getContent() { return content; }
-    public int getColor() { return color; }
+        } catch (JSONException e) {
+            for (ModelListener listener : mediator.getListeners()) listener.onException(e);
+        }
+    }
 
     /** For Notes: use this.
      *  For Magnets: DO NOT USE. Only to be used through actions.

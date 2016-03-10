@@ -161,7 +161,7 @@ public class ModelMediator {
         return false;
     }
 
-    public boolean isFavoriteMagnetTitleUsed(String title) {
+    public boolean isNoteTitleUsed(String title) {
         return false;
     }
 
