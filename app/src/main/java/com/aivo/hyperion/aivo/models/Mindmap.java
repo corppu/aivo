@@ -44,7 +44,7 @@ public class Mindmap {
         this.mediator = modelMediator_;
     }
 
-    public Mindmap(ModelMediator mediator_, String title) {
+    protected Mindmap(ModelMediator mediator_, String title) {
         setMediator(mediator_);
         this.actionHandler = new ActionHandler();
         this.magnetGroups = new ArrayList<>();
