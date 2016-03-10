@@ -7,102 +7,36 @@ import java.util.ArrayList;
 
 public class Theme {
 
-    private String title;
-    private int colorBackground;
-    private int colorLine;
+    static final private int themeAmount = 3;
+    private int themeId;
 
-    private int colorMenuDefault;
-    private int colorMenuText;
-    private int colorMenuIcon;
+    static final private String[] title =               {"Default", "Dark", "Beige"};
+    static final private int[] colorBackground =        {0,         0,      0};
+    static final private int[] colorLine =              {0,         0,      0};
 
-    private int colorMagnetGroup;
-    private int colorMagnetGroupTitle;
+    static final private int[] colorMenuDefault =       {0,         0,      0};
+    static final private int[] colorMenuText =          {0,         0,      0};
+    static final private int[] colorMenuIcon =          {0,         0,      0};
 
-    private int colorMagnetBackground;
+    static final private int[] colorMagnetGroup =       {0,         0,      0};
+    static final private int[] colorMagnetGroupTitle =  {0,         0,      0};
 
-    // The model mediator reference
-    private ModelMediator mediator;
-    private void setMediator(ModelMediator modelMediator_) {
-        if (modelMediator_ == null)
-            throw new InternalError("Theme created without a valid ModelMediator reference!");
-        mediator = modelMediator_;
+    static final private int[] colorMagnetBackground =  {0,         0,      0};
+
+    public Theme(final int themeId) {
+        if (themeId >= themeAmount || themeId < 0)
+            throw new InternalError("Theme created with an invalid theme id!");
+
+        this.themeId = themeId;
     }
 
-    public Theme(ModelMediator mediator_) {
-        setMediator(mediator_);
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getColorBackground() {
-        return colorBackground;
-    }
-
-    public void setColorBackground(int colorBackground) {
-        this.colorBackground = colorBackground;
-    }
-
-    public int getColorLine() {
-        return colorLine;
-    }
-
-    public void setColorLine(int colorLine) {
-        this.colorLine = colorLine;
-    }
-
-    public int getColorMenuDefault() {
-        return colorMenuDefault;
-    }
-
-    public void setColorMenuDefault(int colorMenuDefault) {
-        this.colorMenuDefault = colorMenuDefault;
-    }
-
-    public int getColorMenuText() {
-        return colorMenuText;
-    }
-
-    public int getColorMenuIcon() {
-        return colorMenuIcon;
-    }
-
-    public void setColorMenuIcon(int colorMenuIcon) {
-        this.colorMenuIcon = colorMenuIcon;
-    }
-
-    public void setColorMenuText(int colorMenuText) {
-        this.colorMenuText = colorMenuText;
-    }
-
-    public int getColorMagnetGroup() {
-        return colorMagnetGroup;
-    }
-
-    public void setColorMagnetGroup(int colorMagnetGroup) {
-        this.colorMagnetGroup = colorMagnetGroup;
-    }
-
-    public int getColorMagnetGroupTitle() {
-        return colorMagnetGroupTitle;
-    }
-
-    public void setColorMagnetGroupTitle(int colorMagnetGroupTitle) {
-        this.colorMagnetGroupTitle = colorMagnetGroupTitle;
-    }
-
-    public int getColorMagnetBackground() {
-        return colorMagnetBackground;
-    }
-
-    public void setColorMagnetBackground(int colorMagnetBackground) {
-        this.colorMagnetBackground = colorMagnetBackground;
-    }
-
-
+    public String getTitle() { return title[themeId]; }
+    public int getColorBackground() { return colorBackground[themeId]; }
+    public int getColorLine() { return colorLine[themeId]; }
+    public int getColorMenuDefault() { return colorMenuDefault[themeId]; }
+    public int getColorMenuText() { return colorMenuText[themeId]; }
+    public int getColorMenuIcon() { return colorMenuIcon[themeId]; }
+    public int getColorMagnetGroup() { return colorMagnetGroup[themeId]; }
+    public int getColorMagnetGroupTitle() { return colorMagnetGroupTitle[themeId]; }
+    public int getColorMagnetBackground() { return colorMagnetBackground[themeId]; }
 }
