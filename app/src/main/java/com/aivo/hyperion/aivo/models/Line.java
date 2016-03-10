@@ -7,6 +7,7 @@ import com.aivo.hyperion.aivo.models.actions.LinePointAdd;
 import com.aivo.hyperion.aivo.models.actions.LineChangeData;
 import com.aivo.hyperion.aivo.models.actions.LineDelete;
 import com.aivo.hyperion.aivo.models.actions.LinePointDelete;
+import com.aivo.hyperion.aivo.models.actions.LinePointMove;
 
 import java.util.ArrayList;
 
@@ -58,6 +59,11 @@ public class Line {
 
     public void actionAddPoint(PointF newPoint, final int targetIndex) {
         Action action = new LinePointAdd(mediator, this, newPoint, targetIndex);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+    }
+
+    public void actionMovePoint(PointF pointToMove, PointF newPoint) {
+        Action action = new LinePointMove(mediator, this, pointToMove, newPoint);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 

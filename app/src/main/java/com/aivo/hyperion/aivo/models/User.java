@@ -17,6 +17,7 @@ public class User {
 
     public User(ModelMediator mediator_) {
         setMediator(mediator_);
+        setTheme(0);
     }
 
 }
