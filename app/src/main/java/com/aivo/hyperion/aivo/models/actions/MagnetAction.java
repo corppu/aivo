@@ -37,11 +37,11 @@ public abstract class MagnetAction extends Action {
 
     protected void notifyMagnetCreatedIntoGroup(Magnet magnet, MagnetGroup magnetGroup) {
         for (ModelListener listener : mediator.getListeners()) {
+            listener.onMagnetCreate(magnet);
             if (magnetGroup.getMagnets().size() == 1)
                 listener.onMagnetGroupCreate(magnetGroup);
             else
                 listener.onMagnetGroupChange(magnetGroup);
-            listener.onMagnetCreate(magnet);
         }
     }
 
