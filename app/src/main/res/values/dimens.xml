@@ -3,4 +3,11 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="canvas_width">3840px</dimen>
+    <dimen name="canvas_height">2160px</dimen>
+    <dimen name="magnet_button_radius">24px</dimen>
+    <dimen name="magnet_half_width">100px</dimen>
+    <dimen name="magnet_half_height">100px</dimen>
+    <dimen name="hilight_size">50px</dimen>
+    <dimen name="border_size">10px</dimen>
 </resources>
