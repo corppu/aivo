@@ -94,7 +94,8 @@ public class ModelMediator {
             throw new InternalError("Tried to create a Mindmap without first opening a User!");
 
         // Check that the title isn't used
-        if (isMindmapTitleUsed(title)) return;
+        if (isMindmapTitleUsed(title))
+            throw new InternalError("Tried to create a Mindmap with a used title!");
 
         // Close any opened Mindmap
         if (!closeMindmap()) return;
@@ -161,7 +162,7 @@ public class ModelMediator {
         return false;
     }
 
-    public boolean isFavoriteMagnetTitleUsed(String title) {
+    public boolean isNoteTitleUsed(String title) {
         return false;
     }
 

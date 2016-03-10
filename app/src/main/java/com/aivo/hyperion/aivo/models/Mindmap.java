@@ -8,6 +8,10 @@ import com.aivo.hyperion.aivo.models.actions.LineCreate;
 import com.aivo.hyperion.aivo.models.actions.MagnetCreate;
 import com.aivo.hyperion.aivo.models.actions.MagnetCreateChild;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +32,10 @@ public class Mindmap {
     // List of lines in the mindmap (Never null, use clear!)
     private List<Line> lines;
 
+    // Global id counter for this mindmap, always use "idCounter++"
+    private int idCounter;
+    protected int getNextId() { return idCounter++; }
+
     // The model mediator reference
     private ModelMediator mediator;
     private void setMediator(ModelMediator modelMediator_) {
@@ -36,13 +44,44 @@ public class Mindmap {
         this.mediator = modelMediator_;
     }
 
-    public Mindmap(ModelMediator mediator_, String title) {
+    protected Mindmap(ModelMediator mediator_, String title) {
         setMediator(mediator_);
         this.actionHandler = new ActionHandler();
         this.magnetGroups = new ArrayList<>();
         this.lines = new ArrayList<>();
         this.title = title;
         this.isDirty = true;
+    }
+
+    protected Mindmap(ModelMediator mediator_, JSONObject json) {
+        setMediator(mediator_);
+        this.actionHandler = new ActionHandler();
+        this.magnetGroups = new ArrayList<>();
+        this.lines = new ArrayList<>();
+        this.isDirty = false;
+
+        try {
+            this.title = json.getString("title");
+            this.idCounter = json.getInt("idCounter");
+
+            JSONArray jsonMagnetGroups = json.getJSONArray("magnetGroups");
+            MagnetGroup magnetGroup;
+            for (int j = 0; j < jsonMagnetGroups.length(); ++j) {
+                magnetGroup = new MagnetGroup(mediator, jsonMagnetGroups.getJSONObject(j));
+                magnetGroups.add(magnetGroup);
+            }
+
+            JSONArray jsonLines = json.getJSONArray("lines");
+            Line line;
+            for (int j = 0; j < jsonLines.length(); ++j) {
+                line = new Line(mediator, jsonMagnetGroups.getJSONObject(j));
+                lines.add(line);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
 
     public String getTitle() { return title; }

@@ -1,5 +1,8 @@
 package com.aivo.hyperion.aivo.models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class User {
 
     // Current theme
@@ -15,8 +18,18 @@ public class User {
         mediator = modelMediator_;
     }
 
-    public User(ModelMediator mediator_) {
+    protected User(ModelMediator mediator_) {
         setMediator(mediator_);
+        setTheme(0);
+    }
+
+    protected User(ModelMediator mediator_, JSONObject json) {
+        setMediator(mediator_);
+        try {
+            setTheme(json.getInt("themeId"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
