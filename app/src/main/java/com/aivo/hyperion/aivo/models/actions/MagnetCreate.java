@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelMediator;
+import com.aivo.hyperion.aivo.models.Note;
 
 public class MagnetCreate extends MagnetAction {
 
@@ -21,6 +22,14 @@ public class MagnetCreate extends MagnetAction {
         this.colIndex = 0;
     }
 
+    public MagnetCreate(ModelMediator mediator, PointF pointF, Note noteReference) {
+        setMediator(mediator);
+        this.magnetGroup = new MagnetGroup(mediator, pointF);
+        this.magnet = new Magnet(mediator, magnetGroup, noteReference);
+        this.rowIndex = 0;
+        this.colIndex = 0;
+    }
+
     public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
         if (rowIndex < 0 || colIndex < 0)
             throw new InternalError("Tried to create a MagnetCreate action with negative row/col indexes!");
@@ -28,6 +37,18 @@ public class MagnetCreate extends MagnetAction {
         setMediator(mediator);
         this.magnetGroup = magnetGroup;
         this.magnet = new Magnet(mediator, magnetGroup);
+        this.rowIndex = rowIndex;
+        this.colIndex = colIndex;
+    }
+
+    public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup,
+                        final int rowIndex, final int colIndex, Note noteReference) {
+        if (rowIndex < 0 || colIndex < 0)
+            throw new InternalError("Tried to create a MagnetCreate action with negative row/col indexes!");
+
+        setMediator(mediator);
+        this.magnetGroup = magnetGroup;
+        this.magnet = new Magnet(mediator, magnetGroup, noteReference);
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;
     }

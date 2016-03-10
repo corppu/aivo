@@ -136,6 +136,17 @@ public class ModelMediator {
         return note;
     }
 
+    /** Creates a new Note using a Magnet as a reference.
+     *
+     * @return  the Note created.
+     */
+    public Note createNote(Magnet magnetReference) {
+        Note note = new Note(this, magnetReference);
+        notes.add(note);
+        for (ModelListener listener : listeners) listener.onNoteCreate(note);
+        return note;
+    }
+
     /** Deletes the given Note from the mediator and google drive.
      *
      * @param note  the Note to be deleted.

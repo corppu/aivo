@@ -24,6 +24,14 @@ public class Magnet extends Note {
         this.magnetGroup = magnetGroup;
     }
 
+    public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup, Note noteReference) {
+        setMediator(mediator_);
+        this.magnetGroup = magnetGroup;
+        this.title = noteReference.getTitle();
+        this.content = noteReference.getContent();
+        this.color = noteReference.getColor();
+    }
+
     public void actionChangeData(String newTitle) {
         Action action = new MagnetChangeData(this, newTitle, content, color);
         mediator.getMindmap().getActionHandler().executeAction(action);

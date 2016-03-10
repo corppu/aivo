@@ -7,6 +7,7 @@ import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
+import com.aivo.hyperion.aivo.models.Note;
 
 public class MagnetCreateChild extends MagnetAction {
 
@@ -21,6 +22,14 @@ public class MagnetCreateChild extends MagnetAction {
         this.parentMagnetGroup = parentMagnetGroup;
         this.magnetGroup = new MagnetGroup(mediator, pointF);
         this.magnet = new Magnet(mediator, magnetGroup);
+        this.line = new Line(mediator, this.parentMagnetGroup, this.magnetGroup);
+    }
+
+    public MagnetCreateChild(ModelMediator mediator, MagnetGroup parentMagnetGroup, PointF pointF, Note noteReference) {
+        setMediator(mediator);
+        this.parentMagnetGroup = parentMagnetGroup;
+        this.magnetGroup = new MagnetGroup(mediator, pointF);
+        this.magnet = new Magnet(mediator, magnetGroup, noteReference);
         this.line = new Line(mediator, this.parentMagnetGroup, this.magnetGroup);
     }
 

@@ -19,6 +19,12 @@ public class Note {
     protected Note(ModelMediator mediator_) {
         setMediator(mediator_);
     }
+    protected Note(ModelMediator mediator_, Magnet magnetReference) {
+        setMediator(mediator_);
+        this.title = magnetReference.getTitle();
+        this.content = magnetReference.getContent();
+        this.color = magnetReference.getColor();
+    }
 
     public String getTitle() { return title; }
     public String getContent() { return content; }

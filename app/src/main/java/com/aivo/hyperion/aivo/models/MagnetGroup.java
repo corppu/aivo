@@ -50,9 +50,15 @@ public class MagnetGroup {
     public void actionCreateMagnet(final int rowIndex, final int colIndex) {
         mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex);
     }
+    public void actionCreateMagnet(final int rowIndex, final int colIndex, Note noteReference) {
+        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex, noteReference);
+    }
 
     public void actionCreateMagnetChild(PointF pointF) {
         mediator.getMindmap().actionCreateMagnetChild(this, pointF);
+    }
+    public void actionCreateMagnetChild(PointF pointF, Note noteReference) {
+        mediator.getMindmap().actionCreateMagnetChild(this, pointF, noteReference);
     }
 
     public void actionChangeData(String newTitle) {

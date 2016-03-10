@@ -70,6 +70,10 @@ public class Mindmap {
         Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
         getActionHandler().executeAction(action);
     }
+    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex, Note noteReference) {
+        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex, noteReference);
+        getActionHandler().executeAction(action);
+    }
 
     /** Creates a magnet through an action into a new magnet group.
      *
@@ -77,6 +81,10 @@ public class Mindmap {
      */
     public void actionCreateMagnet(PointF pointF) {
         Action action = new MagnetCreate(mediator, pointF);
+        getActionHandler().executeAction(action);
+    }
+    public void actionCreateMagnet(PointF pointF, Note noteReference) {
+        Action action = new MagnetCreate(mediator, pointF, noteReference);
         getActionHandler().executeAction(action);
     }
 
@@ -88,6 +96,10 @@ public class Mindmap {
      */
     public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF) {
         Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF);
+        getActionHandler().executeAction(action);
+    }
+    public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF, Note noteReference) {
+        Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF, noteReference);
         getActionHandler().executeAction(action);
     }
 
