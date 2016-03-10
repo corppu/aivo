@@ -4,9 +4,9 @@ import android.graphics.PointF;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.ActionHandler;
-import com.aivo.hyperion.aivo.models.actions.ChangeData;
 import com.aivo.hyperion.aivo.models.actions.LineCreate;
 import com.aivo.hyperion.aivo.models.actions.MagnetCreate;
+import com.aivo.hyperion.aivo.models.actions.MagnetCreateChild;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +32,7 @@ public class Mindmap {
     private ModelMediator mediator;
     private void setMediator(ModelMediator modelMediator_) {
         if (modelMediator_ == null)
-            throw new InternalError("User created without a valid ModelMediator reference!");
+            throw new InternalError("Mindmap created without a valid ModelMediator reference!");
         this.mediator = modelMediator_;
     }
 
@@ -52,14 +52,14 @@ public class Mindmap {
 
     /** Change mindmap title through an action.
      *
-     * @param newTitle
+     * @param newTitle      New title
      */
     public void changeTitle(String newTitle) {
         title = newTitle;
         for (ModelListener listener : mediator.getListeners()) listener.onMindmapTitleChange(this);
     }
 
-    /** Creates a magnet through an action.
+    /** Creates a magnet through an action into a existing magnet group.
      *
      * @param magnetGroup   Group to create magnet into.
      * @param rowIndex      Group row to create magnet into. If greater than count, creates new row.
@@ -70,13 +70,36 @@ public class Mindmap {
         Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
         getActionHandler().executeAction(action);
     }
+    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex, Note noteReference) {
+        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex, noteReference);
+        getActionHandler().executeAction(action);
+    }
 
-    /** Creates a magnet through an action.
+    /** Creates a magnet through an action into a new magnet group.
      *
      * @param pointF        Where a new MagnetGroup is created, to contain the new Magnet.
      */
     public void actionCreateMagnet(PointF pointF) {
         Action action = new MagnetCreate(mediator, pointF);
+        getActionHandler().executeAction(action);
+    }
+    public void actionCreateMagnet(PointF pointF, Note noteReference) {
+        Action action = new MagnetCreate(mediator, pointF, noteReference);
+        getActionHandler().executeAction(action);
+    }
+
+    /** Creates a magnet through an action into a new magnet group,
+     *  that will be connected by a line to a parent magnet group.
+     *
+     * @param parentMagnetGroup Group to connect the new group to
+     * @param pointF            Where a new MagnetGroup is created, to contain the new Magnet.
+     */
+    public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF) {
+        Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF);
+        getActionHandler().executeAction(action);
+    }
+    public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF, Note noteReference) {
+        Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF, noteReference);
         getActionHandler().executeAction(action);
     }
 
@@ -94,6 +117,6 @@ public class Mindmap {
      *
      */
     public void delete() {
-
+        mediator.closeMindmap();
     }
 }

@@ -1,8 +1,5 @@
 package com.aivo.hyperion.aivo.models;
 
-/**
- * Created by MicroLoota on 25.11.2015.
- */
 public interface ModelListener {
     void onUserOpen(User user);
     void onUserChange(User user);
@@ -23,6 +20,10 @@ public interface ModelListener {
     void onLineCreate(Line line);
     void onLineChange(Line line);
     void onLineDelete(Line line);
+
+    void onNoteCreate(Note note);
+    void onNoteChange(Note note);
+    void onNoteDelete(Note note);
 
     void onException(Exception e);
 

@@ -5,10 +5,8 @@ import android.graphics.PointF;
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelMediator;
+import com.aivo.hyperion.aivo.models.Note;
 
-/**
- * Created by corpp on 14.12.2015.
- */
 public class MagnetCreate extends MagnetAction {
 
     private MagnetGroup magnetGroup;
@@ -24,6 +22,14 @@ public class MagnetCreate extends MagnetAction {
         this.colIndex = 0;
     }
 
+    public MagnetCreate(ModelMediator mediator, PointF pointF, Note noteReference) {
+        setMediator(mediator);
+        this.magnetGroup = new MagnetGroup(mediator, pointF);
+        this.magnet = new Magnet(mediator, magnetGroup, noteReference);
+        this.rowIndex = 0;
+        this.colIndex = 0;
+    }
+
     public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
         if (rowIndex < 0 || colIndex < 0)
             throw new InternalError("Tried to create a MagnetCreate action with negative row/col indexes!");
@@ -35,23 +41,31 @@ public class MagnetCreate extends MagnetAction {
         this.colIndex = colIndex;
     }
 
+    public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup,
+                        final int rowIndex, final int colIndex, Note noteReference) {
+        if (rowIndex < 0 || colIndex < 0)
+            throw new InternalError("Tried to create a MagnetCreate action with negative row/col indexes!");
+
+        setMediator(mediator);
+        this.magnetGroup = magnetGroup;
+        this.magnet = new Magnet(mediator, magnetGroup, noteReference);
+        this.rowIndex = rowIndex;
+        this.colIndex = colIndex;
+    }
+
     @Override
     public void execute() {
-        // TODO: LSM: Write to file
-
         // Check if the magnetgroup was created for this action
         if (magnetGroup.getMagnets().size() == 0)
             mediator.getMindmap().getMagnetGroups().add(magnetGroup);
 
         insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex);
 
-        notifyMagnetInsertedIntoGroup(magnet, magnetGroup);
+        notifyMagnetCreatedIntoGroup(magnet, magnetGroup);
     }
 
     @Override
     public void undo() {
-        // TODO: LSM: Remove file
-
         // Remove magnet from group
         removeMagnetFromGroup(magnet, magnetGroup);
 
@@ -59,6 +73,6 @@ public class MagnetCreate extends MagnetAction {
         if (magnetGroup.getMagnets().size() == 0)
             mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
 
-        notifyMagnetRemovedFromGroup(magnet, magnetGroup);
+        notifyMagnetDeletedFromGroup(magnet, magnetGroup);
     }
 }
