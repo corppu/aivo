@@ -20,10 +20,14 @@ import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
-import com.aivo.hyperion.aivo.views.MindmapFragment;
+import com.aivo.hyperion.aivo.views.mindmap.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
 
+import java.util.Random;
+
 public class MainActivity extends AppCompatActivity implements ModelListener {
+    static private Random sRandom = new Random();
+    public static Random getRandom() { return sRandom; }
 
     private static Context sTheContext;
     public static Context getContext() {
