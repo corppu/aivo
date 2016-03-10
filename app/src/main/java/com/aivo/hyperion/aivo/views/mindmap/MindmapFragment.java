@@ -1,4 +1,4 @@
-package com.aivo.hyperion.aivo.views;
+package com.aivo.hyperion.aivo.views.mindmap;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,7 +17,6 @@ import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
-import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 
 /**
@@ -35,7 +34,7 @@ public class MindmapFragment extends Fragment implements ModelListener {
     private OnMindmapFragmentInteractionListener mListener;
 
     private Mindmap mMindmap;
-    private MindmapPresenter mPresenter;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -97,20 +96,11 @@ public class MindmapFragment extends Fragment implements ModelListener {
     @Override
     public void onPause() {
         super.onPause();
-        mPresenter.pause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        if (!(mPresenter != null)) {
-            mPresenter = new MindmapPresenter();
-            mPresenter.setView((SurfaceView) getActivity().findViewById(R.id.surfaceView));
-            mPresenter.setModel(mMindmap);
-        }
-
-        mPresenter.resume();
     }
 
     @Override
@@ -125,8 +115,6 @@ public class MindmapFragment extends Fragment implements ModelListener {
     @Override
     public void onMindmapOpen(Mindmap mindmap) {
         Log.d(TAG, "onMindmapOpen " + mindmap.toString());
-        if (mPresenter != null) mPresenter.setModel(mindmap);
-        else mMindmap = mindmap;
     }
 
     @Override
@@ -146,7 +134,6 @@ public class MindmapFragment extends Fragment implements ModelListener {
     @Override
     public void onMindmapClosed() {
         Log.d(TAG, "onMindmapClosed");
-        mPresenter.setModel(null);
     }
 
     @Override
@@ -191,21 +178,6 @@ public class MindmapFragment extends Fragment implements ModelListener {
 
     @Override
     public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
-
-    }
-
-    @Override
-    public void onNoteCreate(Note note) {
-
-    }
-
-    @Override
-    public void onNoteChange(Note note) {
-
-    }
-
-    @Override
-    public void onNoteDelete(Note note) {
 
     }
 

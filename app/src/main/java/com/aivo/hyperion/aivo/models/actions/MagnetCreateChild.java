@@ -43,8 +43,8 @@ public class MagnetCreateChild extends MagnetAction {
 
         for (ModelListener listener : mediator.getListeners()) {
             listener.onMagnetCreate(magnet);
-            listener.onLineCreate(line);
             listener.onMagnetGroupCreate(magnetGroup);
+            listener.onLineCreate(line);
             listener.onMagnetGroupChange(parentMagnetGroup);
         }
     }
