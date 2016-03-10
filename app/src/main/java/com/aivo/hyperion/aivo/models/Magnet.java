@@ -5,6 +5,7 @@ import android.graphics.PointF;
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.MagnetChangeData;
 import com.aivo.hyperion.aivo.models.actions.MagnetDelete;
+import com.aivo.hyperion.aivo.models.actions.MagnetGroupMove;
 import com.aivo.hyperion.aivo.models.actions.MagnetMove;
 
 public class Magnet extends Note {
@@ -53,7 +54,13 @@ public class Magnet extends Note {
     }
 
     public void actionMoveTo(PointF newPoint) {
-        Action action = new MagnetMove(mediator, this, newPoint);
+        Action action;
+        if (getMagnetGroup().getMagnets().size() == 1 &&
+                getMagnetGroup().getMagnets().get(0).size() == 1)
+            action = new MagnetGroupMove(mediator, getMagnetGroup(), newPoint);
+        else
+            action = new MagnetMove(mediator, this, newPoint);
+        
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
