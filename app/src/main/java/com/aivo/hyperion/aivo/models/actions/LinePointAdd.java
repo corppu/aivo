@@ -6,8 +6,6 @@ import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 
-import java.util.List;
-
 public class LinePointAdd extends Action {
 
     private Line line;

@@ -7,9 +7,6 @@ import com.aivo.hyperion.aivo.models.ModelListener;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by MicroLoota on 11.2.2016.
- */
 public abstract class MagnetAction extends Action {
 
 

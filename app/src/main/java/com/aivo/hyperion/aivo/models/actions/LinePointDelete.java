@@ -6,11 +6,6 @@ import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 
-import java.util.List;
-
-/**
- * Created by MicroLoota on 10.3.2016.
- */
 public class LinePointDelete extends Action {
 
     private Line line;
