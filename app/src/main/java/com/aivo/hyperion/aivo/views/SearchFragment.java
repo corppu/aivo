@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import com.aivo.hyperion.aivo.R;
@@ -31,8 +32,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements V
     private CheckBox fileSearchChckBtn;
     private Button searchBtn;
     private EditText searchTextArea;
-
-    //private View search_bar;
 
     private OnFragmentInteractionListener mListener;
 
@@ -60,16 +59,31 @@ public class SearchFragment extends android.support.v4.app.Fragment implements V
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
 
-        View searchFragmentView = inflater.inflate(R.layout.fragment_main_menu, container,false);
+        View searchFragmentView = inflater.inflate(R.layout.fragment_search, container,false);
 
         imageSearchChckBtn = (CheckBox) searchFragmentView.findViewById(R.id.imageCheckBox);
-        imageSearchChckBtn.setOnClickListener(this);
+        imageSearchChckBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //TODO: image search
+            }
+        });
 
         videoSearchChckBtn = (CheckBox) searchFragmentView.findViewById(R.id.videoCheckBox);
-        videoSearchChckBtn.setOnClickListener(this);
+        videoSearchChckBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //TODO: video search
+            }
+        });
 
         fileSearchChckBtn = (CheckBox) searchFragmentView.findViewById(R.id.fileCheckBox);
-        fileSearchChckBtn.setOnClickListener(this);
+        fileSearchChckBtn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                //TODO: file search
+            }
+        });
 
         searchBtn = (Button) searchFragmentView.findViewById(R.id.searchButton2);
         searchBtn.setOnClickListener(this);
@@ -127,30 +141,6 @@ public class SearchFragment extends android.support.v4.app.Fragment implements V
     @Override
     public void onClick(View view) {
 
-//                switch (view.getId()) {
-//                    case R.id.searchButton2:
-//                        FragmentManager fm = getFragmentManager();
-//                        FragmentTransaction ft = fm.beginTransaction();
-//                        ft.replace(R.id.search_bar, new SearchFragment(mListener), "fragment_screen");
-//                        ft.commit();
-//                        break;
-//                }
-//
-//        };
-
     }
-
-//        private void onSearchClick(View view) {
-//        if(view.isSelected()) {
-//            showSearchMenu();
-//        }
-//        view.setSelected(!view.isSelected());
-//    }
-//
-//        private void showSearchMenu() {
-//        search_bar.setVisibility(View.VISIBLE);
-//    }
-
-
-    }
+}
 

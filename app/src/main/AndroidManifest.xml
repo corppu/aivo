@@ -21,8 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".views.FloatingSearchMenu"> </service>
-        <!--<service android:name=".views.SearchFragment"> </service>-->
     </application>
 
 </manifest>

@@ -19,7 +19,6 @@ import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
-import com.aivo.hyperion.aivo.views.FloatingSearchMenu;
 import com.aivo.hyperion.aivo.views.SearchFragment;
 
 import static com.aivo.hyperion.aivo.R.id.contentAreaParent;
@@ -48,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     Button searchButton;
     Boolean isSideNoteVisible = false;
     Boolean isMainMenuVisible = true;
-    Boolean isSearchPanelVisible = true;
+    Boolean isSearchPanelVisible = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 //        fragmentManager.beginTransaction().replace(R.id.contentArea, new NoteFragment()).commit();
         fragmentManager.beginTransaction().add(contentAreaParent, new MainMenuFragment()).commit();
         fragmentManager.beginTransaction().add(contentAreaParent, new SearchFragment()).commit();
-
 
         sideBtn =(Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
@@ -102,10 +100,10 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
                 LinearLayout mainMenuPanel = (LinearLayout) findViewById(R.id.main_menu);
                 // animate the main menu panel
                 if (isMainMenuVisible) {
-                    mainMenuPanel.animate().translationY(-mainMenuPanel.getHeight());
+                    mainMenuPanel.animate().translationX(-mainMenuPanel.getWidth());
                     isMainMenuVisible = false;
                 } else {
-                    mainMenuPanel.animate().translationY(0);
+                    mainMenuPanel.animate().translationX(0);
                     isMainMenuVisible = true;
                 }
             }
@@ -114,12 +112,12 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         searchButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 LinearLayout searchMenuPanel = (LinearLayout)findViewById(R.id.search_bar);
-                //getSupportFragmentManager().beginTransaction().replace(R.id.contentAreaParent,mSearchFragment).commit();
+
                 if (isSearchPanelVisible) {
-                    searchMenuPanel.animate().translationX(-searchMenuPanel.getWidth());
+                    searchMenuPanel.animate().translationY(-searchMenuPanel.getHeight());
                     isSearchPanelVisible = false;
                 } else {
-                    searchMenuPanel.animate().translationX(0);
+                    searchMenuPanel.animate().translationY(0);
                     isSearchPanelVisible = true;
                 }
             }
@@ -172,8 +170,6 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         mMindmapFragment.onMindmapClosed();
         getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, new NoteFragment());
     }
-
-
 
     @Override
     public void onException(Exception e) {

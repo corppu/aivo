@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:weightSum="1"
     android:id="@+id/search_bar"
-    android:clickable="true">
+    android:clickable="true"
+    android:baselineAligned="false"
+    android:contextClickable="true"
+    android:visibility="gone">
 
     <RelativeLayout
         android:layout_width="388dp"
@@ -12,66 +17,122 @@
         android:background="#336094"
         android:fadingEdge="horizontal"
         android:fadingEdgeLength="5dp"
-        android:layout_weight="0.02">
+        android:layout_weight="0.02"
+        android:layout_gravity="center_horizontal"
+        android:paddingLeft="6dp">
 
         <EditText
             android:layout_width="350dp"
             android:layout_height="35dp"
             android:id="@+id/editText"
             android:text="Java"
-            android:background="#DFF2FF"
-            android:layout_above="@+id/videoCheckBox"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:background="@drawable/edittext_rounded"
             android:layout_toLeftOf="@+id/searchButton2"
-            android:layout_toStartOf="@+id/searchButton2"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp" />
+            android:paddingLeft="10dp"
+            android:enabled="true"
+            android:editable="true"
+            android:layout_alignBottom="@+id/searchButton2"
+            android:layout_alignTop="@+id/searchButton2"
+            android:clickable="true" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:text="Search"
             android:id="@+id/searchButton2"
-            android:layout_centerVertical="true"
+            android:textColor="#FFFFFF"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_above="@+id/fileCheckBox"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
-            android:textColor="#FFFFFF"
-            style="?android:attr/borderlessButtonStyle" />
+            android:enabled="true"
+            android:clickable="true" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Video"
             android:id="@+id/videoCheckBox"
+            android:checked="false"
+            android:button="@drawable/checkbox"
+            android:clickable="true"
+            android:enabled="true"
+            android:backgroundTint="#DFF2FF"
+            android:layout_marginLeft="86dp"
+            android:layout_marginStart="86dp"
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/imageCheckBox"
             android:layout_toEndOf="@+id/imageCheckBox"
-            android:textColor="#FFFFFF"
-            android:checked="false" />
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="7dp"
+            android:layout_marginRight="7dp"
+            android:paddingRight="7dp" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Image"
             android:id="@+id/imageCheckBox"
-            android:layout_weight="0.02"
+            android:checked="false"
+            android:button="@drawable/checkbox"
+            android:clickable="true"
+            android:enabled="true"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:textColor="#FFFFFF"
-            android:checked="false" />
+            android:layout_alignLeft="@+id/editText"
+            android:layout_alignStart="@+id/editText"
+            android:layout_marginBottom="7dp"
+            android:layout_marginTop="7dp"
+            android:paddingRight="7dp" />
 
         <CheckBox
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="File"
             android:id="@+id/fileCheckBox"
+            android:checked="false"
+            android:button="@drawable/checkbox"
+            android:clickable="true"
+            android:enabled="true"
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@+id/videoCheckBox"
             android:layout_toEndOf="@+id/videoCheckBox"
+            android:layout_marginLeft="86dp"
+            android:layout_marginStart="86dp"
+            android:layout_marginTop="7dp"
+            android:layout_marginBottom="7dp"
+            android:paddingRight="7dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Image"
+            android:id="@+id/textView"
             android:textColor="#FFFFFF"
-            android:checked="false" />
+            android:layout_alignBottom="@+id/imageCheckBox"
+            android:layout_toRightOf="@+id/imageCheckBox"
+            android:layout_toEndOf="@+id/imageCheckBox"
+            android:layout_marginBottom="1dp"
+            android:phoneNumber="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Video"
+            android:id="@+id/textView2"
+            android:layout_toEndOf="@+id/videoCheckBox"
+            android:textColor="#FFFFFF"
+            android:layout_alignBottom="@+id/videoCheckBox"
+            android:layout_marginBottom="1dp"
+            android:layout_alignBaseline="@+id/textView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="File"
+            android:id="@+id/textView3"
+            android:textColor="#FFFFFF"
+            android:layout_toEndOf="@+id/fileCheckBox"
+            android:layout_alignBaseline="@+id/textView" />
 
     </RelativeLayout>
 
