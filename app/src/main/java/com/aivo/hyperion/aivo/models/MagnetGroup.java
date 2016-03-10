@@ -83,6 +83,13 @@ public class MagnetGroup {
         }
     }
 
+    public int getMagnetCount() {
+        int count = 0;
+        for (List<Magnet> magnetRow : magnets)
+            count += magnetRow.size();
+        return count;
+    }
+
     // Should only be called from line, when creating a mindmap from json!
     protected void addLine(Line line) {
         lines.add(line);

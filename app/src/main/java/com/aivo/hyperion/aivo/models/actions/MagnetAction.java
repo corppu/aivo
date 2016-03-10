@@ -28,7 +28,7 @@ public abstract class MagnetAction extends Action {
             magnetRow.add(colIndex, magnet);
 
         // Check if the magnetGroup was "resurrected", and if so re-add it and its lines to model
-        if (magnetGroup.getMagnets().size() == 1 && magnetGroup.getMagnets().get(0).size() == 1) {
+        if (magnetGroup.getMagnetCount() == 1) {
             mediator.getMindmap().getMagnetGroups().add(magnetGroup);
             for (Line line : magnetGroup.getLines()) {
                 mediator.getMindmap().getLines().add(line);
@@ -52,7 +52,7 @@ public abstract class MagnetAction extends Action {
             throw new InternalError("Tried to remove magnet from a group it wasn't inside in!");
 
         // Remove group and associated lines, if group becomes empty
-        if (magnetGroup.getMagnets().size() == 0) {
+        if (magnetGroup.getMagnetCount() == 0) {
             mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
             for (Line line : magnetGroup.getLines()) {
                 mediator.getMindmap().getLines().remove(line);
@@ -68,7 +68,7 @@ public abstract class MagnetAction extends Action {
         for (ModelListener listener : mediator.getListeners()) {
             listener.onMagnetCreate(magnet);
             // Handle "resurrection" of a group, if necessary
-            if (magnetGroup.getMagnets().size() == 1) {
+            if (magnetGroup.getMagnetCount() == 1) {
                 for (Line line : magnetGroup.getLines())
                     listener.onLineCreate(line);
                 listener.onMagnetGroupCreate(magnetGroup);
@@ -82,7 +82,7 @@ public abstract class MagnetAction extends Action {
         for (ModelListener listener : mediator.getListeners()) {
             listener.onMagnetDelete(magnet);
             // handle removal of a group, if necessary
-            if (magnetGroup.getMagnets().size() == 0) {
+            if (magnetGroup.getMagnetCount() == 0) {
                 for (Line line : magnetGroup.getLines())
                     listener.onLineDelete(line);
                 listener.onMagnetGroupDelete(magnetGroup);
@@ -96,7 +96,7 @@ public abstract class MagnetAction extends Action {
         for (ModelListener listener : mediator.getListeners()) {
 
             // Handle "resurrection" of a group, if necessary
-            if (magnetGroupNew.getMagnets().size() == 1) {
+            if (magnetGroupNew.getMagnetCount() == 1) {
                 for (Line line : magnetGroupNew.getLines())
                     listener.onLineCreate(line);
                 listener.onMagnetGroupCreate(magnetGroupNew);
@@ -107,7 +107,7 @@ public abstract class MagnetAction extends Action {
             listener.onMagnetChange(magnet);
 
             // Handle removal of a group, if necessary
-            if (magnetGroupOld.getMagnets().size() == 0) {
+            if (magnetGroupOld.getMagnetCount() == 1) {
                 for (Line line : magnetGroupOld.getLines())
                     listener.onLineDelete(line);
                 listener.onMagnetGroupDelete(magnetGroupOld);
