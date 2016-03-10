@@ -67,7 +67,7 @@ public class MagnetGroup {
     }
 
     public void actionMoveTo(PointF newPoint) {
-        Action action = new MagnetGroupMove(this, newPoint);
+        Action action = new MagnetGroupMove(mediator, this, newPoint);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
