@@ -2,6 +2,7 @@ package com.aivo.hyperion.aivo.models.actions;
 
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.ModelListener;
+import com.aivo.hyperion.aivo.models.ModelMediator;
 
 public class MagnetChangeData extends Action {
 
@@ -13,7 +14,9 @@ public class MagnetChangeData extends Action {
     private int colorNew;
     private int colorOld;
 
-    public MagnetChangeData(Magnet magnet, String titleNew, String contentNew, final int colorNew) {
+    public MagnetChangeData(ModelMediator mediator, Magnet magnet, String titleNew, String contentNew, final int colorNew) {
+        setMediator(mediator);
+
         this.magnet = magnet;
 
         this.titleNew = titleNew;

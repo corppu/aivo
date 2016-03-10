@@ -2,6 +2,7 @@ package com.aivo.hyperion.aivo.models.actions;
 
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.ModelListener;
+import com.aivo.hyperion.aivo.models.ModelMediator;
 
 public class LineChangeData extends Action {
 
@@ -11,7 +12,9 @@ public class LineChangeData extends Action {
     private int thicknessNew;
     private int thicknessOld;
 
-    public LineChangeData(Line line, final int typeNew, final int thicknessNew) {
+    public LineChangeData(ModelMediator mediator, Line line, final int typeNew, final int thicknessNew) {
+        setMediator(mediator);
+
         this.line = line;
 
         this.typeNew = typeNew;

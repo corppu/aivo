@@ -14,7 +14,7 @@ public abstract class MagnetAction extends Action {
 
 
     protected void insertMagnetIntoGroup(Magnet magnet, MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
-        List<List< Magnet >> magnetRows = magnetGroup.getMagnets();
+        final List<List< Magnet >> magnetRows = magnetGroup.getMagnets();
         List< Magnet > magnetRow;
 
         // Find the magnet row to add the magnet to

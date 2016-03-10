@@ -33,17 +33,17 @@ public class Magnet extends Note {
     }
 
     public void actionChangeData(String newTitle) {
-        Action action = new MagnetChangeData(this, newTitle, content, color);
+        Action action = new MagnetChangeData(mediator, this, newTitle, content, color);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
     public void actionChangeData(String newTitle, String newContent) {
-        Action action = new MagnetChangeData(this, newTitle, newContent, color);
+        Action action = new MagnetChangeData(mediator, this, newTitle, newContent, color);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
     public void actionChangeColor(final int newColor) {
-        Action action = new MagnetChangeData(this, title, content, newColor);
+        Action action = new MagnetChangeData(mediator, this, title, content, newColor);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 

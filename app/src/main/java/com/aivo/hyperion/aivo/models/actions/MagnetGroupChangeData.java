@@ -2,6 +2,7 @@ package com.aivo.hyperion.aivo.models.actions;
 
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelListener;
+import com.aivo.hyperion.aivo.models.ModelMediator;
 
 public class MagnetGroupChangeData extends Action {
 
@@ -9,7 +10,8 @@ public class MagnetGroupChangeData extends Action {
     private String titleNew;
     private String titleOld;
 
-    public MagnetGroupChangeData(MagnetGroup magnetGroup, String titleNew) {
+    public MagnetGroupChangeData(ModelMediator mediator, MagnetGroup magnetGroup, String titleNew) {
+        setMediator(mediator);
         this.magnetGroup = magnetGroup;
         this.titleNew = titleNew;
         this.titleOld = magnetGroup.getTitle();

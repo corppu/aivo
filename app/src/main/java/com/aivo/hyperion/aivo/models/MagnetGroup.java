@@ -62,7 +62,7 @@ public class MagnetGroup {
     }
 
     public void actionChangeData(String newTitle) {
-        Action action = new MagnetGroupChangeData(this, newTitle);
+        Action action = new MagnetGroupChangeData(mediator, this, newTitle);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
