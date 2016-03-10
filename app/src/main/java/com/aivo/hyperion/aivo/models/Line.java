@@ -15,6 +15,7 @@ public class Line {
     private MagnetGroup magnetGroup2;
     private ArrayList<PointF> points;
     private int type;
+    private int color;
     private int thickness;
 
     // The model mediator reference
@@ -36,21 +37,28 @@ public class Line {
     public MagnetGroup getMagnetGroup2() { return magnetGroup2; }
     public ArrayList<PointF> getPoints() { return points; }
     public int getType() { return type; }
+    public int getColor() { return color; }
     public int getThickness() { return thickness; }
 
     // DO NOT USE! Only for LineChangeData action!
-    public void setData(final int newType, final int newThickness) {
+    public void setData(final int newType, final int newColor, final int newThickness) {
         type = newType;
+        color = newColor;
         thickness = newThickness;
     }
 
     public void actionChangeType(final int newType) {
-        Action action = new LineChangeData(this, newType, thickness);
+        Action action = new LineChangeData(this, newType, color, thickness);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+    }
+
+    public void actionChangeColor(final int newColor) {
+        Action action = new LineChangeData(this, type, newColor, thickness);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
     public void actionChangeThickness(final int newThickness) {
-        Action action = new LineChangeData(this, type, newThickness);
+        Action action = new LineChangeData(this, type, color, newThickness);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
