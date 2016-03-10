@@ -55,24 +55,15 @@ public class MagnetCreate extends MagnetAction {
 
     @Override
     public void execute() {
-        // Check if the magnetgroup was created for this action
-        if (magnetGroup.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().add(magnetGroup);
 
         insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex);
-
         notifyMagnetCreatedIntoGroup(magnet, magnetGroup);
     }
 
     @Override
     public void undo() {
-        // Remove magnet from group
+
         removeMagnetFromGroup(magnet, magnetGroup);
-
-        // Check if the magnetgroup was created for this action
-        if (magnetGroup.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
-
         notifyMagnetDeletedFromGroup(magnet, magnetGroup);
     }
 }

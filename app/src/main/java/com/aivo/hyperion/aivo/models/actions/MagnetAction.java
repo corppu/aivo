@@ -1,5 +1,6 @@
 package com.aivo.hyperion.aivo.models.actions;
 
+import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelListener;
@@ -25,14 +26,42 @@ public abstract class MagnetAction extends Action {
             magnetRow.add(magnet);
         else
             magnetRow.add(colIndex, magnet);
+
+        // Check if the magnetGroup was "resurrected", and if so re-add it and its lines to model
+        if (magnetGroup.getMagnets().size() == 1 && magnetGroup.getMagnets().get(0).size() == 1) {
+            mediator.getMindmap().getMagnetGroups().add(magnetGroup);
+            for (Line line : magnetGroup.getLines()) {
+                mediator.getMindmap().getLines().add(line);
+                if (line.getMagnetGroup1() != magnetGroup)
+                    line.getMagnetGroup1().getLines().add(line);
+                if (line.getMagnetGroup2() != magnetGroup)
+                    line.getMagnetGroup2().getLines().add(line);
+            }
+        }
     }
 
     protected void removeMagnetFromGroup(Magnet magnet, MagnetGroup magnetGroup) {
-
+        boolean found = false;
         for (List< Magnet > magnetRow : magnetGroup.getMagnets())
-            if (magnetRow.remove(magnet))
-                return;
-        throw new InternalError("Tried to remove magnet from a group it wasn't inside in!");
+            if (magnetRow.remove(magnet)) {
+                found = true;
+                break;
+            }
+
+        if (!found)
+            throw new InternalError("Tried to remove magnet from a group it wasn't inside in!");
+
+        // Remove group and associated lines, if group becomes empty
+        if (magnetGroup.getMagnets().size() == 0) {
+            mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
+            for (Line line : magnetGroup.getLines()) {
+                mediator.getMindmap().getLines().remove(line);
+                if (line.getMagnetGroup1() != magnetGroup)
+                    line.getMagnetGroup1().getLines().remove(line);
+                if (line.getMagnetGroup2() != magnetGroup)
+                    line.getMagnetGroup2().getLines().remove(line);
+            }
+        }
     }
 
     protected void notifyMagnetCreatedIntoGroup(Magnet magnet, MagnetGroup magnetGroup) {

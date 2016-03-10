@@ -2,13 +2,11 @@ package com.aivo.hyperion.aivo.models.actions;
 
 import android.graphics.PointF;
 
+import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 
-/**
- * Created by MicroLoota on 11.2.2016.
- */
 public class MagnetMove extends MagnetAction {
 
     private MagnetGroup magnetGroupNew;
@@ -49,37 +47,17 @@ public class MagnetMove extends MagnetAction {
 
     @Override
     void execute() {
-        // Remove from previous MagnetGroup
+        // Remove from previous MagnetGroup, add to new
         removeMagnetFromGroup(magnet, magnetGroupOld);
-
-        // Check if old group is now empty. If so, remove it
-        if (magnetGroupOld.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().remove(magnetGroupOld);
-
-        // Check if the magnetgroup was created for this action
-        if (magnetGroupNew.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().add(magnetGroupNew);
-
         insertMagnetIntoGroup(magnet, magnetGroupNew, rowIndexNew, colIndexNew);
-
         notifyMagnetMoved(magnet, magnetGroupOld, magnetGroupNew);
     }
 
     @Override
     void undo() {
-        // Remove magnet from group
+        // Remove magnet from new group, add to old
         removeMagnetFromGroup(magnet, magnetGroupNew);
-
-        // Check if the magnetgroup was created for this action
-        if (magnetGroupNew.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().remove(magnetGroupNew);
-
-        // Check if the old group was removed due to emptiness
-        if (magnetGroupOld.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().add(magnetGroupOld);
-
         insertMagnetIntoGroup(magnet, magnetGroupOld, rowIndexOld, colIndexOld);
-
         notifyMagnetMoved(magnet, magnetGroupNew, magnetGroupOld);
     }
 }

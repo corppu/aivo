@@ -4,9 +4,6 @@ import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 
-/**
- * Created by MicroLoota on 25.2.2016.
- */
 public class MagnetDelete extends MagnetAction {
 
     private Magnet magnet;
@@ -25,23 +22,15 @@ public class MagnetDelete extends MagnetAction {
 
     @Override
     void execute() {
+
         removeMagnetFromGroup(magnet, magnetGroup);
-
-        // check if group is now empty
-        if (magnetGroup.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
-
         notifyMagnetDeletedFromGroup(magnet, magnetGroup);
     }
 
     @Override
     void undo() {
-        // check if group was removed
-        if (magnetGroup.getMagnets().size() == 0)
-            mediator.getMindmap().getMagnetGroups().add(magnetGroup);
 
         insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex);
-
         notifyMagnetCreatedIntoGroup(magnet, magnetGroup);
     }
 }
