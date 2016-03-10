@@ -67,8 +67,12 @@ public abstract class MagnetAction extends Action {
     protected void notifyMagnetCreatedIntoGroup(Magnet magnet, MagnetGroup magnetGroup) {
         for (ModelListener listener : mediator.getListeners()) {
             listener.onMagnetCreate(magnet);
-            if (magnetGroup.getMagnets().size() == 1)
+            // Handle "resurrection" of a group, if necessary
+            if (magnetGroup.getMagnets().size() == 1) {
+                for (Line line : magnetGroup.getLines())
+                    listener.onLineCreate(line);
                 listener.onMagnetGroupCreate(magnetGroup);
+            }
             else
                 listener.onMagnetGroupChange(magnetGroup);
         }
@@ -77,8 +81,12 @@ public abstract class MagnetAction extends Action {
     protected void notifyMagnetDeletedFromGroup(Magnet magnet, MagnetGroup magnetGroup) {
         for (ModelListener listener : mediator.getListeners()) {
             listener.onMagnetDelete(magnet);
-            if (magnetGroup.getMagnets().size() == 0)
+            // handle removal of a group, if necessary
+            if (magnetGroup.getMagnets().size() == 0) {
+                for (Line line : magnetGroup.getLines())
+                    listener.onLineDelete(line);
                 listener.onMagnetGroupDelete(magnetGroup);
+            }
             else
                 listener.onMagnetGroupChange(magnetGroup);
         }
@@ -87,15 +95,23 @@ public abstract class MagnetAction extends Action {
     protected void notifyMagnetMoved(Magnet magnet, MagnetGroup magnetGroupOld, MagnetGroup magnetGroupNew) {
         for (ModelListener listener : mediator.getListeners()) {
 
-            if (magnetGroupNew.getMagnets().size() == 1)
+            // Handle "resurrection" of a group, if necessary
+            if (magnetGroupNew.getMagnets().size() == 1) {
+                for (Line line : magnetGroupNew.getLines())
+                    listener.onLineCreate(line);
                 listener.onMagnetGroupCreate(magnetGroupNew);
+            }
             else
                 listener.onMagnetGroupChange(magnetGroupNew);
 
             listener.onMagnetChange(magnet);
 
-            if (magnetGroupOld.getMagnets().size() == 0)
+            // Handle removal of a group, if necessary
+            if (magnetGroupOld.getMagnets().size() == 0) {
+                for (Line line : magnetGroupOld.getLines())
+                    listener.onLineDelete(line);
                 listener.onMagnetGroupDelete(magnetGroupOld);
+            }
             else
                 listener.onMagnetGroupChange(magnetGroupOld);
         }
