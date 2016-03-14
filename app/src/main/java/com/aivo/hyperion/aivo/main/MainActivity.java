@@ -1,7 +1,10 @@
 package com.aivo.hyperion.aivo.main;
 
 import android.app.Activity;
-import android.app.FragmentTransaction;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         return sModelMediator;
     }
 
-    FragmentManager fragmentManager;
+    FragmentTransaction fragmentTransaction;
     Button sideBtn;
     Button mainMenuButton;
     Boolean isSideNoteVisible = false;
@@ -56,11 +59,14 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fragmentManager = getSupportFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.contentArea, new NoteFragment()).commit();
-        fragmentManager.beginTransaction().add(R.id.contentAreaParent, new MainMenuFragment()).commit();
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.contentAreaParent, new MainMenuFragment()).commit();
 
-        sideBtn =(Button)findViewById(R.id.side_note_button);
+        NoteFragment noteFragment = new NoteFragment();
+        noteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
+        noteFragment.show(getFragmentManager(), "noteDialogFragment");
+
+        sideBtn = (Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
         setButtonsOnClickListeners();
 
@@ -140,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     @Override
     public void onMindmapClosed() {
         mMindmapFragment.onMindmapClosed();
-        getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, new NoteFragment());
+//        getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, new NoteFragment());
     }
 
     @Override
