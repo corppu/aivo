@@ -4,6 +4,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.aivo.hyperion.aivo.main.MainActivity;
 import com.aivo.hyperion.aivo.models.Line;
@@ -24,6 +25,9 @@ public class LineViewModel {
     private int mColor = 0;
     private PointF middlePointF = new PointF(0,0);
 
+    public void refresh() {
+        Log.d("ASD", mLine.getPoints().toString());
+    }
 
     public Line getLine() {
         return mLine;
@@ -41,6 +45,17 @@ public class LineViewModel {
         mLine = null;
         mIsGhost = true;
         mIsSelected = true;
+
+        middlePointF = new PointF();
+        middlePointF.set(
+                (mParentMagnetGroupViewModel.getCenterX() + mChildMagnetGroupViewModel.getCenterX()) / 2.0f,
+                (mParentMagnetGroupViewModel.getCenterY() + mChildMagnetGroupViewModel.getCenterY()) / 2.0f
+        );
+
+        int r = MainActivity.getRandom().nextInt(255);
+        int g = MainActivity.getRandom().nextInt(255);
+        int b = MainActivity.getRandom().nextInt(255);
+        mColor = Color.argb(255, r, g, b);
     }
 
     public LineViewModel(Line line, Map<MagnetGroup, MagnetGroupViewModel> magnetMagnetGroupViewModelMap) {
@@ -50,6 +65,7 @@ public class LineViewModel {
         mIsGhost = false;
         mIsSelected = false;
 
+        middlePointF = new PointF();
         middlePointF.set(
                 (mParentMagnetGroupViewModel.getCenterX() + mChildMagnetGroupViewModel.getCenterX()) / 2.0f,
                 (mParentMagnetGroupViewModel.getCenterY() + mChildMagnetGroupViewModel.getCenterY()) / 2.0f

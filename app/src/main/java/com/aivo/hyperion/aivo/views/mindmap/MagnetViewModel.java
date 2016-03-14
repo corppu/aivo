@@ -20,6 +20,13 @@ import java.util.ArrayList;
  * Created by corppu on 23.2.2016.
  */
 public class MagnetViewModel {
+    public void refresh() {
+        mColor = mMagnet.getColor();
+        mTitle = mMagnet.getTitle();
+        mHasImage = mMagnet.hasImage();
+        mHasVideo = mMagnet.hasVideo();
+    }
+
     // Retrieve view constants from dimensions.xml
     private Context mContext;
 
@@ -38,6 +45,9 @@ public class MagnetViewModel {
     private boolean mHasVideo;
     private Magnet mMagnet;
 
+    public Magnet getModel() {
+        return mMagnet;
+    }
 
     public MagnetViewModel() {
         mIsGhost = true;
@@ -60,11 +70,14 @@ public class MagnetViewModel {
     }
 
 
-    public void setCenterPointF(PointF centerPointF) {
-        this.mCenterPointF = new PointF(centerPointF.x, centerPointF.y);
+    public void setTopLeftPointF(PointF topLeftPointF) {
+
+        this.mCenterPointF = new PointF(
+                topLeftPointF.x + HALF_WIDTH + HIGHLIGHT_BORDER_SIZE,
+                topLeftPointF.y + HALF_HEIGHT + HIGHLIGHT_BORDER_SIZE);
         mOuterRectF = new RectF(
-                centerPointF.x - HALF_WIDTH - HIGHLIGHT_BORDER_SIZE, centerPointF.y - HALF_HEIGHT - HIGHLIGHT_BORDER_SIZE,
-                centerPointF.x + HALF_WIDTH + HIGHLIGHT_BORDER_SIZE, centerPointF.y + HALF_HEIGHT + HIGHLIGHT_BORDER_SIZE);
+                mCenterPointF.x - HALF_WIDTH - HIGHLIGHT_BORDER_SIZE, mCenterPointF.y - HALF_HEIGHT - HIGHLIGHT_BORDER_SIZE,
+                mCenterPointF.x + HALF_WIDTH + HIGHLIGHT_BORDER_SIZE, mCenterPointF.y + HALF_HEIGHT + HIGHLIGHT_BORDER_SIZE);
 
 
         mBottomIconCenterPointF = new PointF(mCenterPointF.x, mCenterPointF.y + HALF_HEIGHT);
@@ -112,8 +125,8 @@ public class MagnetViewModel {
     static public final String TITLE = "Preview";
     static public final int INDICATOR_ICON_SIZE = HIGHLIGHT_BORDER_SIZE;
     static public final int GHOST_ALPHA = 120;
-    static public final int OUTER_HALF_WIDTH_WITH_INDICATOR_SIZE = HALF_WIDTH + BORDER_SIZE + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
-    static public final int OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE = HALF_HEIGHT + BORDER_SIZE + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
+    static public final int OUTER_HALF_WIDTH_WITH_INDICATOR_SIZE = HALF_WIDTH + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
+    static public final int OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE = HALF_HEIGHT + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
 
 
     public float getCenterX() {

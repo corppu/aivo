@@ -2,18 +2,15 @@ package com.aivo.hyperion.aivo.views.mindmap;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 
-import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
-import com.aivo.hyperion.aivo.models.Mindmap;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,8 +34,44 @@ public class MagnetGroupViewModel {
     // From model
     private MagnetGroup mMagnetGroup;
     private String mTitle;
-    private PointF mCenterPointF;
 
+    public MagnetViewModel getMagnetViewModel(int row, int column) {
+        return magnetViewModels.get(row).get(column);
+    }
+
+    public void refresh() {
+        mTitle = mMagnetGroup.getTitle();
+        magnetViewModels = new ArrayList<>();
+        mOuterRectF = new RectF(mMagnetGroup.getPoint().x, mMagnetGroup.getPoint().y, 0,0);
+        mSize = 0;
+
+        if (mMagnetGroup.getMagnets().size() == 1 && mMagnetGroup.getMagnets().get(0).size() == 1) {
+            magnetViewModels.add(new ArrayList<MagnetViewModel>());
+            magnetViewModels.get(0).add(new MagnetViewModel(mMagnetGroup.getMagnets().get(0).get(0)));
+            magnetViewModels.get(0).get(0).setTopLeftPointF(mMagnetGroup.getPoint());
+            magnetViewModels.get(0).get(0).getOuterRectF(mOuterRectF);
+            mSize = 1;
+        }
+        else {
+            PointF pointF = new PointF(mOuterRectF.left, mOuterRectF.top);
+            for (List<Magnet> magnets : mMagnetGroup.getMagnets()) {
+                ArrayList<MagnetViewModel> magnetViewModelList = new ArrayList<>();
+                for (Magnet magnet : magnets) {
+                    MagnetViewModel magnetViewModel = mMagnetMagnetViewModelMap.get(magnet);
+                    magnetViewModel.setTopLeftPointF(pointF);
+                    magnetViewModelList.add(magnetViewModel);
+                    pointF.x += MagnetViewModel.OUTER_HALF_WIDTH_WITH_INDICATOR_SIZE * 2;
+                    if (mOuterRectF.right < pointF.x) mOuterRectF.right = pointF.x;
+                    ++mSize;
+                    Log.d("MagnetGroupViewModel", "New magnet added to group" + pointF.toString());
+                }
+                magnetViewModels.add(magnetViewModelList);
+                pointF.y += MagnetViewModel.OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE * 2;
+                mOuterRectF.bottom = pointF.y;
+                pointF.x = mOuterRectF.left;
+            }
+        }
+    }
 
     // For view-model:
     static private final int maxRowSize = 5;
@@ -49,14 +82,21 @@ public class MagnetGroupViewModel {
     private RectF mOuterRectF;
     private ArrayList<ArrayList<MagnetViewModel>> magnetViewModels;
 
+    public float halfWidth() {
+        return mOuterRectF.centerX() - mOuterRectF.left;
+    }
+
+    public float halfHeight() {
+        return mOuterRectF.bottom - mOuterRectF.centerY();
+    }
+
     public MagnetGroupViewModel(float x, float y) {
         mMagnetMagnetViewModelMap = null;
 
         this.magnetViewModels = new ArrayList<>();
         ArrayList<MagnetViewModel> magnetViewModels = new ArrayList<>();
         MagnetViewModel magnetViewModel = new MagnetViewModel();
-        this.mCenterPointF = new PointF(x,y);
-        magnetViewModel.setCenterPointF(mCenterPointF);
+        magnetViewModel.setTopLeftPointF(new PointF(x, y));
         magnetViewModels.add(magnetViewModel);
         this.magnetViewModels.add(magnetViewModels);
         mOuterRectF = new RectF();
@@ -68,39 +108,8 @@ public class MagnetGroupViewModel {
     // Build from model:
     public MagnetGroupViewModel(MagnetGroup magnetGroup, final Map<Magnet, MagnetViewModel> magnetMagnetViewModelMap) {
         mMagnetGroup = magnetGroup;
-        mTitle = magnetGroup.getTitle();
-        mCenterPointF = magnetGroup.getPoint();
         mMagnetMagnetViewModelMap = magnetMagnetViewModelMap;
-        magnetViewModels = new ArrayList<>();
-        mOuterRectF = new RectF();
-
-        mSize = 0;
-/*
-        float left = mCenterPointF.x - MagnetViewModel.OUTER_HALF_WIDTH_WITH_INDICATOR_SIZE * maxRowSize;
-        float top = mCenterPointF.y - MagnetViewModel.OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE * maxRowCount;
-        PointF pointF = new PointF(
-                left + MagnetViewModel.HIGHLIGHT_BORDER_SIZE + MagnetViewModel.BORDER_SIZE + MagnetViewModel.HALF_WIDTH,
-                top + MagnetViewModel.HIGHLIGHT_BORDER_SIZE + MagnetViewModel.BORDER_SIZE + MagnetViewModel.HALF_HEIGHT);
-        for (List<Magnet> magnets : magnetGroup.getMagnets()) {
-            ArrayList<MagnetViewModel> magnetViewModelList = new ArrayList<>();
-            for (Magnet magnet : magnets) {
-                MagnetViewModel magnetViewModel = magnetMagnetViewModelMap.get(magnet);
-                magnetViewModel.setCenterPointF(pointF);
-                magnetViewModelList.add(magnetViewModel);
-                pointF.x += MagnetViewModel.OUTER_HALF_WIDTH_WITH_INDICATOR_SIZE;
-                ++mSize;
-            }
-            magnetViewModels.add(magnetViewModelList);
-            pointF.y += MagnetViewModel.OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE;
-            pointF.x = left + MagnetViewModel.HIGHLIGHT_BORDER_SIZE + MagnetViewModel.BORDER_SIZE + MagnetViewModel.HALF_WIDTH;
-        }*/
-
-        Magnet magnet = magnetGroup.getMagnets().get(0).get(0);
-        MagnetViewModel magnetViewModel = magnetMagnetViewModelMap.get(magnet);
-        magnetViewModels.add(new ArrayList<MagnetViewModel>());
-        magnetViewModels.get(0).add(magnetViewModel);
-        magnetViewModel.setCenterPointF(mCenterPointF);
-        magnetViewModel.getOuterRectF(mOuterRectF);
+        refresh();
     }
 
     public void remove(MagnetViewModel magnetViewModelA) {
@@ -115,53 +124,22 @@ public class MagnetGroupViewModel {
         }
     }
 
-//    public MagnetGroupViewModel(MagnetViewModel magnetViewModel, Map<Magnet, MagnetViewModel> mMagnetMagnetViewModelMap) {
-//        this.mMagnetMagnetViewModelMap = mMagnetMagnetViewModelMap;
-//        magnetViewModel.getOuterRectF(mOuterRectF);
-//        magnetViewModel.getCenterPointF(mCenterPointF);
-//
-//        mOuterRectF.top -= MagnetViewModel.HIGHLIGHT_BORDER_SIZE + MagnetViewModel.BORDER_SIZE;
-//        mOuterRectF.left -= MagnetViewModel.HIGHLIGHT_BORDER_SIZE + MagnetViewModel.BORDER_SIZE;
-//        mOuterRectF.bottom += MagnetViewModel.HIGHLIGHT_BORDER_SIZE + MagnetViewModel.BORDER_SIZE;
-//        mOuterRectF.right += MagnetViewModel.HIGHLIGHT_BORDER_SIZE + MagnetViewModel.BORDER_SIZE;
-//        magnetViewModels.add(new ArrayList<MagnetViewModel>());
-//        magnetViewModels.get(0).add(magnetViewModel);
-//    }
-
     public float getCenterX() {
-        return mCenterPointF.x;
+        return mOuterRectF.centerX();
     }
 
     public float getCenterY() {
-        return mCenterPointF.y;
+        return mOuterRectF.centerY();
     }
 
 
     public void getCenterPointF(PointF pointF) {
-        pointF.set(mCenterPointF);
+        pointF.set(mOuterRectF.centerX(), mOuterRectF.centerY());
     }
-
-//    public void pushMagnetViewModel(MagnetViewModel magnetViewModel) {
-//        if (magnetViewModel.getCenterY() < mOuterRectF.bottom - MagnetViewModel.HIGHLIGHT_BORDER_SIZE - MagnetViewModel.BORDER_SIZE) {
-//            ArrayList<MagnetViewModel> magnetViewModels = new ArrayList<>();
-//            magnetViewModels.add(magnetViewModel);
-//            this.magnetViewModels.add(magnetViewModels);
-//            mCenterPointF.y = mOuterRectF.bottom;
-//            mOuterRectF.bottom += MagnetViewModel.HALF_HEIGHT * 2;
-//        }
-//
-//        else {
-//            this.magnetViewModels.get(this.magnetViewModels.size() - 1).add(magnetViewModel);
-//            magnetViewModel.move(mCenterPointF.x, mCenterPointF.y);
-//            magnetViewModel.move(mOuterRectF.right, mCenterPointF.y);
-//            mCenterPointF.x = mOuterRectF.right;
-//            mOuterRectF.right += MagnetViewModel.HALF_WIDTH * 2;
-//        }
-//    }
 
     static public void draw(MagnetGroupViewModel magnetGroupViewModel, Canvas canvas, Paint paint) {
 
-        if (magnetGroupViewModel.magnetViewModels.size() == 1 && magnetGroupViewModel.magnetViewModels.get(0).size() == 1) {
+        if (magnetGroupViewModel.mSize > 1) {
             paint.setColor(MagnetViewModel.HIGHLIGHT_BORDER_COLOR);
             canvas.drawRect(magnetGroupViewModel.mOuterRectF, paint);
 
@@ -172,17 +150,15 @@ public class MagnetGroupViewModel {
 
         for (ArrayList<MagnetViewModel> magnetViewModels : magnetGroupViewModel.magnetViewModels) {
             for (MagnetViewModel magnetViewModel : magnetViewModels) {
-                MagnetViewModel.draw(magnetViewModel,canvas, paint);
+                MagnetViewModel.draw(magnetViewModel, canvas, paint);
             }
         }
     }
 
     public void move(float newTouchPointX, float newTouchPointY) {
-        float distanceX = mCenterPointF.x - newTouchPointX;
-        float distanceY = mCenterPointF.y - newTouchPointY;
+        float distanceX = mOuterRectF.centerX() - newTouchPointX;
+        float distanceY = mOuterRectF.centerY() - newTouchPointY;
 
-        mCenterPointF.x -= distanceX;
-        mCenterPointF.y -= distanceY;
         mOuterRectF.left -= distanceX;
         mOuterRectF.right -= distanceX;
         mOuterRectF.top -= distanceY;

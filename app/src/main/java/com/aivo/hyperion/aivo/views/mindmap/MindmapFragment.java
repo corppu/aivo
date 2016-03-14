@@ -17,6 +17,7 @@ import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
+import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 
 /**
@@ -168,6 +169,21 @@ public class MindmapFragment extends Fragment implements ModelListener {
 
     @Override
     public void onLineDelete(Line line) {
+
+    }
+
+    @Override
+    public void onNoteCreate(Note note) {
+
+    }
+
+    @Override
+    public void onNoteChange(Note note) {
+
+    }
+
+    @Override
+    public void onNoteDelete(Note note) {
 
     }
 
