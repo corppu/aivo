@@ -1,4 +1,4 @@
-package com.aivo.hyperion.aivo.views;
+package com.aivo.hyperion.aivo.views.mindmap;
 
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,8 +12,12 @@ import android.view.ViewGroup;
 
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.main.MainActivity;
+import com.aivo.hyperion.aivo.models.Line;
+import com.aivo.hyperion.aivo.models.Magnet;
+import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
+import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 
 /**
@@ -31,7 +35,7 @@ public class MindmapFragment extends Fragment implements ModelListener {
     private OnMindmapFragmentInteractionListener mListener;
 
     private Mindmap mMindmap;
-    private MindmapPresenter mPresenter;
+
 
     /**
      * Use this factory method to create a new instance of
@@ -93,20 +97,11 @@ public class MindmapFragment extends Fragment implements ModelListener {
     @Override
     public void onPause() {
         super.onPause();
-        mPresenter.pause();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        if (!(mPresenter != null)) {
-            mPresenter = new MindmapPresenter();
-            mPresenter.setView((SurfaceView) getActivity().findViewById(R.id.surfaceView));
-            mPresenter.setModel(mMindmap);
-        }
-
-        mPresenter.resume();
     }
 
     @Override
@@ -115,22 +110,20 @@ public class MindmapFragment extends Fragment implements ModelListener {
     }
 
     @Override
-    public void onUserOpened(User user) {
+    public void onUserOpen(User user) {
     }
 
     @Override
-    public void onMindmapOpened(Mindmap mindmap) {
-        Log.d(TAG, "onMindmapOpened " + mindmap.toString());
-        if (mPresenter != null) mPresenter.setModel(mindmap);
-        else mMindmap = mindmap;
+    public void onMindmapOpen(Mindmap mindmap) {
+        Log.d(TAG, "onMindmapOpen " + mindmap.toString());
     }
 
     @Override
-    public void onUserChanged(User user) {
+    public void onUserChange(User user) {
     }
 
     @Override
-    public void onMindmapChanged(Mindmap mindmap) {
+    public void onMindmapTitleChange(Mindmap mindmap) {
 
     }
 
@@ -142,7 +135,51 @@ public class MindmapFragment extends Fragment implements ModelListener {
     @Override
     public void onMindmapClosed() {
         Log.d(TAG, "onMindmapClosed");
-        mPresenter.setModel(null);
+    }
+
+    @Override
+    public void onMagnetGroupChange(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetCreate(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetChange(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetDelete(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onLineCreate(Line line) {
+
+    }
+
+    @Override
+    public void onLineChange(Line line) {
+
+    }
+
+    @Override
+    public void onLineDelete(Line line) {
+
+    }
+
+    @Override
+    public void onMagnetGroupCreate(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
+
     }
 
     @Override
@@ -165,4 +202,18 @@ public class MindmapFragment extends Fragment implements ModelListener {
         public void onFragmentInteraction(Uri uri);
     }
 
+    @Override
+    public void onNoteDelete(Note note) {
+
+    }
+
+    @Override
+    public void onNoteChange(Note note) {
+
+    }
+
+    @Override
+    public void onNoteCreate(Note note) {
+
+    }
 }

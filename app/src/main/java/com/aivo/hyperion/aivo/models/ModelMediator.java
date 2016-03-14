@@ -1,30 +1,29 @@
 package com.aivo.hyperion.aivo.models;
 
-import com.aivo.hyperion.aivo.models.actions.Action;
-import com.aivo.hyperion.aivo.models.actions.ActionHandler;
 import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ModelMediator {
-    
-    // Create one LSM to be used by all model classes in the package
-    protected LocalStorageModule lsm;
 
     // The current User (null if none opened)
-    protected User user;
+    private User user;
 
     // The currently open Mindmap (null if none opened)
-    protected Mindmap mindmap;
+    private Mindmap mindmap;
+
+    // List of all the notes of the user
+    private ArrayList<Note> notes;
 
     // The registered listeners of this ModelMediator
-    protected ArrayList<ModelListener> listeners;
+    private ArrayList<ModelListener> listeners;
 
     public ModelMediator() {
-        lsm = new LocalStorageModule();
         user = null;
         mindmap = null;
-        listeners = new ArrayList<ModelListener>();
+        notes = new ArrayList<>();
+        listeners = new ArrayList<>();
     }
 
     public void registerListener(ModelListener listener) {
@@ -43,12 +42,12 @@ public class ModelMediator {
 
     public Mindmap getMindmap() { return mindmap; }
 
-    protected void notifyMindmapChanged() {
-        for (ModelListener listener : listeners) listener.onMindmapChanged(mindmap);
-    }
+    public List<Note> getNotes() { return new ArrayList<>(notes); }
+
+    public List<ModelListener> getListeners() { return new ArrayList<>(listeners); }
 
     //----------------------------------------------------------------------------------------------
-    // Public open/close functions for User, Note and Magnet
+    // Public open/close functions for User, Mindmap and Note
 
     /** Create a new User and open it.
      *
@@ -58,7 +57,7 @@ public class ModelMediator {
         if (!closeUser()) return;
 
         user = new User(this);
-        for (ModelListener listener : listeners) listener.onUserOpened(user);
+        for (ModelListener listener : listeners) listener.onUserOpen(user);
     }
 
     /** First saves and closes any opened Note, then Mindmap and finally the User.
@@ -95,14 +94,15 @@ public class ModelMediator {
             throw new InternalError("Tried to create a Mindmap without first opening a User!");
 
         // Check that the title isn't used
-        if (isMindmapTitleUsed(title)) return;
+        if (isMindmapTitleUsed(title))
+            throw new InternalError("Tried to create a Mindmap with a used title!");
 
         // Close any opened Mindmap
         if (!closeMindmap()) return;
 
         // Create the mindmap
         mindmap = new Mindmap(this, title);
-        for (ModelListener listener : listeners) listener.onMindmapOpened(mindmap);
+        for (ModelListener listener : listeners) listener.onMindmapOpen(mindmap);
     }
 
     /** Save and close any open Mindmap.
@@ -126,11 +126,44 @@ public class ModelMediator {
         return true;
     }
 
+    /** Creates a blank new Note.
+     *
+     * @return  the Note created.
+     */
+    public Note createNote() {
+        Note note = new Note(this);
+        notes.add(note);
+        for (ModelListener listener : listeners) listener.onNoteCreate(note);
+        return note;
+    }
+
+    /** Creates a new Note using a Magnet as a reference.
+     *
+     * @return  the Note created.
+     */
+    public Note createNote(Magnet magnetReference) {
+        Note note = new Note(this, magnetReference);
+        notes.add(note);
+        for (ModelListener listener : listeners) listener.onNoteCreate(note);
+        return note;
+    }
+
+    /** Deletes the given Note from the mediator and google drive.
+     *
+     * @param note  the Note to be deleted.
+     */
+    public void deleteNote(Note note) {
+        if (!notes.remove(note))
+            throw new InternalError("Tried to remove a Note that was not found in ModelMediator!");
+        for (ModelListener listener : listeners) listener.onNoteDelete(note);
+    }
+
     public boolean isMindmapTitleUsed(String title) {
         return false;
     }
 
-    public boolean isFavoriteMagnetTitleUsed(String title) {
+    public boolean isNoteTitleUsed(String title) {
         return false;
     }
+
 }
