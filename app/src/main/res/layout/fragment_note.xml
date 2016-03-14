@@ -5,8 +5,8 @@
     android:background="@drawable/shadow"
     android:fadingEdge="horizontal"
     android:fadingEdgeLength="5dp"
-    android:layout_width="332dp"
-    android:layout_height="447dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="match_parent"

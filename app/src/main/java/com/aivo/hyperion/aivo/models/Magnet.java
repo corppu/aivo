@@ -74,7 +74,7 @@ public class Magnet extends Note {
     }
 
     public void actionMoveTo(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
-        Action action = new MagnetMove(mediator, this, magnetGroup, rowIndex, colIndex);
+        Action action = new MagnetMove(mediator, this, newMagnetGroup, rowIndex, colIndex);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 

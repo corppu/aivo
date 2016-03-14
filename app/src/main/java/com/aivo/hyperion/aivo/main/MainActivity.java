@@ -1,16 +1,25 @@
 package com.aivo.hyperion.aivo.main;
 
+import android.app.Activity;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.test.ViewAsserts;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.models.Line;
@@ -29,6 +38,15 @@ import com.aivo.hyperion.aivo.views.SideNoteFragment;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements ModelListener {
+    NoteFragment noteFragment;
+    SideNoteFragment sideNoteFragment;
+    MainMenuFragment mainMenuFragment;
+    Button sideBtn;
+    Button mainMenuButton;
+    Boolean isSideNoteVisible = false;
+    Boolean isMainMenuVisible = true;
+    FrameLayout sidePanel;
+
     static private Random sRandom = new Random();
     public static Random getRandom() { return sRandom; }
 
@@ -47,14 +65,6 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         return sModelMediator;
     }
 
-    FragmentManager fragmentManager;
-    SideNoteFragment sideNoteFragment;
-    Button sideBtn;
-    Button mainMenuButton;
-    Boolean isSideNoteVisible = false;
-    Boolean isMainMenuVisible = true;
-    FrameLayout sidePanel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,16 +72,19 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        sideNoteFragment=new SideNoteFragment();
-        fragmentManager = getSupportFragmentManager();
+        sideNoteFragment = new SideNoteFragment();
+        mainMenuFragment = new MainMenuFragment();
 
-        
-//        fragmentManager.beginTransaction().replace(R.id.contentArea, new NoteFragment()).commit();
-        fragmentManager.beginTransaction().replace(R.id.contentAreaParent, new MainMenuFragment()).commit();
-        fragmentManager.beginTransaction().add(R.id.contentAreaParent, sideNoteFragment).commit();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.add(R.id.contentAreaParent, mainMenuFragment);
+        fragmentTransaction.add(R.id.contentAreaParent, sideNoteFragment);
+        fragmentTransaction.commit();
 
+        noteFragment = new NoteFragment();
+        noteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
+        noteFragment.show(getFragmentManager(), "noteDialogFragment");
 
-        sideBtn =(Button)findViewById(R.id.side_note_button);
+        sideBtn = (Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
         setButtonsOnClickListeners();
 
@@ -79,44 +92,55 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         sModelMediator = new ModelMediator();
         sModelMediator.registerListener(this);
         sModelMediator.createUser();
-
-
-
     }
+
     @Override
     public void onStart(){
         super.onStart();
         sidePanel = (FrameLayout) findViewById(R.id.side_note_fragment);
-       // sidePanel.animate().translationX(sidePanel.getWidth());
-        //sidePanel.setX(sidePanel.getWidth());
-        sidePanel.setVisibility(View.GONE);
 
+        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) sidePanel.getLayoutParams();
+        // make the right margin negative so the view is moved to the right of the screen
+        params.rightMargin = params.rightMargin * -1;
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.remove(sideNoteFragment);
+        fragmentTransaction.remove(mainMenuFragment);
+//        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.commit();
+        noteFragment.dismiss();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        //  fragment transaction cant be here cause it will crash
     }
 
     public void setButtonsOnClickListeners(){
 
-        sideBtn.setOnClickListener(new Button.OnClickListener(){
-            public void onClick(View v){
-               // FrameLayout sidePanel = (FrameLayout) findViewById(R.id.side_note_fragment);
+        sideBtn.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
                 // animate the side bar
-                if (isSideNoteVisible){
+                if (isSideNoteVisible) {
                     // Start the animation
-//                    sidePanel.animate().translationXBy(sidePanel.getWidth());
-                    sidePanel.animate().translationX(sidePanel.getWidth());
+                    // We have to translate to 0 because the view's default starting position is moved out of the screen bounds in onStart() method
+                    sidePanel.animate().translationX(0);
                     isSideNoteVisible = false;
                 } else {
-//                    sidePanel.animate().translationXBy(-120);
                     // Start the animation
-                    sidePanel.setVisibility(View.VISIBLE);
-                    sidePanel.animate().translationX(0);
-
+                    sidePanel.animate().translationX(-sidePanel.getWidth());
                     isSideNoteVisible = true;
                 }
             }
 
         });
 
-        mainMenuButton.setOnClickListener(new Button.OnClickListener(){
+        mainMenuButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 LinearLayout mainMenuPanel = (LinearLayout) findViewById(R.id.main_menu);
                 // animate the main menu panel
@@ -163,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     @Override
     public void onMindmapClosed() {
         mMindmapFragment.onMindmapClosed();
-        getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, new NoteFragment());
+//        getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, new NoteFragment());
     }
 
     @Override
@@ -216,17 +240,6 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
     }
 
-    @Override
-    public void onPause(){
-        super.onPause();
-        fragmentManager.beginTransaction().remove(sideNoteFragment).commitAllowingStateLoss();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-///   fragment trasaction cant be here cause it will crash
-    }
     @Override
     public void onNoteCreate(Note note) {
 
