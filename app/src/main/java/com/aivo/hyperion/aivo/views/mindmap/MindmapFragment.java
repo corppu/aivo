@@ -1,12 +1,12 @@
 package com.aivo.hyperion.aivo.views.mindmap;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -34,26 +34,28 @@ public class MindmapFragment extends Fragment implements ModelListener {
 
     private OnMindmapFragmentInteractionListener mListener;
 
-    private Mindmap mMindmap;
+    private String mMindmapTitle;
 
+    private static final String ARG_MINDMAP_TITLE = "arg_mindmap_title";
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param mindmapTitle Parameter 1.
      * @return A new instance of fragment MindmapFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MindmapFragment newInstance(String param1, String param2) {
+    public static MindmapFragment newInstance(String mindmapTitle) {
         MindmapFragment fragment = new MindmapFragment();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_MINDMAP_TITLE, mindmapTitle);
+
+
         fragment.setArguments(args);
         return fragment;
     }
+
 
     public MindmapFragment() {
         // Required empty public constructor
@@ -63,8 +65,10 @@ public class MindmapFragment extends Fragment implements ModelListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
+            mMindmapTitle = getArguments().getString(ARG_MINDMAP_TITLE);
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+            editor.putString(ARG_MINDMAP_TITLE, mMindmapTitle);
+            editor.commit();
         }
     }
 
@@ -97,11 +101,15 @@ public class MindmapFragment extends Fragment implements ModelListener {
     @Override
     public void onPause() {
         super.onPause();
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+        editor.putString(ARG_MINDMAP_TITLE, mMindmapTitle);
+        editor.commit();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        mMindmapTitle = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).getString(ARG_MINDMAP_TITLE, mMindmapTitle);
     }
 
     @Override
