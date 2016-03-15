@@ -113,7 +113,7 @@ public abstract class MagnetAction extends Action {
             listener.onMagnetChange(magnet);
 
             // Handle removal of a group, if necessary
-            if (magnetGroupOld.getMagnetCount() == 1) {
+            if (magnetGroupOld.getMagnetCount() == 0) {
                 for (Line line : magnetGroupOld.getLines())
                     listener.onLineDelete(line);
                 listener.onMagnetGroupDelete(magnetGroupOld);
