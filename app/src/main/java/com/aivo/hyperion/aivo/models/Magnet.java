@@ -17,6 +17,8 @@ public class Magnet extends Note {
     private int id;
     private MagnetGroup magnetGroup;
 
+    // DO NOT USE! Only to be used by actions.
+    public void setMagnetGroup(MagnetGroup newMagnetGroup) { magnetGroup = newMagnetGroup; }
     public MagnetGroup getMagnetGroup() { return magnetGroup; }
     protected int getId() { return id; }
     
@@ -80,8 +82,7 @@ public class Magnet extends Note {
 
     public void actionMoveTo(PointF newPoint) {
         Action action;
-        if (getMagnetGroup().getMagnets().size() == 1 &&
-                getMagnetGroup().getMagnets().get(0).size() == 1)
+        if (getMagnetGroup().getMagnetCount() == 1)
             action = new MagnetGroupMove(mediator, getMagnetGroup(), newPoint);
         else
             action = new MagnetMove(mediator, this, newPoint);

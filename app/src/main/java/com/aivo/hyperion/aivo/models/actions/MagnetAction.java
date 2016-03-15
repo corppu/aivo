@@ -38,6 +38,9 @@ public abstract class MagnetAction extends Action {
                     line.getMagnetGroup2().getLines().add(line);
             }
         }
+
+        // Add the group reference to the magnet
+        magnet.setMagnetGroup(magnetGroup);
     }
 
     protected void removeMagnetFromGroup(Magnet magnet, MagnetGroup magnetGroup) {
@@ -62,6 +65,9 @@ public abstract class MagnetAction extends Action {
                     line.getMagnetGroup2().getLines().remove(line);
             }
         }
+
+        // Remove the group reference from the magnet
+        magnet.setMagnetGroup(null);
     }
 
     protected void notifyMagnetCreatedIntoGroup(Magnet magnet, MagnetGroup magnetGroup) {
