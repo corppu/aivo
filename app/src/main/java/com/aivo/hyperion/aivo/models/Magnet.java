@@ -20,7 +20,7 @@ public class Magnet extends Note {
     // DO NOT USE! Only to be used by actions.
     public void setMagnetGroup(MagnetGroup newMagnetGroup) { magnetGroup = newMagnetGroup; }
     public MagnetGroup getMagnetGroup() { return magnetGroup; }
-    protected int getId() { return id; }
+    public int getId() { return id; }
     
     private void setMediator(ModelMediator modelMediator_) {
         if (modelMediator_ == null)
@@ -28,10 +28,14 @@ public class Magnet extends Note {
         mediator = modelMediator_;
     }
 
-    public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup) {
+    public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup,
+                  String title, String content, final int color) {
         setMediator(mediator_);
         this.magnetGroup = magnetGroup;
         this.id = mediator.getMindmap().getNextId();
+        this.title = title;
+        this.content = content;
+        this.color = color;
     }
 
     public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup, Note noteReference) {

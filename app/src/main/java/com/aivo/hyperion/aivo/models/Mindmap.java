@@ -89,6 +89,27 @@ public class Mindmap {
     public List<Line> getLines() { return lines; }
     public ActionHandler getActionHandler() { return actionHandler; }
 
+    public MagnetGroup getMagnetGroup(final int id) {
+        for (MagnetGroup magnetGroup : magnetGroups)
+            if (magnetGroup.getId() == id)
+                return magnetGroup;
+        return null;
+    }
+    public Magnet getMagnet(final int id) {
+        for (MagnetGroup magnetGroup : magnetGroups)
+            for (List<Magnet> magnetRow : magnetGroup.getMagnets())
+                for (Magnet magnet : magnetRow)
+                    if (magnet.getId() == id)
+                        return magnet;
+        return null;
+    }
+    public Line getLine(final int id) {
+        for (Line line : lines)
+            if (line.getId() == id)
+                return line;
+        return null;
+    }
+
     /** Change mindmap title through an action.
      *
      * @param newTitle      New title
@@ -105,8 +126,9 @@ public class Mindmap {
      * @param colIndex      Group row position to create magnet into. Shifts elements right.
      *                      If greater than element count in row, magnet is created in the end.
      */
-    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
-        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
+    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex,
+                                   String title, String content, final int color) {
+        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex, title, content, color);
         getActionHandler().executeAction(action);
     }
     public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex, Note noteReference) {
@@ -118,8 +140,8 @@ public class Mindmap {
      *
      * @param pointF        Where a new MagnetGroup is created, to contain the new Magnet.
      */
-    public void actionCreateMagnet(PointF pointF) {
-        Action action = new MagnetCreate(mediator, pointF);
+    public void actionCreateMagnet(PointF pointF, String title, String content, final int color) {
+        Action action = new MagnetCreate(mediator, pointF, title, content, color);
         getActionHandler().executeAction(action);
     }
     public void actionCreateMagnet(PointF pointF, Note noteReference) {
@@ -133,8 +155,9 @@ public class Mindmap {
      * @param parentMagnetGroup Group to connect the new group to
      * @param pointF            Where a new MagnetGroup is created, to contain the new Magnet.
      */
-    public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF) {
-        Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF);
+    public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF,
+                                        String title, String content, final int color) {
+        Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF, title, content, color);
         getActionHandler().executeAction(action);
     }
     public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF, Note noteReference) {

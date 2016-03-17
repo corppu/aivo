@@ -17,11 +17,12 @@ public class MagnetCreateChild extends MagnetAction {
     private Magnet magnet;
     private Line line;
 
-    public MagnetCreateChild(ModelMediator mediator, MagnetGroup parentMagnetGroup, PointF pointF) {
+    public MagnetCreateChild(ModelMediator mediator, MagnetGroup parentMagnetGroup, PointF pointF,
+                             String title, String content, final int color) {
         setMediator(mediator);
         this.parentMagnetGroup = parentMagnetGroup;
         this.magnetGroup = new MagnetGroup(mediator, pointF);
-        this.magnet = new Magnet(mediator, magnetGroup);
+        this.magnet = new Magnet(mediator, magnetGroup, title, content, color);
         this.line = new Line(mediator, this.parentMagnetGroup, this.magnetGroup);
     }
 
