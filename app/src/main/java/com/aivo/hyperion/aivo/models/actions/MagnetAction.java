@@ -101,6 +101,12 @@ public abstract class MagnetAction extends Action {
     protected void notifyMagnetMoved(Magnet magnet, MagnetGroup magnetGroupOld, MagnetGroup magnetGroupNew) {
         for (ModelListener listener : mediator.getListeners()) {
 
+            // Handle movement within a group
+            if (magnetGroupOld == magnetGroupNew) {
+                listener.onMagnetGroupChange(magnetGroupNew);
+                continue;
+            }
+
             // Handle "resurrection" of a group, if necessary
             if (magnetGroupNew.getMagnetCount() == 1) {
                 for (Line line : magnetGroupNew.getLines())

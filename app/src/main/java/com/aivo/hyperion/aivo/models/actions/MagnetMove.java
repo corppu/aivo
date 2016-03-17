@@ -33,8 +33,6 @@ public class MagnetMove extends MagnetAction {
                       final int rowIndexNew, final int colIndexNew) {
         if (rowIndexNew < 0 || colIndexNew < 0)
             throw new InternalError("Tried to create a MagnetMove action with negative row/col indexes!");
-        else if (magnetGroupNew == magnet.getMagnetGroup())
-            throw new InternalError("Tried to move a Magnet to its own MagnetGroup!");
 
         setMediator(mediator);
         this.magnetGroupNew = magnetGroupNew;
