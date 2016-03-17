@@ -6,6 +6,7 @@
     <dimen name="note_width">363dp</dimen>
     <dimen name="note_height">477dp</dimen>
     <dimen name="side_note_width">200dp</dimen>
+    <dimen name="search_height">84dp</dimen>
     <dimen name="canvas_width">3840px</dimen>
     <dimen name="canvas_height">2160px</dimen>
     <dimen name="magnet_button_radius">24px</dimen>

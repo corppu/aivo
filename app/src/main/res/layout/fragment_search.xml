@@ -1,25 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="337dp"
-    android:weightSum="1"
+    android:layout_width="388dp"
+    android:layout_height="@dimen/search_height"
+    android:layout_marginTop="@dimen/search_height"
     android:id="@+id/search_bar"
-    android:clickable="true"
-    android:baselineAligned="false"
-    android:contextClickable="true">
-
-    <RelativeLayout
-        android:layout_width="388dp"
-        android:layout_height="69dp"
-        android:background="#336094"
-        android:fadingEdge="horizontal"
-        android:fadingEdgeLength="5dp"
-        android:layout_weight="0.02"
-        android:layout_gravity="center_horizontal"
-        android:paddingLeft="6dp">
+    android:background="#336094"
+    android:fadingEdge="horizontal"
+    android:fadingEdgeLength="5dp"
+    android:layout_centerHorizontal="true"
+    android:layout_alignParentTop="true"
+    android:paddingLeft="6dp">
 
         <EditText
             android:layout_width="350dp"
@@ -28,9 +19,9 @@
             android:text="Java"
             android:background="@drawable/edittext_rounded"
             android:layout_toLeftOf="@+id/searchButton2"
+            android:layout_toStartOf="@+id/searchButton2"
             android:paddingLeft="10dp"
             android:enabled="true"
-            android:editable="true"
             android:layout_alignBottom="@+id/searchButton2"
             android:layout_alignTop="@+id/searchButton2"
             android:clickable="true" />
@@ -119,6 +110,7 @@
             android:text="Video"
             android:id="@+id/textView2"
             android:layout_toEndOf="@+id/videoCheckBox"
+            android:layout_toRightOf="@+id/videoCheckBox"
             android:textColor="#FFFFFF"
             android:layout_alignBottom="@+id/videoCheckBox"
             android:layout_marginBottom="1dp"
@@ -132,8 +124,8 @@
             android:id="@+id/textView3"
             android:textColor="#FFFFFF"
             android:layout_toEndOf="@+id/fileCheckBox"
+            android:layout_toRightOf="@+id/fileCheckBox"
             android:layout_alignBaseline="@+id/textView" />
 
-    </RelativeLayout>
 
-</LinearLayout>
+</RelativeLayout>

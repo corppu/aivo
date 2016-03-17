@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -39,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     Boolean isSideNoteVisible = false;
     Boolean isMainMenuVisible = true;
     Boolean isSearchPanelVisible = false;
-    FrameLayout sidePanel;
+    RelativeLayout sidePanel;
+    RelativeLayout searchPanel;
 
     static private Random sRandom = new Random();
     public static Random getRandom() { return sRandom; }
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -95,11 +99,16 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     @Override
     public void onStart(){
         super.onStart();
-        sidePanel = (FrameLayout) findViewById(R.id.side_note_fragment);
+        sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
+        searchPanel = (RelativeLayout) findViewById(R.id.search_bar);
 
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) sidePanel.getLayoutParams();
+        RelativeLayout.LayoutParams sidePanelParams = (RelativeLayout.LayoutParams) sidePanel.getLayoutParams();
         // make the right margin negative so the view is moved to the right of the screen
-        params.rightMargin = params.rightMargin * -1;
+        sidePanelParams.rightMargin = sidePanelParams.rightMargin * -1;
+
+        RelativeLayout.LayoutParams searchParams = (RelativeLayout.LayoutParams) searchPanel.getLayoutParams();
+        // make the top margin negative so the view is moved to the top of the screen
+        searchParams.topMargin = searchParams.topMargin * -1;
     }
 
     @Override
@@ -109,7 +118,6 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         fragmentTransaction.remove(sideNoteFragment);
         fragmentTransaction.remove(mainMenuFragment);
         fragmentTransaction.remove(searchFragment);
-//        fragmentTransaction.commitAllowingStateLoss();
         fragmentTransaction.commit();
         noteFragment.dismiss();
     }
@@ -127,12 +135,19 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
                 // animate the side bar
                 if (isSideNoteVisible) {
                     // Start the animation
-                    // We have to translate to 0 because the view's default starting position is moved out of the screen bounds in onStart() method
-                    sidePanel.animate().translationX(0);
+                    Animation animation = new TranslateAnimation(-sidePanel.getWidth(), 0, 0, 0);
+                    animation.setDuration(300);
+                    animation.setFillAfter(true);
+                    sidePanel.startAnimation(animation);
+
                     isSideNoteVisible = false;
                 } else {
                     // Start the animation
-                    sidePanel.animate().translationX(-sidePanel.getWidth());
+                    Animation animation = new TranslateAnimation(0, -sidePanel.getWidth(), 0, 0);
+                    animation.setDuration(300);
+                    animation.setFillAfter(true);
+                    sidePanel.startAnimation(animation);
+
                     isSideNoteVisible = true;
                 }
             }
@@ -155,24 +170,22 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
         searchButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                LinearLayout searchMenuPanel = (LinearLayout)findViewById(R.id.search_bar);
-
                 if (isSearchPanelVisible) {
-                    searchMenuPanel.animate().translationY(-searchMenuPanel.getHeight());
+                    Animation animation = new TranslateAnimation(0, 0, searchPanel.getHeight(), 0);
+                    animation.setDuration(250);
+                    animation.setFillAfter(true);
+                    searchPanel.startAnimation(animation);
+
                     isSearchPanelVisible = false;
                 } else {
-                    searchMenuPanel.animate().translationY(0);
+                    Animation animation = new TranslateAnimation(0, 0, 0, searchPanel.getHeight());
+                    animation.setDuration(250);
+                    animation.setFillAfter(true);
+                    searchPanel.startAnimation(animation);
+
                     isSearchPanelVisible = true;
                 }
             }
-            /*
-                @Override
-                public void onClick(View v) {
-
-                    startService(new Intent(MainActivity.this, SearchFragment.class));
-
-                }
-                */
         });
     }
 
