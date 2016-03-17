@@ -45,6 +45,7 @@ public class Line {
         this.magnetGroup1 = magnetGroup1;
         this.magnetGroup2 = magnetGroup2;
         this.id = mediator.getMindmap().getNextId();
+        this.points = new ArrayList<>();
     }
 
     /** Used to construct a line from a json object.
@@ -52,6 +53,7 @@ public class Line {
      */
     protected Line(ModelMediator mediator_, JSONObject json) {
         setMediator(mediator_);
+        this.points = new ArrayList<>();
 
         try {
             this.id = json.getInt("id");

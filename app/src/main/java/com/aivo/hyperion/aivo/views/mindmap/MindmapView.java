@@ -312,10 +312,10 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                 LineViewModel lineViewModel = mActionDownLineViewModels.get(pointerId);
 
                 if (lineViewModel != null) {
-                    MainActivity.getModelMediator().getMindmap().actionCreateMagnetChild(lineViewModel.getParent().getModel(), pointF);
+                    MainActivity.getModelMediator().getMindmap().actionCreateMagnetChild(lineViewModel.getParent().getModel(), pointF, "title", "content", Color.CYAN);
                     mActionDownLineViewModels.remove(pointerId);
                 } else {
-                    MainActivity.getModelMediator().getMindmap().actionCreateMagnet(pointF);
+                    MainActivity.getModelMediator().getMindmap().actionCreateMagnet(pointF, "title", "content", Color.CYAN);
                 }
             }
 
@@ -464,7 +464,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         Log.d(TAG, "onDoubleTap: " + e.toString());
             final float x = e.getX() / mScaleFactor + mClipBounds.left;
             final float y = e.getY() / mScaleFactor + mClipBounds.top;
-            MainActivity.getModelMediator().getMindmap().actionCreateMagnet(new PointF(x, y));
+            MainActivity.getModelMediator().getMindmap().actionCreateMagnet(new PointF(x, y), "title", "content", Color.CYAN);
             invalidate();
         return true;
     }
