@@ -14,11 +14,13 @@ import org.json.JSONObject;
 public class Magnet extends Note {
 
     // Local properties
+    private int id;
     private MagnetGroup magnetGroup;
 
     // DO NOT USE! Only to be used by actions.
     public void setMagnetGroup(MagnetGroup newMagnetGroup) { magnetGroup = newMagnetGroup; }
     public MagnetGroup getMagnetGroup() { return magnetGroup; }
+    public int getId() { return id; }
     
     private void setMediator(ModelMediator modelMediator_) {
         if (modelMediator_ == null)
