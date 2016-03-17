@@ -1,7 +1,5 @@
 package com.aivo.hyperion.aivo.models;
 
-import com.aivo.hyperion.aivo.models.pojos.LocalStorageModule;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,11 +17,15 @@ public class ModelMediator {
     // The registered listeners of this ModelMediator
     private ArrayList<ModelListener> listeners;
 
+    // The StorageModule
+    private StorageModule storageModule;
+
     public ModelMediator() {
         user = null;
         mindmap = null;
         notes = new ArrayList<>();
         listeners = new ArrayList<>();
+        storageModule = new StorageModule();
     }
 
     public void registerListener(ModelListener listener) {
@@ -45,6 +47,8 @@ public class ModelMediator {
     public List<Note> getNotes() { return new ArrayList<>(notes); }
 
     public List<ModelListener> getListeners() { return new ArrayList<>(listeners); }
+
+    public StorageModule getStorageModule() { return storageModule; }
 
     //----------------------------------------------------------------------------------------------
     // Public open/close functions for User, Mindmap and Note
@@ -103,6 +107,25 @@ public class ModelMediator {
         // Create the mindmap
         mindmap = new Mindmap(this, title);
         for (ModelListener listener : listeners) listener.onMindmapOpen(mindmap);
+
+        storageModule.saveMindmap(mindmap);
+    }
+
+    /** Close any open Mindmap and open another. Does nothing if the mindmap is not found.
+     *
+     * @param title     Title of the Mindmap to be opened.
+     * @return          True if successful.
+     */
+    public boolean openMindmap(String title) {
+        Mindmap tempMindmap = storageModule.loadMindmap(this, title);
+
+        if (tempMindmap != null && closeMindmap()) {
+            mindmap = tempMindmap;
+            for (ModelListener listener : listeners) listener.onMindmapOpen(mindmap);
+            return true;
+        }
+
+        return false;
     }
 
     /** Save and close any open Mindmap.
@@ -112,12 +135,9 @@ public class ModelMediator {
     public boolean closeMindmap() {
         if (mindmap == null) return true;
 
-        /*try {
-            mindmap.savePojo();
-        } catch (IOException e) {
-            for (ModelListener listener : listeners) listener.onException(e);
+        // Save the Mindmap locally
+        if (!storageModule.saveMindmap(mindmap))
             return false;
-        }*/
 
         // Saved successfully, close mindmap
         mindmap = null;

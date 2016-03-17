@@ -1,5 +1,8 @@
 package com.aivo.hyperion.aivo.models;
 
+import com.aivo.hyperion.aivo.main.MainActivity;
+
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -13,16 +16,89 @@ import java.io.OutputStreamWriter;
 
 public class StorageModule {
 
-    public void saveMindmap(Mindmap mindmap) {
-        JSONObject json = mindmap.getJSON();
-        File file = new File("/Mindmap", mindmap.getTitle() + ".json");
+    private File appDir;
+
+    protected StorageModule() {
+        appDir = MainActivity.getContext().getFilesDir();
+    }
+
+    public boolean saveMindmap(Mindmap mindmap) {
+        try {
+            File dir = new File(appDir + "/mindmaps");
+            File file = new File(dir, mindmap.getTitle() + ".json");
+            JSONObject json = mindmap.getJSON();
+            saveToFile(file, json.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public Mindmap loadMindmap(ModelMediator mediator, String title) {
+        try {
+            File dir = new File(appDir + "/mindmaps");
+            File file = new File(dir, title + ".json");
+            String jsonString = readFromFile(file);
+            JSONObject jsonObject = new JSONObject(jsonString);
+            return new Mindmap(mediator, jsonObject);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
+    public boolean saveNote(Note note) {
+        try {
+            File dir = new File(appDir + "/notes");
+            File file = new File(dir, note.getTitle() + ".json");
+            JSONObject json = note.getJSON();
+            saveToFile(file, json.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    public Note loadNote(ModelMediator mediator, String title) {
+        try {
+            File dir = new File(appDir + "/notes");
+            File file = new File(dir, title + ".json");
+            JSONObject json = new JSONObject(readFromFile(file));
+            return new Note(mediator, json);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
+
+/*
+    public boolean saveUser(User user) {
+        JSONObject json = user.getJSON();
+        File file = new File(user.getEmail() + ".json");
         try {
             saveToFile(file, json.toString());
         } catch (IOException e) {
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
-
+*/
 
     /** Reads contents of given file to a string.
      *
@@ -32,7 +108,7 @@ public class StorageModule {
      */
     private String readFromFile(File file) throws IOException {
         if (!file.isFile())
-            return null;
+            throw new IOException("File \"" + file.toString() + "\" not found!");
 
         StringBuilder content = new StringBuilder();
         BufferedReader br = null;
