@@ -4,7 +4,11 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.app.DialogFragment;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,11 +17,14 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.widget.ImageButton;
 
 import com.aivo.hyperion.aivo.R;
+import com.aivo.hyperion.aivo.main.MainActivity;
 import com.ogaclejapan.arclayout.ArcLayout;
 
 import java.util.ArrayList;
@@ -32,15 +39,16 @@ import java.util.List;
  * create an instance of this fragment.
  *
  */
-public class NoteFragment extends Fragment implements OnTouchListener, View.OnClickListener {
+public class NoteFragment extends DialogFragment implements OnTouchListener, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String ARG_OLD_NOTE_TITLE = "param1";
+    private static final String ARG_OLD_NOTE_CONTENT = "param2";
+    private static final String TAG = "NoteFragment";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String mOldNoteTitle;
+    private String mOldNoteContent;
 
     private View attachFile;
     private ArcLayout arcLayout;
@@ -51,16 +59,17 @@ public class NoteFragment extends Fragment implements OnTouchListener, View.OnCl
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param noteTitle Parameter 1.
+     * @param noteContent Parameter 2.
      * @return A new instance of fragment NoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NoteFragment newInstance(String param1, String param2) {
+    public static NoteFragment newInstance(String noteTitle, String noteContent) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_OLD_NOTE_TITLE, noteTitle);
+        args.putString(ARG_OLD_NOTE_CONTENT, noteContent);
+
         fragment.setArguments(args);
         return fragment;
     }
@@ -72,8 +81,12 @@ public class NoteFragment extends Fragment implements OnTouchListener, View.OnCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mOldNoteTitle = getArguments().getString(ARG_OLD_NOTE_TITLE);
+            mOldNoteContent = getArguments().getString(ARG_OLD_NOTE_CONTENT);
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+            editor.putString(ARG_OLD_NOTE_TITLE, mOldNoteContent);
+            editor.putString(ARG_OLD_NOTE_CONTENT, mOldNoteContent);
+            editor.commit();
         }
     }
 
@@ -123,6 +136,37 @@ public class NoteFragment extends Fragment implements OnTouchListener, View.OnCl
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        mOldNoteTitle = sharedPreferences.getString(ARG_OLD_NOTE_TITLE, mOldNoteTitle);
+        mOldNoteContent = sharedPreferences.getString(ARG_OLD_NOTE_CONTENT, mOldNoteContent);
+
+        int width = getResources().getDimensionPixelSize(R.dimen.note_width);
+        int height = getResources().getDimensionPixelSize(R.dimen.note_height);
+
+        Window dialogWindow = getDialog().getWindow();
+        WindowManager.LayoutParams windowParams = dialogWindow.getAttributes();
+
+        dialogWindow.setLayout(width, height);
+        dialogWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        // remove the dim of background around dialog
+        windowParams.dimAmount = 0.00f;
+        dialogWindow.setAttributes(windowParams);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // save stuff to sharedpreffs
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+        editor.putString(ARG_OLD_NOTE_TITLE, mOldNoteContent);
+        editor.putString(ARG_OLD_NOTE_CONTENT, mOldNoteContent);
+        editor.commit();
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
@@ -153,9 +197,12 @@ public class NoteFragment extends Fragment implements OnTouchListener, View.OnCl
         switch (view.getId()) {
             case R.id.saveImageButton:
                 // TODO: Save changes
+                //if (mIsMagnet) MainActivity.getModelMediator().getMindmap().getMagnet(mOldTitle).actionChangeData(findviewbyid...NewTitle.toString, finviewbyid...NewContent..toString);
+                //else MainActivity.getModelMediator().getNote(mOldTitle).actionChangeData(findviewbyid...NewTitle.toString, finviewbyid...NewContent..toString);
                 break;
             case R.id.cancelImageButton:
                 // TODO: Cancel editing
+                this.dismiss();
                 break;
             case R.id.attachFile:
                 onAttachClick(view);
@@ -187,7 +234,6 @@ public class NoteFragment extends Fragment implements OnTouchListener, View.OnCl
         view.setSelected(!view.isSelected());
     }
 
-    @SuppressWarnings("NewApi")
     private void showMenu() {
         arcLayout.setVisibility(View.VISIBLE);
 

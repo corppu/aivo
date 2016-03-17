@@ -10,7 +10,7 @@
     android:orientation="vertical"
     android:visibility="invisible"
     android:id="@+id/side_note_panel"
-    android:background="#ffffff"
+    android:background="#000000"
     >
 
 

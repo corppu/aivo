@@ -1,19 +1,23 @@
-package com.aivo.hyperion.aivo.views;
+package com.aivo.hyperion.aivo.views.mindmap;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.main.MainActivity;
+import com.aivo.hyperion.aivo.models.Line;
+import com.aivo.hyperion.aivo.models.Magnet;
+import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
+import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 
 /**
@@ -30,26 +34,28 @@ public class MindmapFragment extends Fragment implements ModelListener {
 
     private OnMindmapFragmentInteractionListener mListener;
 
-    private Mindmap mMindmap;
-    private MindmapPresenter mPresenter;
+    private String mMindmapTitle;
+
+    private static final String ARG_MINDMAP_TITLE = "arg_mindmap_title";
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param mindmapTitle Parameter 1.
      * @return A new instance of fragment MindmapFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MindmapFragment newInstance(String param1, String param2) {
+    public static MindmapFragment newInstance(String mindmapTitle) {
         MindmapFragment fragment = new MindmapFragment();
         Bundle args = new Bundle();
-//        args.putString(ARG_PARAM1, param1);
-//        args.putString(ARG_PARAM2, param2);
+        args.putString(ARG_MINDMAP_TITLE, mindmapTitle);
+
+
         fragment.setArguments(args);
         return fragment;
     }
+
 
     public MindmapFragment() {
         // Required empty public constructor
@@ -59,8 +65,10 @@ public class MindmapFragment extends Fragment implements ModelListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-//            mParam1 = getArguments().getString(ARG_PARAM1);
-//            mParam2 = getArguments().getString(ARG_PARAM2);
+            mMindmapTitle = getArguments().getString(ARG_MINDMAP_TITLE);
+            SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+            editor.putString(ARG_MINDMAP_TITLE, mMindmapTitle);
+            editor.commit();
         }
     }
 
@@ -93,20 +101,15 @@ public class MindmapFragment extends Fragment implements ModelListener {
     @Override
     public void onPause() {
         super.onPause();
-        mPresenter.pause();
+        SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+        editor.putString(ARG_MINDMAP_TITLE, mMindmapTitle);
+        editor.commit();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        if (!(mPresenter != null)) {
-            mPresenter = new MindmapPresenter();
-            mPresenter.setView((SurfaceView) getActivity().findViewById(R.id.surfaceView));
-            mPresenter.setModel(mMindmap);
-        }
-
-        mPresenter.resume();
+        mMindmapTitle = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).getString(ARG_MINDMAP_TITLE, mMindmapTitle);
     }
 
     @Override
@@ -115,22 +118,20 @@ public class MindmapFragment extends Fragment implements ModelListener {
     }
 
     @Override
-    public void onUserOpened(User user) {
+    public void onUserOpen(User user) {
     }
 
     @Override
-    public void onMindmapOpened(Mindmap mindmap) {
-        Log.d(TAG, "onMindmapOpened " + mindmap.toString());
-        if (mPresenter != null) mPresenter.setModel(mindmap);
-        else mMindmap = mindmap;
+    public void onMindmapOpen(Mindmap mindmap) {
+        Log.d(TAG, "onMindmapOpen " + mindmap.toString());
     }
 
     @Override
-    public void onUserChanged(User user) {
+    public void onUserChange(User user) {
     }
 
     @Override
-    public void onMindmapChanged(Mindmap mindmap) {
+    public void onMindmapTitleChange(Mindmap mindmap) {
 
     }
 
@@ -142,7 +143,66 @@ public class MindmapFragment extends Fragment implements ModelListener {
     @Override
     public void onMindmapClosed() {
         Log.d(TAG, "onMindmapClosed");
-        mPresenter.setModel(null);
+    }
+
+    @Override
+    public void onMagnetGroupChange(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetCreate(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetChange(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onMagnetDelete(Magnet magnet) {
+
+    }
+
+    @Override
+    public void onLineCreate(Line line) {
+
+    }
+
+    @Override
+    public void onLineChange(Line line) {
+
+    }
+
+    @Override
+    public void onLineDelete(Line line) {
+
+    }
+
+    @Override
+    public void onNoteCreate(Note note) {
+
+    }
+
+    @Override
+    public void onNoteChange(Note note) {
+
+    }
+
+    @Override
+    public void onNoteDelete(Note note) {
+
+    }
+
+    @Override
+    public void onMagnetGroupCreate(MagnetGroup magnetGroup) {
+
+    }
+
+    @Override
+    public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
+
     }
 
     @Override

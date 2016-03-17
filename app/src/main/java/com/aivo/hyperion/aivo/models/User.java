@@ -1,14 +1,14 @@
 package com.aivo.hyperion.aivo.models;
 
-import com.aivo.hyperion.aivo.models.pojos.UserPojo;
-
-import java.io.IOException;
-import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class User {
 
     // Current theme
-    protected Theme theme;
+    private Theme theme;
+    public Theme getTheme() { return theme; }
+    public void setTheme(int themeId) { this.theme = new Theme(themeId); }
 
     // The model mediator reference
     private ModelMediator mediator;
@@ -18,8 +18,18 @@ public class User {
         mediator = modelMediator_;
     }
 
-    public User(ModelMediator mediator_) {
+    protected User(ModelMediator mediator_) {
         setMediator(mediator_);
+        setTheme(0);
+    }
+
+    protected User(ModelMediator mediator_, JSONObject json) {
+        setMediator(mediator_);
+        try {
+            setTheme(json.getInt("themeId"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
 }
