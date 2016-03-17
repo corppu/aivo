@@ -36,18 +36,32 @@ public class MainActivity extends AppCompatActivity
         implements ModelListener, MindmapFragment.OnMindmapFragmentInteractionListener, NoteFragment.OnNoteFragmentInteractionListener {
     private static final String TAG = "MainActivity";
 
-    private static final String DEFAULT_USERNAME = "User 0";
+    private static final String DEFAULT_USERNAME = "User 1";
     private String mUserName;
 
+    private static final String DEFAULT_PASSWORD = "123456";
+    private String mPassword;
+
+    private static final String DEFAULT_MINDMAP_TITLE = "Mindmap 1";
+    private String mMindmapTitle;
+
+    private static final String MAGNETS_NEW_POINT_F = "magnets_new_point_f";
+    private PointF mMagnetsNewPointF;
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(MAGNETS_NEW_POINT_F, mMagnetsNewPointF);
+        outState.putString(DEFAULT_MINDMAP_TITLE, mMindmapTitle);
+    }
+
     private void openUser() {
-        //getModelMediator().getUser();
         getModelMediator().closeMindmap();
         getModelMediator().closeUser();
         getModelMediator().createUser();
     }
 
-    private static final String DEFAULT_MINDMAP_TITLE = "Example 0";
-    private String mMindmapTitle;
     private void openMindmap() {
         SharedPreferences sharedPreferences = getSharedPreferences(TAG, MODE_PRIVATE);
         sharedPreferences.getString(mMindmapTitle, DEFAULT_MINDMAP_TITLE);
@@ -66,10 +80,10 @@ public class MainActivity extends AppCompatActivity
     }
 
     private NoteFragment mNoteFragment;
-    private void openNoteFragment(boolean isNew, boolean isMagnet, String title, String content) {
-        mNoteFragment = NoteFragment.newInstance(isNew, isMagnet, title, content);
+    private void openNoteFragment(int id, boolean isMagnet, String title, String content) {
+        mNoteFragment = NoteFragment.newInstance(id, isMagnet, title, content);
         mNoteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
-        mNoteFragment.show(getFragmentManager(), "noteDialogFragment");
+        mNoteFragment.show(getFragmentManager(), "noteFragment");
     }
 
     private MindmapFragment mMindmapFragment;
@@ -132,6 +146,13 @@ public class MainActivity extends AppCompatActivity
         sModelMediator = new ModelMediator();
         sModelMediator.registerListener(this);
         sModelMediator.createUser();
+
+        mainMenuFragment.setMenuVisibility(false);
+
+        if (savedInstanceState != null) {
+            mMagnetsNewPointF = savedInstanceState.getParcelable(MAGNETS_NEW_POINT_F);
+            mMindmapTitle = savedInstanceState.getString(DEFAULT_MINDMAP_TITLE);
+        }
     }
 
     @Override
@@ -155,7 +176,7 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.remove(mainMenuFragment);
 //        fragmentTransaction.commitAllowingStateLoss();
         fragmentTransaction.commit();
-        mNoteFragment.dismiss();
+//        mNoteFragment.dismiss();
     }
 
     @Override
@@ -207,7 +228,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMindmapOpen(Mindmap mindmap) {
-        openMindmapFragment(mindmap.getTitle());
+        mMindmapTitle = mindmap.getTitle();
+        openMindmapFragment(mMindmapTitle);
     }
 
     @Override
@@ -227,23 +249,24 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMindmapClosed() {
-//        getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, new NoteFragment());
-        this.getSupportFragmentManager().popBackStack("asd", 0);
+        this.getSupportFragmentManager().popBackStack(mMindmapTitle, 0);
     }
 
     @Override
     public void onException(Exception e) {
-        Log.d("MainActivity", e.toString());
+        try {
+            throw e;
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
     }
 
     @Override
     public void onMagnetGroupChange(MagnetGroup magnetGroup) {
-
     }
 
     @Override
     public void onMagnetCreate(Magnet magnet) {
-        mCreatedMagnet = magnet;
     }
 
     @Override
@@ -273,7 +296,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMagnetGroupCreate(MagnetGroup magnetGroup) {
-        mCreatedMagnetGroup = magnetGroup;
     }
 
     @Override
@@ -300,54 +322,30 @@ public class MainActivity extends AppCompatActivity
     /** OnMindmapFragmentListener **/
 
     @Override
-    public void onCreateMagnet(PointF pointF) {
-        mNewSavePointF = pointF;
-        openNoteFragment(true, true, "", "");
+    public void onCreateMagnet(PointF newPointF) {
+        mMagnetsNewPointF = newPointF;
+        openNoteFragment(0, true, "", "");
     }
 
     @Override
     public void onCreateMagnet(MagnetGroup parent, PointF newPointF) {
-        mMagnetGroupParent = parent;
-        mNewSavePointF = newPointF;
-        openNoteFragment(true, true, "", "");
+        mMagnetsNewPointF = newPointF;
+        openNoteFragment(-parent.getId(), true, "", "");
     }
 
     /** OnNoteFragmentListener **/
     @Override
-    public void onSave(boolean isMagnet, String oldTitle, String newTitle, String newContent) {
+    public void onSave(int id, boolean isMagnet, String newTitle, String newContent) {
         if (isMagnet) {
-            //mCreatedMagnet.actionChangeData();
-        }
-    }
-
-    MagnetGroup mMagnetGroupParent = null;
-    PointF mNewSavePointF = null;
-
-    Note mCreatedNote = null;
-    Magnet mCreatedMagnet = null;
-    MagnetGroup mCreatedMagnetGroup = null;
-
-    @Override
-    public void onSaveNew(boolean isMagnet, String newTitle, String newContent) {
-        if (isMagnet) {
-            if (mMagnetGroupParent != null) {
-                sModelMediator.getMindmap().actionCreateMagnetChild(mMagnetGroupParent, mNewSavePointF);
+            if (id > 0) {
+                sModelMediator.getMindmap().getMagnet(id).actionChangeData(newTitle, newContent);
+            } else if (id < 0) {
+                sModelMediator.getMindmap().actionCreateMagnetChild(sModelMediator.getMindmap().getMagnetGroup(-id), mMagnetsNewPointF, newTitle, newContent,
+                        Color.argb(255, sRandom.nextInt(255), sRandom.nextInt(255), sRandom.nextInt(255)));
             } else {
-                sModelMediator.getMindmap().actionCreateMagnet(mNewSavePointF);
+                sModelMediator.getMindmap().actionCreateMagnet(mMagnetsNewPointF, newTitle, newContent,
+                        Color.argb(255, sRandom.nextInt(255), sRandom.nextInt(255), sRandom.nextInt(255)));
             }
-
-            mCreatedMagnet.setData(newTitle, newContent, Color.argb(255, sRandom.nextInt(255), sRandom.nextInt(255), sRandom.nextInt(255)));
-        } else { // !isMagnet
-            sModelMediator.createNote();
-            mCreatedNote.setData(newTitle, newContent, Color.argb(255, sRandom.nextInt(255), sRandom.nextInt(255), sRandom.nextInt(255)));
         }
     }
-
-    @Override
-    public void onCancel(boolean isMagnet) {
-
-    }
-
-
-
 }
