@@ -99,7 +99,7 @@ public class LineViewModel {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        if (mIsSelected) {
+        if (mIsSelected || mIsGhost) {
             paint.setColor(MagnetViewModel.HIGHLIGHT_BORDER_COLOR);
             paint.setStrokeWidth(MagnetViewModel.HIGHLIGHT_BORDER_SIZE);
             if (mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);

@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -158,15 +159,9 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart(){
         super.onStart();
-        sidePanel = (FrameLayout) findViewById(R.id.side_note_fragment);
-
-        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) sidePanel.getLayoutParams();
-
-        // make the right margin negative so the view is moved to the right of the screen
-        if (params != null) {
-            params.rightMargin = params.rightMargin * -1;
-        }
     }
+
+
 
     @Override
     public void onPause(){
@@ -177,6 +172,24 @@ public class MainActivity extends AppCompatActivity
 //        fragmentTransaction.commitAllowingStateLoss();
         fragmentTransaction.commit();
 //        mNoteFragment.dismiss();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sidePanel = (FrameLayout) findViewById(R.id.side_note_fragment);
+
+        if (sidePanel != null) {
+            ViewGroup.LayoutParams params =  sidePanel.getLayoutParams();
+
+            if (params != null) {
+                RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams)params;
+
+                if (params1 != null) params1.rightMargin = params1.rightMargin * -1;
+            }
+            // make the right margin negative so the view is moved to the right of the screen
+
+        }
     }
 
     @Override
@@ -331,6 +344,11 @@ public class MainActivity extends AppCompatActivity
     public void onCreateMagnet(MagnetGroup parent, PointF newPointF) {
         mMagnetsNewPointF = newPointF;
         openNoteFragment(-parent.getId(), true, "", "");
+    }
+
+    @Override
+    public void onEditMagnet(Magnet magnet) {
+        openNoteFragment(magnet.getId(), true, magnet.getTitle(), magnet.getContent());
     }
 
     /** OnNoteFragmentListener **/

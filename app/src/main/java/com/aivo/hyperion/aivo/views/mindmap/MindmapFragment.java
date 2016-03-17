@@ -117,6 +117,7 @@ public class MindmapFragment extends Fragment {
     public interface OnMindmapFragmentInteractionListener {
         void onCreateMagnet(PointF pointF);
         void onCreateMagnet(MagnetGroup parent, PointF newPointF);
+        void onEditMagnet(Magnet magnet);
     }
 
 }

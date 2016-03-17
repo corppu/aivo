@@ -164,6 +164,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         Log.d(TAG, "magnet has changed");
 
         mMagnetMagnetViewModelHashMap.get(magnet).refresh();
+        invalidate();
     }
 
     @Override
@@ -177,20 +178,23 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public void onLineCreate(Line line) {
         LineViewModel lineViewModel = new LineViewModel(line, mMagnetGroupMagnetViewModelHashMap);
         mLineViewModelHashMap.put(line, lineViewModel);
-        invalidate();
         if (line.getPoints().isEmpty()) {
             line.actionAddPoint(lineViewModel.getMiddlePointF(), 0);
         }
+
+        invalidate();
     }
 
     @Override
     public void onLineChange(Line line) {
         mLineViewModelHashMap.get(line).refresh();
+        invalidate();
     }
 
     @Override
     public void onLineDelete(Line line) {
         mLineViewModelHashMap.remove(line);
+        invalidate();
     }
 
     @Override
@@ -241,6 +245,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
                         mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModel);
                         mActionDownLineViewModels.append(pointerId, lineViewModel);
+                        lineViewModel.setIsGhost(true);
                         return true;
                     }
                     else {
@@ -259,7 +264,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             if (lineViewModell.contains(x, y)
                     && mActionDownLineViewModels.indexOfValue(lineViewModell) == -1) {
                 mActionDownLineViewModels.append(pointerId, lineViewModell);
-
+                lineViewModell.setIsGhost(true);
                 break;
             }
         }
@@ -285,7 +290,11 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             magnetGroupViewModel = mMagnetGroupMagnetViewModelHashMap.get(magnetViewModel.getModel().getMagnetGroup());
             magnetGroupViewModel.setIsGhost(false);
             if (MagnetGroupViewModel.contains(magnetGroupViewModel, magnetViewModel.getCenterX(), magnetViewModel.getCenterY())) {
-                magnetGroupViewModel.refresh();
+//                magnetGroupViewModel.refresh();
+//                return true;
+
+                int[] rowCol = MagnetGroupViewModel.getRowCol(magnetGroupViewModel, magnetViewModel);
+                magnetViewModel.getModel().actionMoveTo(magnetGroupViewModel.getModel(), rowCol[0], rowCol[1]);
                 return true;
             }
 
@@ -342,9 +351,10 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
                 if (lineViewModel != null) {
                     mActionDownLineViewModels.remove(pointerId);
+                    lineViewModel.setIsGhost(false);
 
                     for (MagnetGroupViewModel magnetGroupViewModelz : mMagnetGroupMagnetViewModelHashMap.values()) {
-                        if (MagnetGroupViewModel.contains(magnetGroupViewModelz, pointF.x, pointF.y)) {
+                        if (MagnetGroupViewModel.contains(magnetGroupViewModelz, pointF.x, pointF.y) && lineViewModel.getParent().getModel() != magnetGroupViewModelz.getModel()) {
                             lineViewModel.getParent().getModel().actionCreateLine(magnetGroupViewModelz.getModel());
                             invalidate();
                             return true;
@@ -371,6 +381,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         LineViewModel lineViewModel = mActionDownLineViewModels.get(e.getPointerId(pointerIndex));
         if (lineViewModel != null) {
             mActionDownLineViewModels.remove(e.getPointerId(pointerIndex));
+            lineViewModel.setIsGhost(false);
             lineViewModel.getLine().actionMovePoint(lineViewModel.getLine().getPoints().get(0), lineViewModel.getMiddlePointF());
             invalidate();
         }
@@ -551,8 +562,12 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         Log.d(TAG, "onDoubleTap: " + e.toString());
         final float x = e.getX() / mScaleFactor + mClipBounds.left;
         final float y = e.getY() / mScaleFactor + mClipBounds.top;
-//        MainActivity.getModelMediator().getMindmap().actionCreateMagnet(new PointF(x, y));
-        ((MainActivity)this.getContext()).onCreateMagnet(new PointF(x, y));
+        if (mSelectedMagnetViewModel != null && MagnetViewModel.contains(mSelectedMagnetViewModel, x ,y)) {
+            ((MainActivity)this.getContext()).onEditMagnet(mSelectedMagnetViewModel.getModel());
+        }
+        else {
+            ((MainActivity) this.getContext()).onCreateMagnet(new PointF(x, y));
+        }
         invalidate();
         return true;
     }

@@ -113,8 +113,10 @@ public class MagnetGroupViewModel {
                     ++mSize;
                     Log.d("MagnetGroupViewModel", "New magnet added to group" + pointF.toString());
                 }
-                magnetViewModels.add(magnetViewModelList);
-                pointF.y += MagnetViewModel.OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE * 2;
+                if (magnetViewModelList.size() != 0) {
+                    magnetViewModels.add(magnetViewModelList);
+                    pointF.y += MagnetViewModel.OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE * 2;
+                }
                 mOuterRectF.bottom = pointF.y;
                 pointF.x = mOuterRectF.left + MagnetViewModel.HIGHLIGHT_BORDER_SIZE;
             }

@@ -236,6 +236,7 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
                 mCurrentNoteTitle = ((EditText)this.getDialog().findViewById(R.id.titleEditText)).getText().toString();
                 mCurrentNoteContent = ((EditText)this.getDialog().findViewById(R.id.contentEditText)).getText().toString();
                 ((MainActivity) getActivity()).onSave(mId, mIsMagnet, mCurrentNoteTitle, mCurrentNoteContent);
+                if (mId < 1)dismiss();
                 break;
 
             case R.id.cancelImageButton:
