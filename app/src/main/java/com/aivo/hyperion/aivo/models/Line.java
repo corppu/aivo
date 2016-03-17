@@ -30,7 +30,7 @@ public class Line {
     public ArrayList<PointF> getPoints() { return points; }
     public int getType() { return type; }
     public int getThickness() { return thickness; }
-    protected int getId() { return id; }
+    public int getId() { return id; }
 
     // The model mediator reference
     private ModelMediator mediator;

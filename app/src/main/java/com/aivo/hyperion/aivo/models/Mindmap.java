@@ -89,6 +89,27 @@ public class Mindmap {
     public List<Line> getLines() { return lines; }
     public ActionHandler getActionHandler() { return actionHandler; }
 
+    public MagnetGroup getMagnetGroup(final int id) {
+        for (MagnetGroup magnetGroup : magnetGroups)
+            if (magnetGroup.getId() == id)
+                return magnetGroup;
+        return null;
+    }
+    public Magnet getMagnet(final int id) {
+        for (MagnetGroup magnetGroup : magnetGroups)
+            for (List<Magnet> magnetRow : magnetGroup.getMagnets())
+                for (Magnet magnet : magnetRow)
+                    if (magnet.getId() == id)
+                        return magnet;
+        return null;
+    }
+    public Line getLine(final int id) {
+        for (Line line : lines)
+            if (line.getId() == id)
+                return line;
+        return null;
+    }
+
     /** Change mindmap title through an action.
      *
      * @param newTitle      New title

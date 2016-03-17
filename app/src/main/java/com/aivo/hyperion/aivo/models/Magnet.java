@@ -20,7 +20,7 @@ public class Magnet extends Note {
     // DO NOT USE! Only to be used by actions.
     public void setMagnetGroup(MagnetGroup newMagnetGroup) { magnetGroup = newMagnetGroup; }
     public MagnetGroup getMagnetGroup() { return magnetGroup; }
-    protected int getId() { return id; }
+    public int getId() { return id; }
     
     private void setMediator(ModelMediator modelMediator_) {
         if (modelMediator_ == null)

@@ -13,7 +13,7 @@ public class LinePointAdd extends Action {
     private int pointIndex;
 
     public LinePointAdd(ModelMediator mediator, Line line, PointF pointNew, final int pointIndex) {
-        if (pointIndex < 0 || pointIndex >= line.getPoints().size())
+        if (pointIndex < 0 || pointIndex > line.getPoints().size())
             throw new InternalError("LinePointAdd created with an invalid pointIndex!");
 
         setMediator(mediator);

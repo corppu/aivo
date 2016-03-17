@@ -32,7 +32,7 @@ public class MagnetGroup {
     public String getTitle() { return title;  }
     public List< List<Magnet> > getMagnets() { return magnets; }
     public List< Line > getLines() { return lines; }
-    protected int getId() { return id; }
+    public int getId() { return id; }
 
     // The model mediator reference
     private ModelMediator mediator;
