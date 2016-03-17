@@ -21,10 +21,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AnticipateInterpolator;
 import android.view.animation.OvershootInterpolator;
+import android.widget.EditText;
 import android.widget.ImageButton;
 
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.main.MainActivity;
+import com.aivo.hyperion.aivo.models.Magnet;
+import com.aivo.hyperion.aivo.models.MagnetGroup;
+import com.aivo.hyperion.aivo.models.Note;
 import com.ogaclejapan.arclayout.ArcLayout;
 
 import java.util.ArrayList;
@@ -33,7 +37,7 @@ import java.util.List;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link NoteFragment.OnFragmentInteractionListener} interface
+ * {@link NoteFragment.OnNoteFragmentInteractionListener} interface
  * to handle interaction events.
  * Use the {@link NoteFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -42,18 +46,23 @@ import java.util.List;
 public class NoteFragment extends DialogFragment implements OnTouchListener, View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_OLD_NOTE_TITLE = "param1";
-    private static final String ARG_OLD_NOTE_CONTENT = "param2";
+    private static final String ARG_IS_NEW = "arg_is_new";
+    private static final String ARG_IS_MAGNET = "arg_is_magnet";
+    private static final String ARG_OLD_NOTE_TITLE = "arg_old_note_title";
+    private static final String ARG_OLD_NOTE_CONTENT = "arg_old_note_content";
     private static final String TAG = "NoteFragment";
 
     // TODO: Rename and change types of parameters
+    private boolean mIsNew;
+    private boolean mIsMagnet;
     private String mOldNoteTitle;
     private String mOldNoteContent;
+
 
     private View attachFile;
     private ArcLayout arcLayout;
 
-    private OnFragmentInteractionListener mListener;
+    private OnNoteFragmentInteractionListener mListener;
 
     /**
      * Use this factory method to create a new instance of
@@ -64,9 +73,12 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
      * @return A new instance of fragment NoteFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static NoteFragment newInstance(String noteTitle, String noteContent) {
+    public static NoteFragment newInstance(boolean isNew, boolean isMagnet, String noteTitle, String noteContent) {
         NoteFragment fragment = new NoteFragment();
         Bundle args = new Bundle();
+
+        args.putBoolean(ARG_IS_NEW, isNew);
+        args.putBoolean(ARG_IS_MAGNET, isMagnet);
         args.putString(ARG_OLD_NOTE_TITLE, noteTitle);
         args.putString(ARG_OLD_NOTE_CONTENT, noteContent);
 
@@ -81,9 +93,13 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
+            mIsNew = getArguments().getBoolean(ARG_IS_NEW);
+            mIsMagnet = getArguments().getBoolean(ARG_IS_MAGNET);
             mOldNoteTitle = getArguments().getString(ARG_OLD_NOTE_TITLE);
             mOldNoteContent = getArguments().getString(ARG_OLD_NOTE_CONTENT);
             SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+            editor.putBoolean(ARG_IS_NEW, mIsNew);
+            editor.putBoolean(ARG_IS_MAGNET, mIsMagnet);
             editor.putString(ARG_OLD_NOTE_TITLE, mOldNoteContent);
             editor.putString(ARG_OLD_NOTE_CONTENT, mOldNoteContent);
             editor.commit();
@@ -117,22 +133,16 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
         return noteView;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
-    }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
+        if (context instanceof OnNoteFragmentInteractionListener) {
+            mListener = (OnNoteFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnNoteFragmentInteractionListener");
+        }
     }
 
     @Override
@@ -140,6 +150,8 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
         super.onResume();
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        mIsNew = sharedPreferences.getBoolean(ARG_IS_NEW, mIsNew);
+        mIsMagnet = sharedPreferences.getBoolean(ARG_IS_MAGNET, mIsMagnet);
         mOldNoteTitle = sharedPreferences.getString(ARG_OLD_NOTE_TITLE, mOldNoteTitle);
         mOldNoteContent = sharedPreferences.getString(ARG_OLD_NOTE_CONTENT, mOldNoteContent);
 
@@ -161,6 +173,8 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
         super.onPause();
         // save stuff to sharedpreffs
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
+        editor.putBoolean(ARG_IS_NEW, mIsNew);
+        editor.putBoolean(ARG_IS_MAGNET, mIsMagnet);
         editor.putString(ARG_OLD_NOTE_TITLE, mOldNoteContent);
         editor.putString(ARG_OLD_NOTE_CONTENT, mOldNoteContent);
         editor.commit();
@@ -187,21 +201,30 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+    public interface OnNoteFragmentInteractionListener {
+        void onSave(boolean isMagnet, String oldTitle, String newTitle, String newContent);
+        void onSaveNew(boolean isMagnet, String newTitle, String newContent);
+        void onCancel(boolean isMagnet);
     }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.saveImageButton:
-                // TODO: Save changes
-                //if (mIsMagnet) MainActivity.getModelMediator().getMindmap().getMagnet(mOldTitle).actionChangeData(findviewbyid...NewTitle.toString, finviewbyid...NewContent..toString);
-                //else MainActivity.getModelMediator().getNote(mOldTitle).actionChangeData(findviewbyid...NewTitle.toString, finviewbyid...NewContent..toString);
+                String newTitle = ((EditText)this.getDialog().findViewById(R.id.titleEditText)).getText().toString();
+                String newContent = ((EditText)this.getDialog().findViewById(R.id.contentEditText)).getText().toString();
+
+                if (mIsNew) mListener.onSaveNew(mIsMagnet, newTitle, newContent);
+                else mListener.onSave(mIsMagnet, mOldNoteTitle, newTitle, newContent);
+
+                mIsNew = false;
+                mOldNoteTitle = newTitle;
+                mOldNoteContent = newContent;
                 break;
+
             case R.id.cancelImageButton:
                 // TODO: Cancel editing
+                mListener.onCancel(mIsMagnet);
                 this.dismiss();
                 break;
             case R.id.attachFile:

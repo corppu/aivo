@@ -1,26 +1,20 @@
 package com.aivo.hyperion.aivo.main;
 
-import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.PointF;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.test.ViewAsserts;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Magnet;
@@ -31,14 +25,63 @@ import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
+import com.aivo.hyperion.aivo.views.mindmap.MagnetViewModel;
 import com.aivo.hyperion.aivo.views.mindmap.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
 import com.aivo.hyperion.aivo.views.SideNoteFragment;
 
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements ModelListener {
-    NoteFragment noteFragment;
+public class MainActivity extends AppCompatActivity
+        implements ModelListener, MindmapFragment.OnMindmapFragmentInteractionListener, NoteFragment.OnNoteFragmentInteractionListener {
+    private static final String TAG = "MainActivity";
+
+    private static final String DEFAULT_USERNAME = "User 0";
+    private String mUserName;
+
+    private void openUser() {
+        //getModelMediator().getUser();
+        getModelMediator().closeMindmap();
+        getModelMediator().closeUser();
+        getModelMediator().createUser();
+    }
+
+    private static final String DEFAULT_MINDMAP_TITLE = "Example 0";
+    private String mMindmapTitle;
+    private void openMindmap() {
+        SharedPreferences sharedPreferences = getSharedPreferences(TAG, MODE_PRIVATE);
+        sharedPreferences.getString(mMindmapTitle, DEFAULT_MINDMAP_TITLE);
+        if (mMindmapTitle == DEFAULT_MINDMAP_TITLE) {
+            int counter = 0;
+            while (sModelMediator.isMindmapTitleUsed(mMindmapTitle)) {
+                mMindmapTitle = mMindmapTitle.substring(0, mMindmapTitle.indexOf(Integer.toString(counter)));
+                ++counter;
+                mMindmapTitle += Integer.toString(counter);
+            }
+            sModelMediator.createMindmap(mMindmapTitle);
+        } else {
+            // TODO: open saved mindmap
+            //sModelMediator.open...
+        }
+    }
+
+    private NoteFragment mNoteFragment;
+    private void openNoteFragment(boolean isNew, boolean isMagnet, String title, String content) {
+        mNoteFragment = NoteFragment.newInstance(isNew, isMagnet, title, content);
+        mNoteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
+        mNoteFragment.show(getFragmentManager(), "noteDialogFragment");
+    }
+
+    private MindmapFragment mMindmapFragment;
+    private void openMindmapFragment(String title) {
+        mMindmapFragment = MindmapFragment.newInstance(title);
+        getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, mMindmapFragment).commit();
+    }
+
+
+
+
+
     SideNoteFragment sideNoteFragment;
     MainMenuFragment mainMenuFragment;
     Button sideBtn;
@@ -80,9 +123,6 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         fragmentTransaction.add(R.id.contentAreaParent, sideNoteFragment);
         fragmentTransaction.commit();
 
-        noteFragment = new NoteFragment();
-        noteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
-        noteFragment.show(getFragmentManager(), "noteDialogFragment");
 
         sideBtn = (Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
@@ -100,8 +140,11 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         sidePanel = (FrameLayout) findViewById(R.id.side_note_fragment);
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) sidePanel.getLayoutParams();
+
         // make the right margin negative so the view is moved to the right of the screen
-        params.rightMargin = params.rightMargin * -1;
+        if (params != null) {
+            params.rightMargin = params.rightMargin * -1;
+        }
     }
 
     @Override
@@ -112,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         fragmentTransaction.remove(mainMenuFragment);
 //        fragmentTransaction.commitAllowingStateLoss();
         fragmentTransaction.commit();
-        noteFragment.dismiss();
+        mNoteFragment.dismiss();
     }
 
     @Override
@@ -161,12 +204,10 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
         sModelMediator.createMindmap("Default");
     }
 
-    private MindmapFragment mMindmapFragment;
+
     @Override
     public void onMindmapOpen(Mindmap mindmap) {
-        mMindmapFragment = new MindmapFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, mMindmapFragment).commit();
-        mMindmapFragment.onMindmapOpen(mindmap);
+        openMindmapFragment(mindmap.getTitle());
     }
 
     @Override
@@ -176,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
     @Override
     public void onMindmapTitleChange(Mindmap mindmap) {
-        mMindmapFragment.onMindmapTitleChange(mindmap);
+
     }
 
     @Override
@@ -186,8 +227,8 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
     @Override
     public void onMindmapClosed() {
-        mMindmapFragment.onMindmapClosed();
 //        getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, new NoteFragment());
+        this.getSupportFragmentManager().popBackStack("asd", 0);
     }
 
     @Override
@@ -202,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
     @Override
     public void onMagnetCreate(Magnet magnet) {
-
+        mCreatedMagnet = magnet;
     }
 
     @Override
@@ -232,7 +273,7 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
 
     @Override
     public void onMagnetGroupCreate(MagnetGroup magnetGroup) {
-
+        mCreatedMagnetGroup = magnetGroup;
     }
 
     @Override
@@ -254,4 +295,59 @@ public class MainActivity extends AppCompatActivity implements ModelListener {
     public void onNoteDelete(Note note) {
 
     }
+
+
+    /** OnMindmapFragmentListener **/
+
+    @Override
+    public void onCreateMagnet(PointF pointF) {
+        mNewSavePointF = pointF;
+        openNoteFragment(true, true, "", "");
+    }
+
+    @Override
+    public void onCreateMagnet(MagnetGroup parent, PointF newPointF) {
+        mMagnetGroupParent = parent;
+        mNewSavePointF = newPointF;
+        openNoteFragment(true, true, "", "");
+    }
+
+    /** OnNoteFragmentListener **/
+    @Override
+    public void onSave(boolean isMagnet, String oldTitle, String newTitle, String newContent) {
+        if (isMagnet) {
+            //mCreatedMagnet.actionChangeData();
+        }
+    }
+
+    MagnetGroup mMagnetGroupParent = null;
+    PointF mNewSavePointF = null;
+
+    Note mCreatedNote = null;
+    Magnet mCreatedMagnet = null;
+    MagnetGroup mCreatedMagnetGroup = null;
+
+    @Override
+    public void onSaveNew(boolean isMagnet, String newTitle, String newContent) {
+        if (isMagnet) {
+            if (mMagnetGroupParent != null) {
+                sModelMediator.getMindmap().actionCreateMagnetChild(mMagnetGroupParent, mNewSavePointF);
+            } else {
+                sModelMediator.getMindmap().actionCreateMagnet(mNewSavePointF);
+            }
+
+            mCreatedMagnet.setData(newTitle, newContent, Color.argb(255, sRandom.nextInt(255), sRandom.nextInt(255), sRandom.nextInt(255)));
+        } else { // !isMagnet
+            sModelMediator.createNote();
+            mCreatedNote.setData(newTitle, newContent, Color.argb(255, sRandom.nextInt(255), sRandom.nextInt(255), sRandom.nextInt(255)));
+        }
+    }
+
+    @Override
+    public void onCancel(boolean isMagnet) {
+
+    }
+
+
+
 }
