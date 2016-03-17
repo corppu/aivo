@@ -6,6 +6,7 @@ import org.json.JSONObject;
 public class Note {
 
     // These have to be protected, so Magnet can access them
+    protected int id;
     protected String title;
     protected String content;
     protected int color;
@@ -13,6 +14,7 @@ public class Note {
     public String getTitle() { return title; }
     public String getContent() { return content; }
     public int getColor() { return color; }
+    public int getId() { return id; }
 
     // The model mediator reference
     protected ModelMediator mediator;

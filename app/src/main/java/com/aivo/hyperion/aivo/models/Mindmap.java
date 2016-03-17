@@ -1,6 +1,7 @@
 package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.ActionHandler;
@@ -51,6 +52,7 @@ public class Mindmap {
         this.lines = new ArrayList<>();
         this.title = title;
         this.isDirty = true;
+        this.idCounter = 1;
     }
 
     protected Mindmap(ModelMediator mediator_, JSONObject json) {
@@ -81,7 +83,28 @@ public class Mindmap {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
 
+    protected JSONObject getJSON() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("title", title);
+            object.put("idCounter", idCounter);
+
+            JSONArray jsonMagnetGroups = new JSONArray();
+            for (MagnetGroup magnetGroup : magnetGroups)
+                jsonMagnetGroups.put(magnetGroup.getJSON());
+            object.put("magnetGroups", jsonMagnetGroups);
+
+            JSONArray jsonLines = new JSONArray();
+            for (Line line : lines)
+                jsonLines.put(line.getJSON());
+            object.put("lines", jsonLines);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 
     public String getTitle() { return title; }
@@ -158,10 +181,6 @@ public class Mindmap {
     public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF,
                                         String title, String content, final int color) {
         Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF, title, content, color);
-        getActionHandler().executeAction(action);
-    }
-    public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF, Note noteReference) {
-        Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF, noteReference);
         getActionHandler().executeAction(action);
     }
 

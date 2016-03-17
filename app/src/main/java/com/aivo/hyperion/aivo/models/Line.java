@@ -14,6 +14,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Line {
 
@@ -65,8 +66,8 @@ public class Line {
                 points.add((PointF) jsonPoints.get(i));
             }
 
-            final int groupId1 = json.getInt("magnetGroup1");
-            final int groupId2 = json.getInt("magnetGroup2");
+            final int groupId1 = json.getInt("magnetGroupId1");
+            final int groupId2 = json.getInt("magnetGroupId2");
 
             for (MagnetGroup magnetGroup : mediator.getMindmap().getMagnetGroups()) {
                 if (magnetGroup.getId() == groupId1) {
@@ -82,6 +83,27 @@ public class Line {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    protected JSONObject getJSON() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("id", id);
+            object.put("type", type);
+            object.put("thickness", thickness);
+
+            JSONArray jsonPoints = new JSONArray();
+                for (PointF point : points)
+                    jsonPoints.put(point);
+            object.put("points", jsonPoints);
+
+            object.put("magnetGroupId1", magnetGroup1.getId());
+            object.put("magnetGroupId2", magnetGroup2.getId());
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 
     // DO NOT USE! Only for LineChangeData action!

@@ -14,13 +14,11 @@ import org.json.JSONObject;
 public class Magnet extends Note {
 
     // Local properties
-    private int id;
     private MagnetGroup magnetGroup;
 
     // DO NOT USE! Only to be used by actions.
     public void setMagnetGroup(MagnetGroup newMagnetGroup) { magnetGroup = newMagnetGroup; }
     public MagnetGroup getMagnetGroup() { return magnetGroup; }
-    public int getId() { return id; }
     
     private void setMediator(ModelMediator modelMediator_) {
         if (modelMediator_ == null)
@@ -62,6 +60,20 @@ public class Magnet extends Note {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    protected JSONObject getJSON() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("id", id);
+            object.put("title", title);
+            object.put("content", content);
+            object.put("color", color);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
     }
 
     public void actionChangeData(String newTitle) {
