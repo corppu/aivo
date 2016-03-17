@@ -99,15 +99,16 @@ public class MagnetGroup {
         mediator.getMindmap().actionCreateLine(this, magnetGroup);
     }
 
-    public void actionCreateMagnet(final int rowIndex, final int colIndex) {
-        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex);
+    public void actionCreateMagnet(final int rowIndex, final int colIndex,
+                                   String title, String content, final int color) {
+        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex, title, content, color);
     }
     public void actionCreateMagnet(final int rowIndex, final int colIndex, Note noteReference) {
         mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex, noteReference);
     }
 
-    public void actionCreateMagnetChild(PointF pointF) {
-        mediator.getMindmap().actionCreateMagnetChild(this, pointF);
+    public void actionCreateMagnetChild(PointF pointF, String title, String content, final int color) {
+        mediator.getMindmap().actionCreateMagnetChild(this, pointF, title, content, color);
     }
     public void actionCreateMagnetChild(PointF pointF, Note noteReference) {
         mediator.getMindmap().actionCreateMagnetChild(this, pointF, noteReference);

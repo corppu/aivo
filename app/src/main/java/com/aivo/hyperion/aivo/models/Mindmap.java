@@ -105,8 +105,9 @@ public class Mindmap {
      * @param colIndex      Group row position to create magnet into. Shifts elements right.
      *                      If greater than element count in row, magnet is created in the end.
      */
-    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
-        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex);
+    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex,
+                                   String title, String content, final int color) {
+        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex, title, content, color);
         getActionHandler().executeAction(action);
     }
     public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex, Note noteReference) {
@@ -118,8 +119,8 @@ public class Mindmap {
      *
      * @param pointF        Where a new MagnetGroup is created, to contain the new Magnet.
      */
-    public void actionCreateMagnet(PointF pointF) {
-        Action action = new MagnetCreate(mediator, pointF);
+    public void actionCreateMagnet(PointF pointF, String title, String content, final int color) {
+        Action action = new MagnetCreate(mediator, pointF, title, content, color);
         getActionHandler().executeAction(action);
     }
     public void actionCreateMagnet(PointF pointF, Note noteReference) {
@@ -133,8 +134,9 @@ public class Mindmap {
      * @param parentMagnetGroup Group to connect the new group to
      * @param pointF            Where a new MagnetGroup is created, to contain the new Magnet.
      */
-    public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF) {
-        Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF);
+    public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF,
+                                        String title, String content, final int color) {
+        Action action = new MagnetCreateChild(mediator, parentMagnetGroup, pointF, title, content, color);
         getActionHandler().executeAction(action);
     }
     public void actionCreateMagnetChild(MagnetGroup parentMagnetGroup, PointF pointF, Note noteReference) {

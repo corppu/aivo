@@ -14,10 +14,11 @@ public class MagnetCreate extends MagnetAction {
     private int rowIndex;
     private int colIndex;
 
-    public MagnetCreate(ModelMediator mediator, PointF pointF) {
+    public MagnetCreate(ModelMediator mediator, PointF pointF,
+                        String title, String content, final int color) {
         setMediator(mediator);
         this.magnetGroup = new MagnetGroup(mediator, pointF);
-        this.magnet = new Magnet(mediator, magnetGroup);
+        this.magnet = new Magnet(mediator, magnetGroup, title, content, color);
         this.rowIndex = 0;
         this.colIndex = 0;
     }
@@ -30,13 +31,14 @@ public class MagnetCreate extends MagnetAction {
         this.colIndex = 0;
     }
 
-    public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
+    public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup, final int rowIndex, final int colIndex,
+                        String title, String content, final int color) {
         if (rowIndex < 0 || colIndex < 0)
             throw new InternalError("Tried to create a MagnetCreate action with negative row/col indexes!");
 
         setMediator(mediator);
         this.magnetGroup = magnetGroup;
-        this.magnet = new Magnet(mediator, magnetGroup);
+        this.magnet = new Magnet(mediator, magnetGroup, title, content, color);
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;
     }

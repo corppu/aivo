@@ -28,10 +28,14 @@ public class Magnet extends Note {
         mediator = modelMediator_;
     }
 
-    public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup) {
+    public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup,
+                  String title, String content, final int color) {
         setMediator(mediator_);
         this.magnetGroup = magnetGroup;
         this.id = mediator.getMindmap().getNextId();
+        this.title = title;
+        this.content = content;
+        this.color = color;
     }
 
     public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup, Note noteReference) {
