@@ -83,6 +83,28 @@ public class MagnetGroup {
         }
     }
 
+    protected JSONObject getJSON() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("id", id);
+            object.put("title", title);
+            object.put("point", point);
+
+            JSONArray jsonMagnets = new JSONArray();
+            for (List<Magnet> magnetRow : magnets) {
+                JSONArray jsonMagnetRow = new JSONArray();
+                for (Magnet magnet : magnetRow)
+                    jsonMagnetRow.put(magnet.getJSON());
+                jsonMagnets.put(jsonMagnetRow);
+            }
+            object.put("magnets", jsonMagnets);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
     public int getMagnetCount() {
         int count = 0;
         for (List<Magnet> magnetRow : magnets)
@@ -109,9 +131,6 @@ public class MagnetGroup {
 
     public void actionCreateMagnetChild(PointF pointF, String title, String content, final int color) {
         mediator.getMindmap().actionCreateMagnetChild(this, pointF, title, content, color);
-    }
-    public void actionCreateMagnetChild(PointF pointF, Note noteReference) {
-        mediator.getMindmap().actionCreateMagnetChild(this, pointF, noteReference);
     }
 
     public void actionChangeData(String newTitle) {

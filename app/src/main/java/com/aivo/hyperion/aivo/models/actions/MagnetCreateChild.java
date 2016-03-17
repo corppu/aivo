@@ -24,22 +24,13 @@ public class MagnetCreateChild extends MagnetAction {
         this.magnetGroup = new MagnetGroup(mediator, pointF);
         this.magnet = new Magnet(mediator, magnetGroup, title, content, color);
         this.line = new Line(mediator, this.parentMagnetGroup, this.magnetGroup);
-    }
 
-    public MagnetCreateChild(ModelMediator mediator, MagnetGroup parentMagnetGroup, PointF pointF, Note noteReference) {
-        setMediator(mediator);
-        this.parentMagnetGroup = parentMagnetGroup;
-        this.magnetGroup = new MagnetGroup(mediator, pointF);
-        this.magnet = new Magnet(mediator, magnetGroup, noteReference);
-        this.line = new Line(mediator, this.parentMagnetGroup, this.magnetGroup);
+        // Only need to add the line to the NEW magnetgroup, insert adds it to the other
+        this.magnetGroup.getLines().add(line);
     }
 
     @Override
     void execute() {
-        mediator.getMindmap().getMagnetGroups().add(magnetGroup);
-        mediator.getMindmap().getLines().add(line);
-        line.getMagnetGroup1().getLines().add(line);
-        line.getMagnetGroup2().getLines().add(line);
         insertMagnetIntoGroup(magnet, magnetGroup, 0, 0);
 
         for (ModelListener listener : mediator.getListeners()) {
@@ -52,11 +43,7 @@ public class MagnetCreateChild extends MagnetAction {
 
     @Override
     void undo() {
-        mediator.getMindmap().getLines().remove(line);
-        line.getMagnetGroup1().getLines().remove(line);
-        line.getMagnetGroup2().getLines().remove(line);
         removeMagnetFromGroup(magnet, magnetGroup);
-        mediator.getMindmap().getMagnetGroups().remove(magnetGroup);
 
         for (ModelListener listener : mediator.getListeners()) {
             listener.onLineDelete(line);

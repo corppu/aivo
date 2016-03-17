@@ -64,6 +64,20 @@ public class Magnet extends Note {
         }
     }
 
+    protected JSONObject getJSON() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("id", id);
+            object.put("title", title);
+            object.put("content", content);
+            object.put("color", color);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
+
     public void actionChangeData(String newTitle) {
         Action action = new MagnetChangeData(mediator, this, newTitle, content, color);
         mediator.getMindmap().getActionHandler().executeAction(action);
