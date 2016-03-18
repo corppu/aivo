@@ -8,7 +8,8 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:background="@color/colorToolBarBackground"
-    app:popupTheme="@style/AppTheme.AppBarOverlay">
+    app:popupTheme="@style/AppTheme.AppBarOverlay"
+    android:clickable="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -21,6 +22,18 @@
             android:clickable="true"
             android:layout_marginLeft="5dp"
             android:background="@drawable/ic_contents" />
+
+        <Button
+            android:id="@+id/search_imagebutton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:background="@drawable/search_button"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true"
+            style="?android:attr/borderlessButtonStyle"
+            android:contextClickable="false"
+            android:enabled="true" />
 
         <Button android:layout_alignParentRight="true"
             android:id="@+id/side_note_button"
