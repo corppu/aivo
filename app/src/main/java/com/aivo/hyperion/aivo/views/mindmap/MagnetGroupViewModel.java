@@ -19,6 +19,29 @@ import java.util.Map;
  * Created by corppu on 23.2.2016.
  */
 public class MagnetGroupViewModel {
+
+    static public int[] getRowCol(MagnetGroupViewModel magnetGroupViewModel, MagnetViewModel magnetViewModel) {
+        int[] rVal = new int[2];
+
+        rVal[0] = 0;
+        rVal[1] = 0;
+
+        RectF rectFA = new RectF();
+        magnetViewModel.getOuterRectF(rectFA);
+        RectF rectFB = new RectF();
+        for (ArrayList<MagnetViewModel> magnetViewModels : magnetGroupViewModel.magnetViewModels) {
+            for (MagnetViewModel magnetViewModelB : magnetViewModels) {
+                magnetViewModelB.getOuterRectF(rectFB);
+                if (rectFA.left < rectFB.left) break;
+                ++rVal[1];
+            }
+            if (rectFA.top < rectFB.top) break;
+            ++rVal[0];
+        }
+
+        return rVal;
+    }
+
     // Retrieve view constants from dimensions.xml
     private Context mContext;
     private final Map<Magnet, MagnetViewModel> mMagnetMagnetViewModelMap;
@@ -34,6 +57,31 @@ public class MagnetGroupViewModel {
     // From model
     private MagnetGroup mMagnetGroup;
     private String mTitle;
+
+    // View model state stuff
+    private boolean mIsGhost;
+    private boolean mIsSelected;
+
+    public boolean getIsGhost() { return mIsGhost; }
+    public void setIsGhost(boolean isGhost) {
+        mIsGhost = isGhost;
+        for (ArrayList<MagnetViewModel> magnetViewModels : this.magnetViewModels) {
+            for (MagnetViewModel magnetViewModel : magnetViewModels) {
+                magnetViewModel.setIsGhost(isGhost);
+            }
+        }
+    }
+    public boolean getIsSelected() { return  mIsSelected; }
+    public void setIsSelected(boolean isSelected) {
+        mIsSelected = isSelected;
+//        if (mSize == 1) magnetViewModels.get(0).get(0).setIsSelected(mIsSelected);
+//        for (ArrayList<MagnetViewModel> magnetViewModels : this.magnetViewModels) {
+//            for (MagnetViewModel magnetViewModel : magnetViewModels) {
+//                magnetViewModel.setIsSelected(isSelected);
+//            }
+//        }
+    }
+
 
     public MagnetViewModel getMagnetViewModel(int row, int column) {
         return magnetViewModels.get(row).get(column);
@@ -53,7 +101,7 @@ public class MagnetGroupViewModel {
             mSize = 1;
         }
         else {
-            PointF pointF = new PointF(mOuterRectF.left, mOuterRectF.top);
+            PointF pointF = new PointF(mOuterRectF.left + MagnetViewModel.HIGHLIGHT_BORDER_SIZE, mOuterRectF.top + MagnetViewModel.HIGHLIGHT_BORDER_SIZE);
             for (List<Magnet> magnets : mMagnetGroup.getMagnets()) {
                 ArrayList<MagnetViewModel> magnetViewModelList = new ArrayList<>();
                 for (Magnet magnet : magnets) {
@@ -65,19 +113,21 @@ public class MagnetGroupViewModel {
                     ++mSize;
                     Log.d("MagnetGroupViewModel", "New magnet added to group" + pointF.toString());
                 }
-                magnetViewModels.add(magnetViewModelList);
-                pointF.y += MagnetViewModel.OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE * 2;
+                if (magnetViewModelList.size() != 0) {
+                    magnetViewModels.add(magnetViewModelList);
+                    pointF.y += MagnetViewModel.OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE * 2;
+                }
                 mOuterRectF.bottom = pointF.y;
-                pointF.x = mOuterRectF.left;
+                pointF.x = mOuterRectF.left + MagnetViewModel.HIGHLIGHT_BORDER_SIZE;
             }
         }
     }
 
     // For view-model:
-    static private final int maxRowSize = 5;
-    private int currentRowSize;
-    static private final int maxRowCount = 4;
-    private int currentRowCount;
+//    static private final int maxRowSize = 5;
+//    private int currentRowSize;
+//    static private final int maxRowCount = 4;
+//    private int currentRowCount;
 
     private RectF mOuterRectF;
     private ArrayList<ArrayList<MagnetViewModel>> magnetViewModels;
@@ -140,12 +190,23 @@ public class MagnetGroupViewModel {
     static public void draw(MagnetGroupViewModel magnetGroupViewModel, Canvas canvas, Paint paint) {
 
         if (magnetGroupViewModel.mSize > 1) {
-            paint.setColor(MagnetViewModel.HIGHLIGHT_BORDER_COLOR);
-            canvas.drawRect(magnetGroupViewModel.mOuterRectF, paint);
-
+            if (magnetGroupViewModel.mIsSelected || magnetGroupViewModel.mIsGhost) {
+                paint.setColor(MagnetViewModel.HIGHLIGHT_BORDER_COLOR);
+                if (magnetGroupViewModel.mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);
+                canvas.drawRect(magnetGroupViewModel.mOuterRectF, paint);
+            }
             paint.setColor(MagnetViewModel.BORDER_COLOR);
+            if (magnetGroupViewModel.mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);
+
             canvas.drawRect(magnetGroupViewModel.mOuterRectF.left + MagnetViewModel.HIGHLIGHT_BORDER_SIZE, magnetGroupViewModel.mOuterRectF.top + MagnetViewModel.HIGHLIGHT_BORDER_SIZE,
                     magnetGroupViewModel.mOuterRectF.right - MagnetViewModel.HIGHLIGHT_BORDER_SIZE, magnetGroupViewModel.mOuterRectF.bottom - MagnetViewModel.HIGHLIGHT_BORDER_SIZE, paint);
+
+            paint.setColor(MagnetViewModel.CONTENT_COLOR);
+            if (magnetGroupViewModel.mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);
+
+            canvas.drawRect(magnetGroupViewModel.mOuterRectF.left + MagnetViewModel.HIGHLIGHT_BORDER_SIZE + MagnetViewModel.BORDER_SIZE, magnetGroupViewModel.mOuterRectF.top + MagnetViewModel.HIGHLIGHT_BORDER_SIZE + MagnetViewModel.BORDER_SIZE,
+                    magnetGroupViewModel.mOuterRectF.right - MagnetViewModel.HIGHLIGHT_BORDER_SIZE - MagnetViewModel.BORDER_SIZE, magnetGroupViewModel.mOuterRectF.bottom - MagnetViewModel.HIGHLIGHT_BORDER_SIZE - MagnetViewModel.BORDER_SIZE, paint);
+
         }
 
         for (ArrayList<MagnetViewModel> magnetViewModels : magnetGroupViewModel.magnetViewModels) {

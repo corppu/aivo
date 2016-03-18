@@ -17,11 +17,24 @@ import java.util.Map;
  * Created by corpp on 23.2.2016.
  */
 public class LineViewModel {
+
+    public PointF getMiddlePointF() {
+        return middlePointF;
+    }
+
     private Line mLine = null;
     private MagnetGroupViewModel mParentMagnetGroupViewModel = null;
     private MagnetGroupViewModel mChildMagnetGroupViewModel = null;
     private boolean mIsGhost = true;
     private boolean mIsSelected = true;
+
+    public boolean getIsGhost() { return mIsGhost; }
+    public void setIsGhost(boolean isGhost) { mIsGhost = isGhost; }
+    public boolean getIsSelected() { return  mIsSelected; }
+    public void setIsSelected(boolean isSelected) {
+        mIsSelected = isSelected;
+    }
+
     private int mColor = 0;
     private PointF middlePointF = new PointF(0,0);
 
@@ -86,7 +99,7 @@ public class LineViewModel {
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        if (mIsSelected) {
+        if (mIsSelected || mIsGhost) {
             paint.setColor(MagnetViewModel.HIGHLIGHT_BORDER_COLOR);
             paint.setStrokeWidth(MagnetViewModel.HIGHLIGHT_BORDER_SIZE);
             if (mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);

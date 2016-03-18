@@ -164,6 +164,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         Log.d(TAG, "magnet has changed");
 
         mMagnetMagnetViewModelHashMap.get(magnet).refresh();
+        invalidate();
     }
 
     @Override
@@ -177,17 +178,23 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public void onLineCreate(Line line) {
         LineViewModel lineViewModel = new LineViewModel(line, mMagnetGroupMagnetViewModelHashMap);
         mLineViewModelHashMap.put(line, lineViewModel);
+        if (line.getPoints().isEmpty()) {
+            line.actionAddPoint(lineViewModel.getMiddlePointF(), 0);
+        }
+
         invalidate();
     }
 
     @Override
     public void onLineChange(Line line) {
         mLineViewModelHashMap.get(line).refresh();
+        invalidate();
     }
 
     @Override
     public void onLineDelete(Line line) {
         mLineViewModelHashMap.remove(line);
+        invalidate();
     }
 
     @Override
@@ -227,23 +234,26 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                 if (magnetViewModel != null) {
 
                     if (magnetGroupViewModelParent.getSize() > 1) {
-                        magnetViewModel.setSelected(true);
+                        magnetViewModel.setIsGhost(true);
                         mActionDownMagnetViewModels.put(pointerId, magnetViewModel);
                         return true;
                     }
-                    else if (MagnetViewModel.bottomIconPressed(magnetViewModel, x, y)) {
+                    else if (magnetViewModel.getIsSelected() && MagnetViewModel.bottomIconPressed(magnetViewModel, x, y)) {
 
                         magnetGroupViewModel = new MagnetGroupViewModel(x, y);
                         lineViewModel = new LineViewModel(magnetGroupViewModelParent, magnetGroupViewModel);
+
                         mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModel);
                         mActionDownLineViewModels.append(pointerId, lineViewModel);
+                        lineViewModel.setIsGhost(true);
                         return true;
                     }
                     else {
-                        magnetViewModel.setSelected(true);
+                        magnetViewModel.setIsGhost(true);
                     }
                 }
                 Log.d(TAG, "Pointer holds a group");
+                magnetGroupViewModelParent.setIsGhost(true);
                 mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModelParent);
                 return true;
             }
@@ -254,6 +264,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             if (lineViewModell.contains(x, y)
                     && mActionDownLineViewModels.indexOfValue(lineViewModell) == -1) {
                 mActionDownLineViewModels.append(pointerId, lineViewModell);
+                lineViewModell.setIsGhost(true);
                 break;
             }
         }
@@ -270,17 +281,41 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         PointF pointF = new PointF();
         MagnetViewModel magnetViewModel = mActionDownMagnetViewModels.get(pointerId);
 
-
+        MagnetGroupViewModel magnetGroupViewModel;
         if (magnetViewModel != null) {
+            magnetViewModel.setIsGhost(false);
             mActionDownMagnetViewModels.remove(pointerId);
+
+
+            magnetGroupViewModel = mMagnetGroupMagnetViewModelHashMap.get(magnetViewModel.getModel().getMagnetGroup());
+            magnetGroupViewModel.setIsGhost(false);
+            if (MagnetGroupViewModel.contains(magnetGroupViewModel, magnetViewModel.getCenterX(), magnetViewModel.getCenterY())) {
+//                magnetGroupViewModel.refresh();
+//                return true;
+
+                int[] rowCol = MagnetGroupViewModel.getRowCol(magnetGroupViewModel, magnetViewModel);
+                magnetViewModel.getModel().actionMoveTo(magnetGroupViewModel.getModel(), rowCol[0], rowCol[1]);
+                return true;
+            }
+
+            for (MagnetGroupViewModel magnetGroupViewModelz : mMagnetGroupMagnetViewModelHashMap.values()) {
+                if (MagnetGroupViewModel.contains(magnetGroupViewModelz, magnetViewModel.getCenterX(), magnetViewModel.getCenterY())) {
+                    int[] rowCol = MagnetGroupViewModel.getRowCol(magnetGroupViewModelz, magnetViewModel);
+                    magnetViewModel.getModel().actionMoveTo(magnetGroupViewModelz.getModel(), rowCol[0], rowCol[1]);
+                    return true;
+                }
+            }
+
+
             magnetViewModel.getCenterPointF(pointF);
             magnetViewModel.getModel().actionMoveTo(pointF);
             return true;
         }
 
 
-        MagnetGroupViewModel magnetGroupViewModel = mActionDownMagnetGroupViewModels.get(pointerId);
+        magnetGroupViewModel = mActionDownMagnetGroupViewModels.get(pointerId);
         if (magnetGroupViewModel != null) {
+            magnetGroupViewModel.setIsGhost(false);
             mActionDownMagnetGroupViewModels.remove(pointerId);
 
             magnetGroupViewModel.getCenterPointF(pointF);
@@ -294,7 +329,9 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                         if (magnetGroupViewModelz.getModel() == magnetGroupViewModel.getModel()) continue;
                         if (MagnetGroupViewModel.contains(magnetGroupViewModelz, pointF.x, pointF.y)) {
                             if (!magnetViewModel.getModel().getMagnetGroup().equals(magnetGroupViewModelz.getModel())) {
-                                magnetViewModel.getModel().actionMoveTo(magnetGroupViewModelz.getModel(), 0, 0);
+
+                                int[] rowCol = MagnetGroupViewModel.getRowCol(magnetGroupViewModelz, magnetViewModel);
+                                magnetViewModel.getModel().actionMoveTo(magnetGroupViewModelz.getModel(), rowCol[0], rowCol[1]);
                             } else {
                                 continue;
                             }
@@ -304,6 +341,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                     }
                 }
 
+
                 pointF.x -= magnetGroupViewModel.halfWidth();
                 pointF.y -= magnetGroupViewModel.halfHeight();
                 magnetGroup.actionMoveTo(pointF);
@@ -312,10 +350,27 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                 LineViewModel lineViewModel = mActionDownLineViewModels.get(pointerId);
 
                 if (lineViewModel != null) {
-                    MainActivity.getModelMediator().getMindmap().actionCreateMagnetChild(lineViewModel.getParent().getModel(), pointF, "title", "content", Color.CYAN);
                     mActionDownLineViewModels.remove(pointerId);
-                } else {
-                    MainActivity.getModelMediator().getMindmap().actionCreateMagnet(pointF, "title", "content", Color.CYAN);
+                    lineViewModel.setIsGhost(false);
+
+                    for (MagnetGroupViewModel magnetGroupViewModelz : mMagnetGroupMagnetViewModelHashMap.values()) {
+                        if (MagnetGroupViewModel.contains(magnetGroupViewModelz, pointF.x, pointF.y) && lineViewModel.getParent().getModel() != magnetGroupViewModelz.getModel()) {
+                            lineViewModel.getParent().getModel().actionCreateLine(magnetGroupViewModelz.getModel());
+                            invalidate();
+                            return true;
+                        }
+                    }
+
+                    Log.d("ASD", "createMagnet" + pointF.toString());
+
+                    ((MainActivity)this.getContext()).onCreateMagnet(lineViewModel.getParent().getModel(), pointF);
+                    //MainActivity.getModelMediator().getMindmap().actionCreateMagnetChild(lineViewModel.getParent().getModel(), pointF);
+                }
+                else {
+                    Log.d("ASD", "createMagnet" + pointF.toString());
+
+                    ((MainActivity)this.getContext()).onCreateMagnet(pointF);
+                    //MainActivity.getModelMediator().getMindmap().actionCreateMagnet(pointF);
                 }
             }
 
@@ -326,6 +381,8 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         LineViewModel lineViewModel = mActionDownLineViewModels.get(e.getPointerId(pointerIndex));
         if (lineViewModel != null) {
             mActionDownLineViewModels.remove(e.getPointerId(pointerIndex));
+            lineViewModel.setIsGhost(false);
+            lineViewModel.getLine().actionMovePoint(lineViewModel.getLine().getPoints().get(0), lineViewModel.getMiddlePointF());
             invalidate();
         }
         return true;
@@ -441,7 +498,6 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
-
      private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mScaleGestureDetector = new ScaleGestureDetector(context, this);
         mGestureDetector = new GestureDetector(context, this);
@@ -451,21 +507,68 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
          Log.d(TAG, "init(MAX_X,MAX_Y):" + Float.toString(MAX_X) + ", " + Float.toString(MAX_Y));
       }
 
+    private MagnetGroupViewModel mSelectedMagnetGroupViewModel;
+    private MagnetViewModel mSelectedMagnetViewModel;
+    private LineViewModel mSelectedLineViewModel;
+
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
         Log.d(TAG, "onSingleTapConfirmed: " + e.toString());
-//        final float x = e.getX() / mScaleFactor + mClipBounds.left;
-//        final float y = e.getY() / mScaleFactor + mClipBounds.top;
+        final float x = e.getX() / mScaleFactor + mClipBounds.left;
+        final float y = e.getY() / mScaleFactor + mClipBounds.top;
+
+        if (mSelectedLineViewModel != null) {
+            mSelectedLineViewModel.setIsSelected(false);
+            mSelectedLineViewModel = null;
+        }
+        if (mSelectedMagnetViewModel != null) {
+            mSelectedMagnetViewModel.setIsSelected(false);
+            mSelectedMagnetViewModel = null;
+        }
+        if (mSelectedMagnetGroupViewModel != null) {
+            mSelectedMagnetGroupViewModel.setIsSelected(false);
+            mSelectedMagnetGroupViewModel = null;
+        }
+
+        for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
+            if (MagnetGroupViewModel.contains(magnetGroupViewModel, x, y)) {
+                MagnetViewModel magnetViewModel = MagnetGroupViewModel.getMagnetViewModel(magnetGroupViewModel, x, y);
+                if (magnetViewModel == null) {
+                    mSelectedMagnetGroupViewModel = magnetGroupViewModel;
+                    magnetGroupViewModel.setIsSelected(!magnetGroupViewModel.getIsSelected());
+                    invalidate();
+                    return true;
+                } else {
+                    mSelectedMagnetViewModel = magnetViewModel;
+                    magnetViewModel.setIsSelected(!magnetViewModel.getIsSelected());
+                    invalidate();
+                    return true;
+                }
+            }
+        }
+
+        for (LineViewModel lineViewModel : mLineViewModelHashMap.values()) {
+            if (lineViewModel.contains(x,y)) {
+                mSelectedLineViewModel = lineViewModel;
+                lineViewModel.setIsSelected(!lineViewModel.getIsSelected());
+            }
+        }
+        invalidate();
         return true;
     }
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
         Log.d(TAG, "onDoubleTap: " + e.toString());
-            final float x = e.getX() / mScaleFactor + mClipBounds.left;
-            final float y = e.getY() / mScaleFactor + mClipBounds.top;
-            MainActivity.getModelMediator().getMindmap().actionCreateMagnet(new PointF(x, y), "title", "content", Color.CYAN);
-            invalidate();
+        final float x = e.getX() / mScaleFactor + mClipBounds.left;
+        final float y = e.getY() / mScaleFactor + mClipBounds.top;
+        if (mSelectedMagnetViewModel != null && MagnetViewModel.contains(mSelectedMagnetViewModel, x ,y)) {
+            ((MainActivity)this.getContext()).onEditMagnet(mSelectedMagnetViewModel.getModel());
+        }
+        else {
+            ((MainActivity) this.getContext()).onCreateMagnet(new PointF(x, y));
+        }
+        invalidate();
         return true;
     }
 
@@ -478,8 +581,6 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     @Override
     public boolean onDown(MotionEvent e) {
         Log.d(TAG, "onDown: " + e.toString());
-        Log.d("TIEDOT", Float.toString(MAX_X) + Float.toString(MAX_Y));
-
         return true;
     }
 
@@ -513,34 +614,30 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             MagnetGroup magnetGroup = magnetGroupViewModel.getModel();
             if (magnetGroup != null) {
                 mActionDownMagnetGroupViewModels.remove(pointerId);
-
-//                mMagnetGroupMagnetViewModelHashMap.remove(magnetGroup);
                 Magnet magnet = magnetGroup.getMagnets().get(0).get(0);
-//                mMagnetMagnetViewModelHashMap.remove(magnet);
                 magnet.actionDelete();
                 return;
             }
         }
+
         MagnetViewModel magnetViewModel = mActionDownMagnetViewModels.get(pointerId);
         if (magnetViewModel != null) {
             Magnet magnet = magnetViewModel.getModel();
             if (magnet != null) {
                 mActionDownMagnetViewModels.remove(pointerId);
-//                mMagnetMagnetViewModelHashMap.remove(magnet);
                 magnet.actionDelete();
                 return;
             }
         }
+
         LineViewModel lineViewModel = mActionDownLineViewModels.get(pointerId);
         if (lineViewModel != null) {
             Line line = lineViewModel.getLine();
             if (line != null) {
                 mActionDownLineViewModels.remove(pointerId);
-//                mLineViewModelHashMap.remove(line);
                 line.actionDelete();
             }
         }
-
     }
 
     @Override

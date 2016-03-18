@@ -34,8 +34,11 @@ public class MagnetViewModel {
     private boolean mIsGhost;
     private boolean mIsSelected;
 
-    public void setSelected(boolean selected) {
-        mIsSelected = selected;
+    public boolean getIsGhost() { return mIsGhost; }
+    public void setIsGhost(boolean isGhost) { mIsGhost = isGhost; }
+    public boolean getIsSelected() { return  mIsSelected; }
+    public void setIsSelected(boolean isSelected) {
+        mIsSelected = isSelected;
     }
 
     // Model related
@@ -92,12 +95,6 @@ public class MagnetViewModel {
         centerPointF.set(mCenterPointF);
     }
 
-
-    private boolean hasVid;
-    private boolean hasImg;
-
-
-
     static public final Bitmap VID_ICON = BitmapFactory.decodeResource(MainActivity.getContext().getResources(), R.mipmap.ic_launcher);
     static public final Bitmap IMG_ICON = BitmapFactory.decodeResource(MainActivity.getContext().getResources(), R.mipmap.ic_launcher);
 
@@ -124,7 +121,7 @@ public class MagnetViewModel {
     static public final int TEXT_COLOR = Color.BLACK;
     static public final String TITLE = "Preview";
     static public final int INDICATOR_ICON_SIZE = HIGHLIGHT_BORDER_SIZE;
-    static public final int GHOST_ALPHA = 120;
+    static public final int GHOST_ALPHA = 100;
     static public final int OUTER_HALF_WIDTH_WITH_INDICATOR_SIZE = HALF_WIDTH + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
     static public final int OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE = HALF_HEIGHT + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
 
@@ -138,7 +135,7 @@ public class MagnetViewModel {
     }
 
     static public void draw(MagnetViewModel magnetViewModel, Canvas canvas, Paint paint) {
-        if (magnetViewModel.mIsSelected) {
+        if (magnetViewModel.mIsSelected || magnetViewModel.mIsGhost) {
             // Draw highlight borders
             paint.setColor(HIGHLIGHT_BORDER_COLOR);
             if (magnetViewModel.mIsGhost) paint.setAlpha(GHOST_ALPHA);
@@ -184,43 +181,48 @@ public class MagnetViewModel {
         canvas.drawCircle(magnetViewModel.mTopIconCenterPointF.x, magnetViewModel.mTopIconCenterPointF.y, CIRLCE_RADIUS + BORDER_SIZE, paint);
 
         // Draw top icon
-        paint.setColor(Color.argb(255, MainActivity.getRandom().nextInt(255), MainActivity.getRandom().nextInt(255), MainActivity.getRandom().nextInt(255)));
+        paint.setColor(magnetViewModel.mColor);
+        //paint.setColor(Color.argb(255, MainActivity.getRandom().nextInt(255), MainActivity.getRandom().nextInt(255), MainActivity.getRandom().nextInt(255)));
         if (magnetViewModel.mIsGhost) paint.setAlpha(GHOST_ALPHA);
 
         canvas.drawCircle(magnetViewModel.mTopIconCenterPointF.x, magnetViewModel.mTopIconCenterPointF.y, CIRLCE_RADIUS, paint);
 //        canvas.drawBitmap(viewModel.topIcon, mCenterPointF.x - CIRLCE_RADIUS, viewModel.pointF.y - HALF_HEIGHT - CIRLCE_RADIUS, paint);
 
         // Draw bottom icon borders
-        paint.setColor(BORDER_COLOR);
-        if (magnetViewModel.mIsGhost) paint.setAlpha(GHOST_ALPHA);
+        if(magnetViewModel.mIsSelected && magnetViewModel.getModel() != null && magnetViewModel.getModel().getMagnetGroup().getMagnetCount() == 1) {
+            paint.setColor(BORDER_COLOR);
+            if (magnetViewModel.mIsGhost) paint.setAlpha(GHOST_ALPHA);
 
-        canvas.drawCircle(magnetViewModel.mBottomIconCenterPointF.x, magnetViewModel.mBottomIconCenterPointF.y, CIRLCE_RADIUS + BORDER_SIZE, paint);
+            canvas.drawCircle(magnetViewModel.mBottomIconCenterPointF.x, magnetViewModel.mBottomIconCenterPointF.y, CIRLCE_RADIUS + BORDER_SIZE, paint);
 
-        // Draw bottom icon
-        paint.setColor(CONTENT_COLOR);
-        if (magnetViewModel.mIsGhost) paint.setAlpha(GHOST_ALPHA);
-        canvas.drawCircle(magnetViewModel.mBottomIconCenterPointF.x, magnetViewModel.mBottomIconCenterPointF.y, CIRLCE_RADIUS, paint);
+            // Draw bottom icon
+            paint.setColor(CONTENT_COLOR);
+            if (magnetViewModel.mIsGhost) paint.setAlpha(GHOST_ALPHA);
+            canvas.drawCircle(magnetViewModel.mBottomIconCenterPointF.x, magnetViewModel.mBottomIconCenterPointF.y, CIRLCE_RADIUS, paint);
 
-        paint.setColor(BORDER_COLOR);
-        if (magnetViewModel.mIsGhost) paint.setAlpha(GHOST_ALPHA);
+            paint.setColor(BORDER_COLOR);
+            if (magnetViewModel.mIsGhost) paint.setAlpha(GHOST_ALPHA);
 
-        // Draw cross or bitmap icon
-        paint.setStrokeWidth(BORDER_SIZE);
-        canvas.drawLine(
-                magnetViewModel.mBottomIconCenterPointF.x - CIRLCE_RADIUS,
-                magnetViewModel.mBottomIconCenterPointF.y,
-                magnetViewModel.mBottomIconCenterPointF.x + CIRLCE_RADIUS,
-                magnetViewModel.mBottomIconCenterPointF.y, paint);
+            // Draw cross or bitmap icon
+            paint.setStrokeWidth(BORDER_SIZE);
+            canvas.drawLine(
+                    magnetViewModel.mBottomIconCenterPointF.x - CIRLCE_RADIUS,
+                    magnetViewModel.mBottomIconCenterPointF.y,
+                    magnetViewModel.mBottomIconCenterPointF.x + CIRLCE_RADIUS,
+                    magnetViewModel.mBottomIconCenterPointF.y, paint);
 
-        canvas.drawLine(
-                magnetViewModel.mBottomIconCenterPointF.x,
-                magnetViewModel.mBottomIconCenterPointF.y - CIRLCE_RADIUS,
-                magnetViewModel.mBottomIconCenterPointF.x,
-                magnetViewModel.mBottomIconCenterPointF.y + CIRLCE_RADIUS, paint);
+            canvas.drawLine(
+                    magnetViewModel.mBottomIconCenterPointF.x,
+                    magnetViewModel.mBottomIconCenterPointF.y - CIRLCE_RADIUS,
+                    magnetViewModel.mBottomIconCenterPointF.x,
+                    magnetViewModel.mBottomIconCenterPointF.y + CIRLCE_RADIUS, paint);
+        }
 
         // Draw text
         RectF rectF = new RectF();
         rectF.set(magnetViewModel.mTopIconCenterPointF.x - HALF_WIDTH - BORDER_SIZE, magnetViewModel.mTopIconCenterPointF.y + CIRLCE_RADIUS, magnetViewModel.mTopIconCenterPointF.x + HALF_WIDTH + BORDER_SIZE, magnetViewModel.mBottomIconCenterPointF.y - CIRLCE_RADIUS);
+
+        paint.setColor(BORDER_COLOR);
         canvas.drawRoundRect(rectF,
                 ROUND_RADIUS,
                 ROUND_RADIUS,
@@ -244,18 +246,16 @@ public class MagnetViewModel {
 
         paint.setFakeBoldText(true);
         paint.setTextAlign(Paint.Align.CENTER);
-        canvas.drawText(TITLE, magnetViewModel.mCenterPointF.x, magnetViewModel.mCenterPointF.y + CIRLCE_RADIUS / 2, paint);
+        canvas.drawText(magnetViewModel.mTitle, magnetViewModel.mCenterPointF.x, magnetViewModel.mCenterPointF.y + CIRLCE_RADIUS / 2, paint);
 
-        magnetViewModel.hasVid = MainActivity.getRandom().nextBoolean();
-        if (magnetViewModel.hasVid) {
+        if (magnetViewModel.mHasVideo) {
             canvas.drawBitmap(Bitmap.createScaledBitmap(VID_ICON, HIGHLIGHT_BORDER_SIZE, HIGHLIGHT_BORDER_SIZE, true),
                     magnetViewModel.mCenterPointF.x + HALF_WIDTH + HIGHLIGHT_BORDER_SIZE,
                     magnetViewModel.mCenterPointF.y - HALF_HEIGHT,
                     null);
         }
 
-        magnetViewModel.hasImg = MainActivity.getRandom().nextBoolean();
-        if (magnetViewModel.hasImg) {
+        if (magnetViewModel.mHasImage) {
             canvas.drawBitmap(Bitmap.createScaledBitmap(IMG_ICON, HIGHLIGHT_BORDER_SIZE, HIGHLIGHT_BORDER_SIZE, true),
                     magnetViewModel.mCenterPointF.x + HALF_WIDTH + HIGHLIGHT_BORDER_SIZE,
                     magnetViewModel.mCenterPointF.y,
