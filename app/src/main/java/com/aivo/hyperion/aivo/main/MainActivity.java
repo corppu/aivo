@@ -37,6 +37,19 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
         implements ModelListener, MindmapFragment.OnMindmapFragmentInteractionListener, NoteFragment.OnNoteFragmentInteractionListener {
+
+    SideNoteFragment sideNoteFragment;
+    MainMenuFragment mainMenuFragment;
+    SearchFragment searchFragment;
+    Button sideBtn;
+    Button mainMenuButton;
+    Button searchButton;
+    Boolean isSideNoteVisible = false;
+    Boolean isMainMenuVisible = true;
+    Boolean isSearchPanelVisible = false;
+    RelativeLayout sidePanel;
+    RelativeLayout searchPanel;
+
     private static final String TAG = "MainActivity";
 
     private static final String DEFAULT_USERNAME = "User 1";
@@ -94,21 +107,6 @@ public class MainActivity extends AppCompatActivity
         getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, mMindmapFragment).commit();
     }
 
-
-
-
-
-    SideNoteFragment sideNoteFragment;
-    MainMenuFragment mainMenuFragment;
-    SearchFragment searchFragment;
-    Button sideBtn;
-    Button mainMenuButton;
-    Button searchButton;
-    Boolean isSideNoteVisible = false;
-    Boolean isMainMenuVisible = true;
-    Boolean isSearchPanelVisible = false;
-    RelativeLayout sidePanel;
-    RelativeLayout searchPanel;
 
     static private Random sRandom = new Random();
     public static Random getRandom() { return sRandom; }
@@ -197,19 +195,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
-
-        if (sidePanel != null) {
-            ViewGroup.LayoutParams params =  sidePanel.getLayoutParams();
-
-            if (params != null) {
-                RelativeLayout.LayoutParams params1 = (RelativeLayout.LayoutParams)params;
-
-                if (params1 != null) params1.rightMargin = params1.rightMargin * -1;
-            }
-            // make the right margin negative so the view is moved to the right of the screen
-
-        }
     }
 
     @Override
