@@ -87,6 +87,12 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener {
         return mainMenuView;
     }
 
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        mListener = null;
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -105,11 +111,7 @@ public class MainMenuFragment extends Fragment implements View.OnClickListener {
 //        }
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
+
 
     /**
      * This interface must be implemented by activities that contain this

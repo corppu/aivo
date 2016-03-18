@@ -3,15 +3,17 @@ package com.aivo.hyperion.aivo.main;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PointF;
+import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentTransaction;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -29,8 +31,8 @@ import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.mindmap.MagnetViewModel;
 import com.aivo.hyperion.aivo.views.mindmap.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
+import com.aivo.hyperion.aivo.views.SearchFragment;
 import com.aivo.hyperion.aivo.views.SideNoteFragment;
-
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity
@@ -87,7 +89,6 @@ public class MainActivity extends AppCompatActivity
         mNoteFragment.show(getFragmentManager(), "noteFragment");
     }
 
-    private MindmapFragment mMindmapFragment;
     private void openMindmapFragment(String title) {
         mMindmapFragment = MindmapFragment.newInstance(title);
         getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, mMindmapFragment).commit();
@@ -99,16 +100,21 @@ public class MainActivity extends AppCompatActivity
 
     SideNoteFragment sideNoteFragment;
     MainMenuFragment mainMenuFragment;
+    SearchFragment searchFragment;
     Button sideBtn;
     Button mainMenuButton;
+    Button searchButton;
     Boolean isSideNoteVisible = false;
     Boolean isMainMenuVisible = true;
-    FrameLayout sidePanel;
+    Boolean isSearchPanelVisible = false;
+    RelativeLayout sidePanel;
+    RelativeLayout searchPanel;
 
     static private Random sRandom = new Random();
     public static Random getRandom() { return sRandom; }
 
     private static Context sTheContext;
+
     public static Context getContext() {
         return sTheContext;
     }
@@ -126,21 +132,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         sideNoteFragment = new SideNoteFragment();
         mainMenuFragment = new MainMenuFragment();
+        searchFragment = new SearchFragment();
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.add(R.id.contentAreaParent, mainMenuFragment);
         fragmentTransaction.add(R.id.contentAreaParent, sideNoteFragment);
+        fragmentTransaction.add(R.id.contentAreaParent, searchFragment);
         fragmentTransaction.commit();
 
 
         sideBtn = (Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
+        searchButton = (Button)findViewById(R.id.search_imagebutton);
         setButtonsOnClickListeners();
 
         sTheContext = MainActivity.this;
@@ -159,6 +169,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart(){
         super.onStart();
+        sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
+        searchPanel = (RelativeLayout) findViewById(R.id.search_bar);
+
+        RelativeLayout.LayoutParams sidePanelParams = (RelativeLayout.LayoutParams) sidePanel.getLayoutParams();
+        // make the right margin negative so the view is moved to the right of the screen
+        sidePanelParams.rightMargin = sidePanelParams.rightMargin * -1;
+
+        RelativeLayout.LayoutParams searchParams = (RelativeLayout.LayoutParams) searchPanel.getLayoutParams();
+        // make the top margin negative so the view is moved to the top of the screen
+        searchParams.topMargin = searchParams.topMargin * -1;
     }
 
 
@@ -169,7 +189,7 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.remove(sideNoteFragment);
         fragmentTransaction.remove(mainMenuFragment);
-//        fragmentTransaction.commitAllowingStateLoss();
+        fragmentTransaction.remove(searchFragment);
         fragmentTransaction.commit();
 //        mNoteFragment.dismiss();
     }
@@ -177,7 +197,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        sidePanel = (FrameLayout) findViewById(R.id.side_note_fragment);
+        sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
 
         if (sidePanel != null) {
             ViewGroup.LayoutParams params =  sidePanel.getLayoutParams();
@@ -205,12 +225,19 @@ public class MainActivity extends AppCompatActivity
                 // animate the side bar
                 if (isSideNoteVisible) {
                     // Start the animation
-                    // We have to translate to 0 because the view's default starting position is moved out of the screen bounds in onStart() method
-                    sidePanel.animate().translationX(0);
+                    Animation animation = new TranslateAnimation(-sidePanel.getWidth(), 0, 0, 0);
+                    animation.setDuration(300);
+                    animation.setFillAfter(true);
+                    sidePanel.startAnimation(animation);
+
                     isSideNoteVisible = false;
                 } else {
                     // Start the animation
-                    sidePanel.animate().translationX(-sidePanel.getWidth());
+                    Animation animation = new TranslateAnimation(0, -sidePanel.getWidth(), 0, 0);
+                    animation.setDuration(300);
+                    animation.setFillAfter(true);
+                    sidePanel.startAnimation(animation);
+
                     isSideNoteVisible = true;
                 }
             }
@@ -230,14 +257,39 @@ public class MainActivity extends AppCompatActivity
                 }
             }
         });
+
+        searchButton.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                if (isSearchPanelVisible) {
+                    Animation animation = new TranslateAnimation(0, 0, searchPanel.getHeight(), 0);
+                    animation.setDuration(250);
+                    animation.setFillAfter(true);
+                    searchPanel.startAnimation(animation);
+
+                    isSearchPanelVisible = false;
+                } else {
+                    Animation animation = new TranslateAnimation(0, 0, 0, searchPanel.getHeight());
+                    animation.setDuration(250);
+                    animation.setFillAfter(true);
+                    searchPanel.startAnimation(animation);
+
+                    isSearchPanelVisible = true;
+                }
+            }
+        });
     }
+
 
     @Override
     public void onUserOpen(User user) {
         sUser = user;
         sModelMediator.createMindmap("Default");
+        //sModelMediator.createSearch("Default");
     }
 
+
+    private MindmapFragment mMindmapFragment;
+    //private SearchFragment mSearchFragment;
 
     @Override
     public void onMindmapOpen(Mindmap mindmap) {
