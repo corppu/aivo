@@ -25,7 +25,7 @@ public class ModelMediator {
         mindmap = null;
         notes = new ArrayList<>();
         listeners = new ArrayList<>();
-        storageModule = new StorageModule(this);
+        storageModule = new StorageModule();
     }
 
     public void registerListener(ModelListener listener) {
@@ -48,7 +48,11 @@ public class ModelMediator {
 
     public List<ModelListener> getListeners() { return new ArrayList<>(listeners); }
 
-    public StorageModule getStorageModule() { return storageModule; }
+    public List<String> getMindmapTitles() {
+        if (user != null)
+            return storageModule.readMindmapTitles(user);
+        throw new InternalError("Tried to get mindmap titles without first opening a user!");
+    }
 
     //----------------------------------------------------------------------------------------------
     // Public open/close functions for User, Mindmap and Note
@@ -98,7 +102,7 @@ public class ModelMediator {
             throw new InternalError("Tried to create a Mindmap without first opening a User!");
 
         // Check that the title isn't used
-        if (isMindmapTitleUsed(title))
+        if (isMindmapTitleUsedOnCurrentUser(title))
             throw new InternalError("Tried to create a Mindmap with a used title!");
 
         // Close any opened Mindmap
@@ -108,7 +112,7 @@ public class ModelMediator {
         mindmap = new Mindmap(this, title);
         for (ModelListener listener : listeners) listener.onMindmapOpen(mindmap);
 
-        storageModule.saveMindmap(mindmap);
+        storageModule.saveMindmap(user, mindmap);
     }
 
     /** Close any open Mindmap and open another. Does nothing if the mindmap is not found.
@@ -117,7 +121,7 @@ public class ModelMediator {
      * @return          True if successful.
      */
     public boolean openMindmap(String title) {
-        Mindmap tempMindmap = storageModule.loadMindmap(title);
+        Mindmap tempMindmap = storageModule.loadMindmap(this, user, title);
 
         if (tempMindmap != null && closeMindmap()) {
             mindmap = tempMindmap;
@@ -136,7 +140,7 @@ public class ModelMediator {
         if (mindmap == null) return true;
 
         // Save the Mindmap locally
-        if (!storageModule.saveMindmap(mindmap))
+        if (!storageModule.saveMindmap(user, mindmap))
             return false;
 
         // Saved successfully, close mindmap
@@ -178,12 +182,16 @@ public class ModelMediator {
         for (ModelListener listener : listeners) listener.onNoteDelete(note);
     }
 
-    public boolean isMindmapTitleUsed(String title) {
-        return false;
+    public boolean isMindmapTitleUsedOnCurrentUser(String title) {
+        if (user != null && !storageModule.readMindmapTitles(user).contains(title))
+            return false;
+        return true;
     }
 
-    public boolean isNoteTitleUsed(String title) {
-        return false;
+    public boolean isNoteTitleUsedOnCurrentUser(String title) {
+        if (user != null && !storageModule.readNoteTitles(user).contains(title))
+            return false;
+        return true;
     }
 
 }
