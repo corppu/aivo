@@ -9,13 +9,10 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.aivo.hyperion.aivo.R;
@@ -28,7 +25,6 @@ import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
-import com.aivo.hyperion.aivo.views.mindmap.MagnetViewModel;
 import com.aivo.hyperion.aivo.views.mindmap.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
 import com.aivo.hyperion.aivo.views.SearchFragment;
@@ -83,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         sharedPreferences.getString(mMindmapTitle, DEFAULT_MINDMAP_TITLE);
         if (mMindmapTitle == DEFAULT_MINDMAP_TITLE) {
             int counter = 0;
-            while (sModelMediator.isMindmapTitleUsed(mMindmapTitle)) {
+            while (sModelMediator.isMindmapTitleUsedOnCurrentUser(mMindmapTitle)) {
                 mMindmapTitle = mMindmapTitle.substring(0, mMindmapTitle.indexOf(Integer.toString(counter)));
                 ++counter;
                 mMindmapTitle += Integer.toString(counter);

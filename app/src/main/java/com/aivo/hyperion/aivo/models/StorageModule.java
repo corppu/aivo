@@ -15,27 +15,97 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StorageModule {
 
-    private ModelMediator mediator;
+    static final String defaultUserFolder = "/localuser";
+    static final String mindmapFolder = "/mindmaps";
+    static final String noteFolder = "/notes";
+    static final String fileExtension = ".json";
+
     private File appDir;
 
-    private void setMediator(ModelMediator modelMediator_) {
-        if (modelMediator_ == null)
-            throw new InternalError("Line created without a valid ModelMediator reference!");
-        this.mediator = modelMediator_;
-    }
-
-    protected StorageModule(ModelMediator mediator) {
-        setMediator(mediator);
+    protected StorageModule() {
         appDir = MainActivity.getContext().getFilesDir();
     }
 
-    public boolean saveMindmap(Mindmap mindmap) {
+    // ---------------
+    // Private Helpers
+    private String getUserFolder(String userEmail) {
+        if (userEmail != null && userEmail != "")
+            return "/" + userEmail;
+        else
+            return defaultUserFolder;
+    }
+
+    private File getMindmapFile(User user, String mindmapTitle) {
+        File dir = new File(appDir + getUserFolder(user.getEmail()) + mindmapFolder);
+        if (mindmapTitle != null)
+            return new File(dir, mindmapTitle + fileExtension);
+        return dir;
+    }
+
+    private File getNoteFile(User user, String noteTitle) {
+        File dir = new File(appDir + getUserFolder(user.getEmail()) + noteFolder);
+        if (noteTitle != null)
+            return new File(dir, noteTitle + fileExtension);
+        return dir;
+    }
+
+    private File getUserFile(String userEmail) {
+        File dir = new File(appDir + getUserFolder(userEmail));
+        return new File(dir, "user" + fileExtension);
+    }
+
+
+    // ---------------
+
+    protected List<String> readMindmapTitles(User user) {
+        List<String> namelist = new ArrayList<>();
+
+        File dir = getMindmapFile(user, null);
+        if (dir.exists()) {
+            String[] filenames = dir.list();
+            for (String filename : filenames) {
+                namelist.add(filename.substring(0, filename.length() - fileExtension.length()));
+            }
+        }
+
+        return namelist;
+    }
+
+    protected List<String> readNoteTitles(User user) {
+        List<String> namelist = new ArrayList<>();
+
+        File dir = getNoteFile(user, null);
+        if (dir.exists()) {
+            String[] filenames = dir.list();
+            for (String filename : filenames) {
+                namelist.add(filename.substring(0, filename.length() - fileExtension.length()));
+            }
+        }
+
+        return namelist;
+    }
+
+    protected boolean saveUser(User user) {
         try {
-            File dir = new File(appDir + "/mindmaps");
-            File file = new File(dir, mindmap.getTitle() + ".json");
+            File file = getUserFile(user.getEmail());
+            JSONObject json = user.getJSON();
+            saveToFile(file, json.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean saveMindmap(User user, Mindmap mindmap) {
+        try {
+            File file = getMindmapFile(user, mindmap.getTitle());
             JSONObject json = mindmap.getJSON();
             saveToFile(file, json.toString());
 
@@ -46,10 +116,39 @@ public class StorageModule {
         return true;
     }
 
-    public Mindmap loadMindmap(String title) {
+    protected boolean saveNote(User user, Note note) {
         try {
-            File dir = new File(appDir + "/mindmaps");
-            File file = new File(dir, title + ".json");
+            File file = getNoteFile(user, note.getTitle());
+            JSONObject json = note.getJSON();
+            saveToFile(file, json.toString());
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    protected Note loadUser(ModelMediator mediator, String email) {
+        try {
+            File file = getUserFile(email);
+            String jsonString = readFromFile(file);
+            JSONObject jsonObject = new JSONObject(jsonString);
+            return new Note(mediator, jsonObject);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+
+        }
+        return null;
+    }
+
+    protected Mindmap loadMindmap(ModelMediator mediator, User user, String title) {
+        try {
+            File file = getMindmapFile(user, title);
             String jsonString = readFromFile(file);
             JSONObject jsonObject = new JSONObject(jsonString);
             return new Mindmap(mediator, jsonObject);
@@ -64,26 +163,12 @@ public class StorageModule {
         return null;
     }
 
-    public boolean saveNote(Note note) {
+    protected Note loadNote(ModelMediator mediator, User user, String title) {
         try {
-            File dir = new File(appDir + "/notes");
-            File file = new File(dir, note.getTitle() + ".json");
-            JSONObject json = note.getJSON();
-            saveToFile(file, json.toString());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    public Note loadNote(String title) {
-        try {
-            File dir = new File(appDir + "/notes");
-            File file = new File(dir, title + ".json");
-            JSONObject json = new JSONObject(readFromFile(file));
-            return new Note(mediator, json);
+            File file = getNoteFile(user, title);
+            String jsonString = readFromFile(file);
+            JSONObject jsonObject = new JSONObject(jsonString);
+            return new Note(mediator, jsonObject);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -94,21 +179,6 @@ public class StorageModule {
         }
         return null;
     }
-
-
-/*
-    public boolean saveUser(User user) {
-        JSONObject json = user.getJSON();
-        File file = new File(user.getEmail() + ".json");
-        try {
-            saveToFile(file, json.toString());
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-*/
 
     /** Reads contents of given file to a string.
      *
