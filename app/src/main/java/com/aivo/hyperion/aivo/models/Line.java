@@ -1,6 +1,7 @@
 package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.LinePointAdd;
@@ -52,24 +53,22 @@ public class Line {
     /** Used to construct a line from a json object.
      *  Should only be called from mindmap, when creating the mindmap from json!
      */
-    protected Line(ModelMediator mediator_, JSONObject json) {
+    protected Line(ModelMediator mediator_, JSONObject json, Mindmap owningMindmap) {
         setMediator(mediator_);
         this.points = new ArrayList<>();
-
         try {
             this.id = json.getInt("id");
             this.type = json.getInt("type");
             this.thickness = json.getInt("thickness");
 
             JSONArray jsonPoints = json.getJSONArray("points");
-            for (int i = 0; i < jsonPoints.length(); ++i) {
-                points.add((PointF) jsonPoints.get(i));
+            for (int i = 0; i < jsonPoints.length(); i+=2) {
+                points.add(new PointF((float) jsonPoints.getDouble(i), (float) jsonPoints.getDouble(i+1)));
             }
 
             final int groupId1 = json.getInt("magnetGroupId1");
             final int groupId2 = json.getInt("magnetGroupId2");
-
-            for (MagnetGroup magnetGroup : mediator.getMindmap().getMagnetGroups()) {
+            for (MagnetGroup magnetGroup : owningMindmap.getMagnetGroups()) {
                 if (magnetGroup.getId() == groupId1) {
                     magnetGroup.addLine(this);
                     magnetGroup1 = magnetGroup;
@@ -93,8 +92,10 @@ public class Line {
             object.put("thickness", thickness);
 
             JSONArray jsonPoints = new JSONArray();
-                for (PointF point : points)
-                    jsonPoints.put(point);
+            for (PointF point : points) {
+                jsonPoints.put((double)point.x);
+                jsonPoints.put((double)point.y);
+            }
             object.put("points", jsonPoints);
 
             object.put("magnetGroupId1", magnetGroup1.getId());

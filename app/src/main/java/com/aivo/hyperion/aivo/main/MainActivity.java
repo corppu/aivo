@@ -189,6 +189,7 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction.remove(mainMenuFragment);
         fragmentTransaction.remove(searchFragment);
         fragmentTransaction.commit();
+        sModelMediator.closeMindmap();
 //        mNoteFragment.dismiss();
     }
 
@@ -268,10 +269,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onUserOpen(User user) {
         sUser = user;
-        sModelMediator.createMindmap("Default");
+        if (!sModelMediator.openMindmap("Default"))
+            sModelMediator.createMindmap("Default");
         //sModelMediator.createSearch("Default");
     }
-
 
     private MindmapFragment mMindmapFragment;
     //private SearchFragment mSearchFragment;

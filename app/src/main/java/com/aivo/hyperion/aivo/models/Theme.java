@@ -32,6 +32,7 @@ public class Theme {
         this.themeId = themeId;
     }
 
+    public int getThemeId() { return themeId; }
     public String getTitle() { return title[themeId]; }
 
     public int getColorBackground() { return colorBackground[themeId]; }

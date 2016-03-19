@@ -42,6 +42,18 @@ public class Note {
             for (ModelListener listener : mediator.getListeners()) listener.onException(e);
         }
     }
+    protected JSONObject getJSON() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("title", title);
+            object.put("content", content);
+            object.put("color", color);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return object;
+    }
 
     /** For Notes: use this.
      *  For Magnets: DO NOT USE. Only to be used through actions.

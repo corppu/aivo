@@ -76,7 +76,7 @@ public class Mindmap {
             JSONArray jsonLines = json.getJSONArray("lines");
             Line line;
             for (int j = 0; j < jsonLines.length(); ++j) {
-                line = new Line(mediator, jsonMagnetGroups.getJSONObject(j));
+                line = new Line(mediator, jsonLines.getJSONObject(j), this);
                 lines.add(line);
             }
 
