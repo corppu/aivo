@@ -27,7 +27,9 @@ import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Random;
 
 public class MindmapView extends View
@@ -72,7 +74,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         canvas.getClipBounds(mClipBounds);
         getDrawingRect(mDrawingRect);
 
-        Log.d(TAG, "Canvas clipbounds: " + mClipBounds.toString() + ". View DrawingRect:" + mDrawingRect.toString());
+        //Log.d(TAG, "Canvas clipbounds: " + mClipBounds.toString() + ". View DrawingRect:" + mDrawingRect.toString());
 
         mPaint.setColor(BACKGROUND_COLOR);
         canvas.drawRect(0, 0, MAX_X, MAX_Y, mPaint);
@@ -132,13 +134,13 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public void onMagnetGroupCreate(MagnetGroup magnetGroup) {
         MagnetGroupViewModel magnetGroupViewModel = new MagnetGroupViewModel(magnetGroup, mMagnetMagnetViewModelHashMap);
         mMagnetGroupMagnetViewModelHashMap.put(magnetGroup, magnetGroupViewModel);
-        Log.d(TAG, "magnetGroup has been created!");
+        //Log.d(TAG, "magnetGroup has been created!");
         invalidate();
     }
 
     @Override
     public void onMagnetGroupChange(MagnetGroup magnetGroup) {
-        Log.d(TAG, "magnetGroup has changed!");
+        //Log.d(TAG, "magnetGroup has changed!");
 
         mMagnetGroupMagnetViewModelHashMap.get(magnetGroup).refresh();
         invalidate();
@@ -146,7 +148,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
-        Log.d(TAG, "magnetGroup has been deleted");
+        //Log.d(TAG, "magnetGroup has been deleted");
 
         mMagnetGroupMagnetViewModelHashMap.remove(magnetGroup);
         invalidate();
@@ -155,13 +157,13 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     @Override
     public void onMagnetCreate(Magnet magnet) {
         mMagnetMagnetViewModelHashMap.put(magnet, new MagnetViewModel(magnet));
-        Log.d(TAG, "magnet has been deleted");
+        //Log.d(TAG, "magnet has been deleted");
         invalidate();
     }
 
     @Override
     public void onMagnetChange(Magnet magnet) {
-        Log.d(TAG, "magnet has changed");
+        //Log.d(TAG, "magnet has changed");
 
         mMagnetMagnetViewModelHashMap.get(magnet).refresh();
         invalidate();
@@ -169,7 +171,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public void onMagnetDelete(Magnet magnet) {
-        Log.d(TAG, "magnet has been deleted!");
+        //Log.d(TAG, "magnet has been deleted!");
         mMagnetMagnetViewModelHashMap.remove(magnet);
         invalidate();
     }
@@ -214,7 +216,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public void onException(Exception e) {
-        Log.d(TAG, e.toString());
+        //Log.d(TAG, e.toString());
     }
 
     boolean onActionDownEvent(MotionEvent e) {
@@ -252,7 +254,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                         magnetViewModel.setIsGhost(true);
                     }
                 }
-                Log.d(TAG, "Pointer holds a group");
+                //Log.d(TAG, "Pointer holds a group");
                 magnetGroupViewModelParent.setIsGhost(true);
                 mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModelParent);
                 return true;
@@ -361,13 +363,13 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                         }
                     }
 
-                    Log.d("ASD", "createMagnet" + pointF.toString());
+                    //Log.d("ASD", "createMagnet" + pointF.toString());
 
                     ((MainActivity)this.getContext()).onCreateMagnet(lineViewModel.getParent().getModel(), pointF);
                     //MainActivity.getModelMediator().getMindmap().actionCreateMagnetChild(lineViewModel.getParent().getModel(), pointF);
                 }
                 else {
-                    Log.d("ASD", "createMagnet" + pointF.toString());
+                    //Log.d("ASD", "createMagnet" + pointF.toString());
 
                     ((MainActivity)this.getContext()).onCreateMagnet(pointF);
                     //MainActivity.getModelMediator().getMindmap().actionCreateMagnet(pointF);
@@ -450,7 +452,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                     break;
 
                 default:
-                    Log.d(TAG, e.toString());
+                    //Log.d(TAG, e.toString());
                     break;
             }
         }
@@ -499,12 +501,24 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     }
 
      private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mScaleGestureDetector = new ScaleGestureDetector(context, this);
-        mGestureDetector = new GestureDetector(context, this);
-
+         mScaleGestureDetector = new ScaleGestureDetector(context, this);
+         mGestureDetector = new GestureDetector(context, this);
          mGestureDetector.setIsLongpressEnabled(true);
+
          MainActivity.getModelMediator().registerListener(this);
-         Log.d(TAG, "init(MAX_X,MAX_Y):" + Float.toString(MAX_X) + ", " + Float.toString(MAX_Y));
+
+         for(MagnetGroup magnetGroup : MainActivity.getModelMediator().getMindmap().getMagnetGroups()) {
+             for (List<Magnet> magnets : magnetGroup.getMagnets()) {
+                 for (Magnet magnet : magnets) {
+                     onMagnetCreate(magnet);
+                 }
+             }
+             onMagnetGroupCreate(magnetGroup);
+         }
+
+         for (Line line : MainActivity.getModelMediator().getMindmap().getLines()) {
+             onLineCreate(line);
+         }
       }
 
     private MagnetGroupViewModel mSelectedMagnetGroupViewModel;
@@ -513,7 +527,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
-        Log.d(TAG, "onSingleTapConfirmed: " + e.toString());
+        //Log.d(TAG, "onSingleTapConfirmed: " + e.toString());
         final float x = e.getX() / mScaleFactor + mClipBounds.left;
         final float y = e.getY() / mScaleFactor + mClipBounds.top;
 
@@ -559,7 +573,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        Log.d(TAG, "onDoubleTap: " + e.toString());
+        //Log.d(TAG, "onDoubleTap: " + e.toString());
         final float x = e.getX() / mScaleFactor + mClipBounds.left;
         final float y = e.getY() / mScaleFactor + mClipBounds.top;
         if (mSelectedMagnetViewModel != null && MagnetViewModel.contains(mSelectedMagnetViewModel, x ,y)) {
@@ -574,24 +588,24 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public boolean onDoubleTapEvent(MotionEvent e) {
-        Log.d(TAG, "onDoubleTapEvent: " + e.toString());
+        //Log.d(TAG, "onDoubleTapEvent: " + e.toString());
         return true;
     }
 
     @Override
     public boolean onDown(MotionEvent e) {
-        Log.d(TAG, "onDown: " + e.toString());
+        //Log.d(TAG, "onDown: " + e.toString());
         return true;
     }
 
     @Override
     public void onShowPress(MotionEvent e) {
-        Log.d(TAG, "onShowPress: " + e.toString());
+        //Log.d(TAG, "onShowPress: " + e.toString());
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
-        Log.d(TAG, "onSingleTapUp: " + e.toString());
+        //Log.d(TAG, "onSingleTapUp: " + e.toString());
         return true;
     }
 
@@ -606,7 +620,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public void onLongPress(MotionEvent e) {
-        Log.d(TAG, "onLongPress: " + e.toString());
+        //Log.d(TAG, "onLongPress: " + e.toString());
 
         int pointerId = e.getPointerId(e.getActionIndex());
         MagnetGroupViewModel magnetGroupViewModel = mActionDownMagnetGroupViewModels.get(pointerId);
@@ -642,13 +656,13 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-        Log.d(TAG, "onFling");
+        //Log.d(TAG, "onFling");
         return true;
     }
 
     @Override
     public boolean onScale(ScaleGestureDetector detector) {
-        Log.d(TAG, "onScale: " + detector.toString());
+        //Log.d(TAG, "onScale: " + detector.toString());
         mScaleFactor = Math.min(Math.max(0.25f,mScaleFactor * detector.getScaleFactor()), 1.0f);
         invalidate();
         return true;
@@ -656,12 +670,12 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector detector) {
-        Log.d(TAG, "onScaleBegin: " + detector.toString());
+        //Log.d(TAG, "onScaleBegin: " + detector.toString());
         return mActionDownMagnetGroupViewModels.size() == 0 && mActionDownLineViewModels.size() == 0 && mActionDownMagnetViewModels.size() == 0;
     }
 
     @Override
     public void onScaleEnd(ScaleGestureDetector detector) {
-        Log.d(TAG, "onScaleEnd: " + detector.toString());
+        //Log.d(TAG, "onScaleEnd: " + detector.toString());
     }
 }
