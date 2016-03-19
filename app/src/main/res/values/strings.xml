@@ -3,7 +3,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Aivo</string>
     <string name="mindmap_text">Mindmap</string>
     <string name="notes_text">Notes</string>
     <string name="favorite_text">Favorite</string>

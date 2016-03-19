@@ -66,11 +66,13 @@ public class StorageModule {
         List<String> namelist = new ArrayList<>();
 
         File dir = getMindmapFile(user, null);
-        String[] filenames = dir.list();
-
-        for (String filename : filenames) {
-            namelist.add(filename.substring(0, filename.length()-fileExtension.length()));
+        if (dir.exists()) {
+            String[] filenames = dir.list();
+            for (String filename : filenames) {
+                namelist.add(filename.substring(0, filename.length() - fileExtension.length()));
+            }
         }
+
         return namelist;
     }
 
@@ -78,11 +80,13 @@ public class StorageModule {
         List<String> namelist = new ArrayList<>();
 
         File dir = getNoteFile(user, null);
-        String[] filenames = dir.list();
-
-        for (String filename : filenames) {
-            namelist.add(filename.substring(0, filename.length()-fileExtension.length()));
+        if (dir.exists()) {
+            String[] filenames = dir.list();
+            for (String filename : filenames) {
+                namelist.add(filename.substring(0, filename.length() - fileExtension.length()));
+            }
         }
+
         return namelist;
     }
 
