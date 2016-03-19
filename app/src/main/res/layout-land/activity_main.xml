@@ -13,7 +13,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:animateLayoutChanges="true"
-        android:gravity="right"
+        android:gravity="end"
         >
 
         <FrameLayout

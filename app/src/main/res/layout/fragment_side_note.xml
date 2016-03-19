@@ -1,4 +1,4 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/side_note_width"
     android:id="@+id/side_note_fragment"
@@ -12,4 +12,4 @@
     <!-- TODO: Update blank fragment layout -->
 
 
-</FrameLayout>
+</RelativeLayout>

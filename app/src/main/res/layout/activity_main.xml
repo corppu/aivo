@@ -16,7 +16,7 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:animateLayoutChanges="true"
-        android:gravity="right"
+        android:gravity="end"
         >
 
         <FrameLayout
@@ -30,7 +30,8 @@
 
 
         </FrameLayout>
-
+        <!--<include layout="@layout/side_note_view"/>-->
+        <!--<include layout="@layout/fragment_search"/>-->
 
     </RelativeLayout>
 

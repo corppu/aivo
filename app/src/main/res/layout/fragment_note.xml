@@ -44,7 +44,8 @@
             android:gravity="top"
             android:background="@drawable/edit_text_note"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:id="@+id/contentEditText" />
         <com.ogaclejapan.arclayout.ArcLayout
             android:id="@+id/arc_layout"
             android:visibility="invisible"
