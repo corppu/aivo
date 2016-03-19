@@ -2,11 +2,10 @@ package com.aivo.hyperion.aivo.views.mindmap;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
+
 
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
@@ -32,13 +31,20 @@ public class MagnetGroupViewModel {
         RectF rectFB = new RectF();
         for (ArrayList<MagnetViewModel> magnetViewModels : magnetGroupViewModel.magnetViewModels) {
             for (MagnetViewModel magnetViewModelB : magnetViewModels) {
-
+                if (magnetViewModel == magnetViewModelB) continue;
                 magnetViewModelB.getOuterRectF(rectFB);
-                if (rectFA.right < rectFB.right + MagnetViewModel.INDICATOR_ICON_SIZE) break;
+                if (rectFB.right + MagnetViewModel.INDICATOR_ICON_SIZE > rectFA.right && rectFA.bottom < rectFB.bottom + MagnetViewModel.INDICATOR_ICON_SIZE) {
+                    return rVal;
+                }
+
                 ++rVal[1];
             }
-            if (rectFA.bottom < rectFB.bottom + MagnetViewModel.INDICATOR_ICON_SIZE) break;
-            if (magnetViewModels.size() != 0) ++rVal[0];
+            if (rectFB.right + MagnetViewModel.INDICATOR_ICON_SIZE < rectFA.right && rectFA.bottom < rectFB.bottom + MagnetViewModel.INDICATOR_ICON_SIZE) {
+                return rVal;
+            }
+
+            rVal[1] = 0;
+            ++rVal[0];
         }
 
         return rVal;
@@ -58,11 +64,11 @@ public class MagnetGroupViewModel {
     private int mSize;
     // From model
     private MagnetGroup mMagnetGroup;
-    private String mTitle;
+    private String mTitle = "";
 
     // View model state stuff
-    private boolean mIsGhost;
-    private boolean mIsSelected;
+    private boolean mIsGhost = false;
+    private boolean mIsSelected = false;
 
     public boolean getIsGhost() { return mIsGhost; }
     public void setIsGhost(boolean isGhost) {
@@ -76,12 +82,6 @@ public class MagnetGroupViewModel {
     public boolean getIsSelected() { return  mIsSelected; }
     public void setIsSelected(boolean isSelected) {
         mIsSelected = isSelected;
-//        if (mSize == 1) magnetViewModels.get(0).get(0).setIsSelected(mIsSelected);
-//        for (ArrayList<MagnetViewModel> magnetViewModels : this.magnetViewModels) {
-//            for (MagnetViewModel magnetViewModel : magnetViewModels) {
-//                magnetViewModel.setIsSelected(isSelected);
-//            }
-//        }
     }
 
 
@@ -98,12 +98,19 @@ public class MagnetGroupViewModel {
         mOuterRectF = new RectF(mMagnetGroup.getPoint().x, mMagnetGroup.getPoint().y, 0,0);
         mSize = 0;
 
-        if (mMagnetGroup.getMagnets().size() == 1 && mMagnetGroup.getMagnets().get(0).size() == 1) {
-            magnetViewModels.add(new ArrayList<MagnetViewModel>());
-            magnetViewModels.get(0).add(new MagnetViewModel(mMagnetGroup.getMagnets().get(0).get(0)));
-            magnetViewModels.get(0).get(0).setTopLeftPointF(mMagnetGroup.getPoint());
-            magnetViewModels.get(0).get(0).getOuterRectF(mOuterRectF);
-            mSize = 1;
+
+        if (mMagnetGroup.getMagnetCount() == 1) {
+
+            for (List<Magnet> magnetRow : mMagnetGroup.getMagnets()) {
+                for (Magnet magnet : magnetRow) {
+                    magnetViewModels.add(new ArrayList<MagnetViewModel>());
+                    magnetViewModels.get(0).add(mMagnetMagnetViewModelMap.get(magnet));
+                    magnetViewModels.get(0).get(0).setTopLeftPointF(mMagnetGroup.getPoint());
+                    magnetViewModels.get(0).get(0).getOuterRectF(mOuterRectF);
+                    mSize = 1;
+                    magnetViewModels.get(0).get(0).getOuterRectF(mOuterRectF);
+                }
+            }
         }
         else {
             PointF pointF = new PointF(mOuterRectF.left + 2 * MagnetViewModel.HIGHLIGHT_BORDER_SIZE, mOuterRectF.top + 2 * MagnetViewModel.HIGHLIGHT_BORDER_SIZE);
@@ -250,7 +257,7 @@ public class MagnetGroupViewModel {
     static MagnetViewModel getMagnetViewModel(MagnetGroupViewModel magnetGroupViewModel, float x, float y) {
         for (ArrayList<MagnetViewModel> magnetViewModels : magnetGroupViewModel.magnetViewModels) {
             for (MagnetViewModel magnetViewModel : magnetViewModels) {
-                if(MagnetViewModel.contains(magnetViewModel, x, y)) return magnetViewModel;
+                if(magnetViewModel.contains(magnetViewModel, x, y)) return magnetViewModel;
             }
         }
         return null;

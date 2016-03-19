@@ -1,6 +1,7 @@
 package com.aivo.hyperion.aivo.views.mindmap;
 
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.main.MainActivity;
@@ -37,8 +39,10 @@ public class MagnetViewModel {
     public boolean getIsGhost() { return mIsGhost; }
     public void setIsGhost(boolean isGhost) { mIsGhost = isGhost; }
     public boolean getIsSelected() { return  mIsSelected; }
-    public void setIsSelected(boolean isSelected) {
+    public void setIsSelected(boolean isSelected)
+    {
         mIsSelected = isSelected;
+        Log.d("mIsSelected", Boolean.toString(mIsSelected));
     }
 
     // Model related
@@ -54,7 +58,7 @@ public class MagnetViewModel {
 
     public MagnetViewModel() {
         mIsGhost = true;
-        mIsSelected = true;
+        mIsSelected = false;
         mColor = ICON_COLOR;
         mTitle = TITLE;
         mHasVideo = false;
@@ -103,7 +107,7 @@ public class MagnetViewModel {
 
 
 
-    private RectF mOuterRectF;
+    private RectF mOuterRectF =new RectF(-1f, -1f, -1f, -1f);
     private PointF mCenterPointF;
     private PointF mTopIconCenterPointF;
     private PointF mBottomIconCenterPointF;
@@ -289,9 +293,10 @@ public class MagnetViewModel {
         return viewModelA.mOuterRectF.intersect(viewModelB.mOuterRectF);
     }
 
-    public static boolean contains(MagnetViewModel magnetViewModel, float x, float y) {
+    public boolean contains(MagnetViewModel magnetViewModel, float x, float y) {
         return magnetViewModel.mOuterRectF.contains(x, y);
     }
+
 
     public void move(float newTouchPointX, float newTouchPointY) {
         float distanceX = mCenterPointF.x - newTouchPointX;

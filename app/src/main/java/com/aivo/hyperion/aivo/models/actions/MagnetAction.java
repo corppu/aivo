@@ -48,6 +48,7 @@ public abstract class MagnetAction extends Action {
         for (List< Magnet > magnetRow : magnetGroup.getMagnets())
             if (magnetRow.remove(magnet)) {
                 found = true;
+                if (magnetRow.isEmpty()) magnetGroup.getMagnets().remove(magnetRow);
                 break;
             }
 
