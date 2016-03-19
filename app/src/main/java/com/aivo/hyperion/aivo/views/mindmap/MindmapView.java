@@ -530,14 +530,19 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
-        //Log.d(TAG, "onSingleTapConfirmed: " + e.toString());
+        Log.d(TAG, "onSingleTapConfirmed: " + e.toString());
         final float x = e.getX() / mScaleFactor + mClipBounds.left;
         final float y = e.getY() / mScaleFactor + mClipBounds.top;
 
-        if (mSelectedMagnetViewModel != null && MagnetViewModel.contains(mSelectedMagnetViewModel, x ,y)) {
+
+        if (mSelectedMagnetViewModel != null && MagnetViewModel.contains(mSelectedMagnetViewModel, x ,y) && mSelectedMagnetViewModel.getIsSelected()) {
+            mSelectedMagnetViewModel.setIsSelected(true);
+            invalidate();
             ((MainActivity)this.getContext()).onEditMagnet(mSelectedMagnetViewModel.getModel());
+
             return true;
         }
+
 
         if (mSelectedLineViewModel != null) {
             mSelectedLineViewModel.setIsSelected(false);
@@ -555,14 +560,19 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
             if (MagnetGroupViewModel.contains(magnetGroupViewModel, x, y)) {
                 MagnetViewModel magnetViewModel = MagnetGroupViewModel.getMagnetViewModel(magnetGroupViewModel, x, y);
-                if (magnetViewModel == null) {
+                if (magnetViewModel == null && magnetGroupViewModel.getSize() > 1) {
                     mSelectedMagnetGroupViewModel = magnetGroupViewModel;
-                    magnetGroupViewModel.setIsSelected(!magnetGroupViewModel.getIsSelected());
+                    magnetGroupViewModel.setIsSelected(true);
                     invalidate();
                     return true;
-                } else {
+                } else if (magnetViewModel == null) {
+                    magnetViewModel = magnetGroupViewModel.getMagnetViewModel(0,0);
+                }
+
+
+                if (magnetViewModel !=  null){
                     mSelectedMagnetViewModel = magnetViewModel;
-                    magnetViewModel.setIsSelected(!magnetViewModel.getIsSelected());
+                    magnetViewModel.setIsSelected(true);
                     invalidate();
                     return true;
                 }
@@ -572,22 +582,29 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         for (LineViewModel lineViewModel : mLineViewModelHashMap.values()) {
             if (lineViewModel.contains(x,y)) {
                 mSelectedLineViewModel = lineViewModel;
-                lineViewModel.setIsSelected(!lineViewModel.getIsSelected());
+                lineViewModel.setIsSelected(true);
+                break;
             }
         }
+
         invalidate();
         return true;
     }
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
-        //Log.d(TAG, "onDoubleTap: " + e.toString());
+        Log.d(TAG, "onDoubleTap: " + e.toString());
         final float x = e.getX() / mScaleFactor + mClipBounds.left;
         final float y = e.getY() / mScaleFactor + mClipBounds.top;
-        if (mSelectedMagnetViewModel != null && MagnetViewModel.contains(mSelectedMagnetViewModel, x ,y)) {
+        if (mSelectedMagnetViewModel != null && MagnetViewModel.contains(mSelectedMagnetViewModel, x ,y) && mSelectedLineViewModel.getIsSelected()) {
             ((MainActivity)this.getContext()).onEditMagnet(mSelectedMagnetViewModel.getModel());
         }
         else {
+            for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
+                if (MagnetGroupViewModel.contains(magnetGroupViewModel, x, y)) {
+                    return true;
+                }
+            }
             ((MainActivity) this.getContext()).onCreateMagnet(new PointF(x, y));
         }
         invalidate();
