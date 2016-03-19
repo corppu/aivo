@@ -4,11 +4,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
-import android.util.Log;
+
 
 import com.aivo.hyperion.aivo.main.MainActivity;
 import com.aivo.hyperion.aivo.models.Line;
-import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 
 import java.util.Map;
@@ -39,7 +38,7 @@ public class LineViewModel {
     private PointF middlePointF = new PointF(0,0);
 
     public void refresh() {
-        Log.d("ASD", mLine.getPoints().toString());
+        middlePointF.set(mLine.getPoints().get(0));
     }
 
     public Line getLine() {

@@ -14,7 +14,7 @@ import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.main.MainActivity;
 import com.aivo.hyperion.aivo.models.Magnet;
 
-import java.util.ArrayList;
+
 
 /**
  * Created by corppu on 23.2.2016.
