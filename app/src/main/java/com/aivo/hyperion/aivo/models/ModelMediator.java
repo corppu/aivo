@@ -25,7 +25,7 @@ public class ModelMediator {
         mindmap = null;
         notes = new ArrayList<>();
         listeners = new ArrayList<>();
-        storageModule = new StorageModule();
+        storageModule = new StorageModule(this);
     }
 
     public void registerListener(ModelListener listener) {
@@ -117,7 +117,7 @@ public class ModelMediator {
      * @return          True if successful.
      */
     public boolean openMindmap(String title) {
-        Mindmap tempMindmap = storageModule.loadMindmap(this, title);
+        Mindmap tempMindmap = storageModule.loadMindmap(title);
 
         if (tempMindmap != null && closeMindmap()) {
             mindmap = tempMindmap;

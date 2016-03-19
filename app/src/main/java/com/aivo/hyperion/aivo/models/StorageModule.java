@@ -1,5 +1,7 @@
 package com.aivo.hyperion.aivo.models;
 
+import android.util.Log;
+
 import com.aivo.hyperion.aivo.main.MainActivity;
 
 import org.json.JSONException;
@@ -16,9 +18,17 @@ import java.io.OutputStreamWriter;
 
 public class StorageModule {
 
+    private ModelMediator mediator;
     private File appDir;
 
-    protected StorageModule() {
+    private void setMediator(ModelMediator modelMediator_) {
+        if (modelMediator_ == null)
+            throw new InternalError("Line created without a valid ModelMediator reference!");
+        this.mediator = modelMediator_;
+    }
+
+    protected StorageModule(ModelMediator mediator) {
+        setMediator(mediator);
         appDir = MainActivity.getContext().getFilesDir();
     }
 
@@ -36,7 +46,7 @@ public class StorageModule {
         return true;
     }
 
-    public Mindmap loadMindmap(ModelMediator mediator, String title) {
+    public Mindmap loadMindmap(String title) {
         try {
             File dir = new File(appDir + "/mindmaps");
             File file = new File(dir, title + ".json");
@@ -68,7 +78,7 @@ public class StorageModule {
         return true;
     }
 
-    public Note loadNote(ModelMediator mediator, String title) {
+    public Note loadNote(String title) {
         try {
             File dir = new File(appDir + "/notes");
             File file = new File(dir, title + ".json");
@@ -145,7 +155,6 @@ public class StorageModule {
      * @throws IOException  If unable to write to or close the file.
      */
     private void saveToFile(File file, String content) throws IOException {
-
         if (!file.getParentFile().mkdirs() && !file.getParentFile().isDirectory())
             throw new IOException("Could not find or create folder for file " + file.toString());
 

@@ -1,6 +1,7 @@
 package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.MagnetGroupChangeData;
@@ -45,8 +46,9 @@ public class MagnetGroup {
     public MagnetGroup(ModelMediator mediator_, PointF point) {
         setMediator(mediator_);
         this.magnets = new ArrayList<>();
-        this.point = point;
+        this.point = new PointF(point.x, point.y);
         this.lines = new ArrayList<>();
+        this.title = new String();
         this.id = mediator.getMindmap().getNextId();
     }
 
@@ -60,7 +62,7 @@ public class MagnetGroup {
             this.lines = new ArrayList<>();
             this.id = json.getInt("id");
             this.title = json.getString("title");
-            this.point = new PointF((float)json.getDouble("point.x"), (float)json.getDouble("point.xy"));
+            this.point = new PointF((float)json.getDouble("point.x"), (float)json.getDouble("point.y"));
 
             JSONArray jsonMagnets = json.getJSONArray("magnets");
             JSONArray jsonMagnetRow;
@@ -88,8 +90,8 @@ public class MagnetGroup {
         try {
             object.put("id", id);
             object.put("title", title);
-            object.put("point.x", point.x);
-            object.put("point.y", point.y);
+            object.put("point.x", (double) point.x);
+            object.put("point.y", (double) point.y);
 
             JSONArray jsonMagnets = new JSONArray();
             for (List<Magnet> magnetRow : magnets) {

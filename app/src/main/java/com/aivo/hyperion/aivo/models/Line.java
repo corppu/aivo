@@ -1,6 +1,7 @@
 package com.aivo.hyperion.aivo.models;
 
 import android.graphics.PointF;
+import android.util.Log;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.LinePointAdd;
@@ -52,10 +53,9 @@ public class Line {
     /** Used to construct a line from a json object.
      *  Should only be called from mindmap, when creating the mindmap from json!
      */
-    protected Line(ModelMediator mediator_, JSONObject json) {
+    protected Line(ModelMediator mediator_, JSONObject json, Mindmap owningMindmap) {
         setMediator(mediator_);
         this.points = new ArrayList<>();
-
         try {
             this.id = json.getInt("id");
             this.type = json.getInt("type");
@@ -68,8 +68,7 @@ public class Line {
 
             final int groupId1 = json.getInt("magnetGroupId1");
             final int groupId2 = json.getInt("magnetGroupId2");
-
-            for (MagnetGroup magnetGroup : mediator.getMindmap().getMagnetGroups()) {
+            for (MagnetGroup magnetGroup : owningMindmap.getMagnetGroups()) {
                 if (magnetGroup.getId() == groupId1) {
                     magnetGroup.addLine(this);
                     magnetGroup1 = magnetGroup;
@@ -94,8 +93,8 @@ public class Line {
 
             JSONArray jsonPoints = new JSONArray();
             for (PointF point : points) {
-                jsonPoints.put(point.x);
-                jsonPoints.put(point.y);
+                jsonPoints.put((double)point.x);
+                jsonPoints.put((double)point.y);
             }
             object.put("points", jsonPoints);
 
