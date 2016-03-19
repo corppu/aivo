@@ -62,8 +62,8 @@ public class Line {
             this.thickness = json.getInt("thickness");
 
             JSONArray jsonPoints = json.getJSONArray("points");
-            for (int i = 0; i < jsonPoints.length(); ++i) {
-                points.add((PointF) jsonPoints.get(i));
+            for (int i = 0; i < jsonPoints.length(); i+=2) {
+                points.add(new PointF((float) jsonPoints.getDouble(i), (float) jsonPoints.getDouble(i+1)));
             }
 
             final int groupId1 = json.getInt("magnetGroupId1");
@@ -93,8 +93,10 @@ public class Line {
             object.put("thickness", thickness);
 
             JSONArray jsonPoints = new JSONArray();
-                for (PointF point : points)
-                    jsonPoints.put(point);
+            for (PointF point : points) {
+                jsonPoints.put(point.x);
+                jsonPoints.put(point.y);
+            }
             object.put("points", jsonPoints);
 
             object.put("magnetGroupId1", magnetGroup1.getId());

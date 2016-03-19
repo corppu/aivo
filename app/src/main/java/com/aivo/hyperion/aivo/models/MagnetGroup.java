@@ -60,7 +60,7 @@ public class MagnetGroup {
             this.lines = new ArrayList<>();
             this.id = json.getInt("id");
             this.title = json.getString("title");
-            this.point = (PointF) json.get("point");
+            this.point = new PointF((float)json.getDouble("point.x"), (float)json.getDouble("point.xy"));
 
             JSONArray jsonMagnets = json.getJSONArray("magnets");
             JSONArray jsonMagnetRow;
@@ -88,7 +88,8 @@ public class MagnetGroup {
         try {
             object.put("id", id);
             object.put("title", title);
-            object.put("point", point);
+            object.put("point.x", point.x);
+            object.put("point.y", point.y);
 
             JSONArray jsonMagnets = new JSONArray();
             for (List<Magnet> magnetRow : magnets) {
