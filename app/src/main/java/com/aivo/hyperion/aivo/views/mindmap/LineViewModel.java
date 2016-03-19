@@ -78,15 +78,20 @@ public class LineViewModel {
         mIsSelected = false;
 
         middlePointF = new PointF();
-
-        refresh();
+        if (line.getPoints().isEmpty()) {
+            middlePointF.set(
+                    (mParentMagnetGroupViewModel.getCenterX() + mChildMagnetGroupViewModel.getCenterX()) / 2.0f,
+                    (mParentMagnetGroupViewModel.getCenterY() + mChildMagnetGroupViewModel.getCenterY()) / 2.0f
+            );
+        }
+        else refresh();
 
 //        int r = MainActivity.getRandom().nextInt(255);
 //        int g = MainActivity.getRandom().nextInt(255);
 //        int b = MainActivity.getRandom().nextInt(255);
 //        mColor = Color.argb(255, r, g, b);
 
-        mColor = MainActivity.getUser().getTheme().getColorLine();
+       mColor = MainActivity.getUser().getTheme().getColorLine();
     }
 
     public void setColor(int color) {

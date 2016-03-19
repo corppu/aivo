@@ -86,7 +86,7 @@ public class MagnetGroupViewModel {
 
 
     public MagnetViewModel getMagnetViewModel(int row, int column) {
-        if (magnetViewModels.size() > row && magnetViewModels.get(0).size() > column) {
+        if (magnetViewModels.size() > row && magnetViewModels.get(row).size() > column) {
             return magnetViewModels.get(row).get(column);
         }
         return null;
@@ -126,12 +126,6 @@ public class MagnetGroupViewModel {
             }
         }
     }
-
-    // For view-model:
-//    static private final int maxRowSize = 5;
-//    private int currentRowSize;
-//    static private final int maxRowCount = 4;
-//    private int currentRowCount;
 
     private RectF mOuterRectF;
     private ArrayList<ArrayList<MagnetViewModel>> magnetViewModels;

@@ -6,24 +6,24 @@ public class Theme {
     static final private int themeAmount = 3;
 
     static final private String[] title =                   {"Default", "Dark", "Beige"};
-    static final private int[] colorBackground =            {0xFFFFFF, 0, 0};
-    static final private int[] colorLine =                  {0xA5A9AC, 0, 0};
-    static final private int[] colorMagnet =                {0xF7F3F3, 0, 0};
-    static final private int[] colorMagnetGroup =           {0x7EDFFC, 0, 0};
+    static final private int[] colorBackground =            {0xFFFFFFFF, 0, 0};
+    static final private int[] colorLine =                  {0xFFA5A9AC, 0, 0};
+    static final private int[] colorMagnet =                {0xFFF7F3F3, 0, 0};
+    static final private int[] colorMagnetGroup =           {0xFF7EDFFC, 0, 0};
 
-    static final private int[] colorMenu =                  {0xF7F3F3, 0, 0};
-    static final private int[] colorMenuItem =              {0x24C3FB, 0, 0};
-    static final private int[] colorMenuText =              {0xA5A9AC, 0, 0};
-    static final private int[] colorMenuSelection =         {0x2C94F4, 0, 0};
+    static final private int[] colorMenu =                  {0xFFF7F3F3, 0, 0};
+    static final private int[] colorMenuItem =              {0xFF24C3FB, 0, 0};
+    static final private int[] colorMenuText =              {0xFFA5A9AC, 0, 0};
+    static final private int[] colorMenuSelection =         {0xFF2C94F4, 0, 0};
 
-    static final private int[] colorMainMenu =              {0xBBE1F9, 0, 0};
-    static final private int[] colorMainMenuItem =          {0x24C3FB, 0, 0};
-    static final private int[] colorMainMenuText =          {0xF7F7F7, 0, 0};
-    static final private int[] colorMainMenuSelection =     {0x2C94F4, 0, 0};
+    static final private int[] colorMainMenu =              {0xFFBBE1F9, 0, 0};
+    static final private int[] colorMainMenuItem =          {0xFF24C3FB, 0, 0};
+    static final private int[] colorMainMenuText =          {0xFFF7F7F7, 0, 0};
+    static final private int[] colorMainMenuSelection =     {0xFF2C94F4, 0, 0};
 
-    static final private int[] colorContextMenu =           {0x24C3FB, 0, 0};
-    static final private int[] colorContextMenuItem =       {0xF7F7F7, 0, 0};
-    static final private int[] colorContextMenuSelection =  {0x2C94F4, 0, 0};
+    static final private int[] colorContextMenu =           {0xFF24C3FB, 0, 0};
+    static final private int[] colorContextMenuItem =       {0xFFF7F7F7, 0, 0};
+    static final private int[] colorContextMenuSelection =  {0xFF2C94F4, 0, 0};
 
     public Theme(final int themeId) {
         if (themeId >= themeAmount || themeId < 0)
