@@ -24,6 +24,7 @@ import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
+import com.aivo.hyperion.aivo.views.Floating_action_bar_fragment;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.mindmap.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
@@ -385,6 +386,11 @@ public class MainActivity extends AppCompatActivity
         openNoteFragment(magnet.getId(), true, magnet.getTitle(), magnet.getContent());
     }
 
+    @Override
+    public void onSelectMagnet(Magnet magnet) {
+
+    }
+
     /** OnNoteFragmentListener **/
     @Override
     public void onSave(int id, boolean isMagnet, String newTitle, String newContent) {
@@ -400,4 +406,8 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+
+
+
 }

@@ -556,6 +556,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                 if (magnetViewModel != null) {
                     magnetViewModel.setIsSelected(true);
                     mSelectedMagnetViewModel = magnetViewModel;
+
                     invalidate();
                     return true;
                 }
