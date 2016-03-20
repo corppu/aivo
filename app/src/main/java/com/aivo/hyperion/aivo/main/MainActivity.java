@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity
     Boolean isSearchPanelVisible = false;
     RelativeLayout sidePanel;
     RelativeLayout searchPanel;
+    LinearLayout mainMenuPanel;
 
     private static final String TAG = "MainActivity";
 
@@ -135,13 +136,6 @@ public class MainActivity extends AppCompatActivity
         mainMenuFragment = new MainMenuFragment();
         searchFragment = new SearchFragment();
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.contentAreaParent, mainMenuFragment);
-        fragmentTransaction.add(R.id.contentAreaParent, sideNoteFragment);
-        fragmentTransaction.add(R.id.contentAreaParent, searchFragment);
-        fragmentTransaction.commit();
-
-
         sideBtn = (Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
         searchButton = (Button)findViewById(R.id.search_imagebutton);
@@ -152,9 +146,13 @@ public class MainActivity extends AppCompatActivity
         sModelMediator.registerListener(this);
         sModelMediator.createUser();
 
-        mainMenuFragment.setMenuVisibility(false);
-
-        if (savedInstanceState != null) {
+        if (savedInstanceState == null) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.add(R.id.contentAreaParent, mainMenuFragment);
+            fragmentTransaction.add(R.id.contentAreaParent, sideNoteFragment);
+            fragmentTransaction.add(R.id.contentAreaParent, searchFragment);
+            fragmentTransaction.commit();
+        } else {
             mMagnetsNewPointF = savedInstanceState.getParcelable(MAGNETS_NEW_POINT_F);
             mMindmapTitle = savedInstanceState.getString(DEFAULT_MINDMAP_TITLE);
         }
@@ -163,8 +161,16 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onStart(){
         super.onStart();
-        sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
-        searchPanel = (RelativeLayout) findViewById(R.id.search_bar);
+
+        if (sidePanel == null) {
+            sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
+        }
+        if (searchPanel == null) {
+            searchPanel = (RelativeLayout) findViewById(R.id.search_bar);
+        }
+        if (mainMenuPanel == null) {
+            mainMenuPanel = (LinearLayout) findViewById(R.id.main_menu);
+        }
 
         RelativeLayout.LayoutParams sidePanelParams = (RelativeLayout.LayoutParams) sidePanel.getLayoutParams();
         // make the right margin negative so the view is moved to the right of the screen
@@ -180,11 +186,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onPause(){
         super.onPause();
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.remove(sideNoteFragment);
-        fragmentTransaction.remove(mainMenuFragment);
-        fragmentTransaction.remove(searchFragment);
-        fragmentTransaction.commit();
         sModelMediator.closeMindmap();
 //        mNoteFragment.dismiss();
     }
@@ -228,7 +229,6 @@ public class MainActivity extends AppCompatActivity
 
         mainMenuButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                LinearLayout mainMenuPanel = (LinearLayout) findViewById(R.id.main_menu);
                 // animate the main menu panel
                 if (isMainMenuVisible) {
                     mainMenuPanel.animate().translationX(-mainMenuPanel.getWidth());
