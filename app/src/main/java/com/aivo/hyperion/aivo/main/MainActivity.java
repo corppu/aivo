@@ -159,11 +159,14 @@ public class MainActivity extends AppCompatActivity
             mMagnetsNewPointF = savedInstanceState.getParcelable(MAGNETS_NEW_POINT_F);
             mMindmapTitle = savedInstanceState.getString(DEFAULT_MINDMAP_TITLE);
         }
+
     }
 
     @Override
     public void onStart(){
         super.onStart();
+        // crashes because after going back to foreground  setContentView(R.layout.activity_main); doesnt run therefore null pointer exceprion
+        // cant hadle fragment view if they are not yet there, move code to onCreateView
         sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
         searchPanel = (RelativeLayout) findViewById(R.id.search_bar);
 
@@ -174,6 +177,17 @@ public class MainActivity extends AppCompatActivity
         RelativeLayout.LayoutParams searchParams = (RelativeLayout.LayoutParams) searchPanel.getLayoutParams();
         // make the top margin negative so the view is moved to the top of the screen
         searchParams.topMargin = searchParams.topMargin * -1;
+    }
+
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        if(sidePanel==null){
+
+            sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
+
+        }
+
     }
 
 
@@ -388,6 +402,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSelectMagnet(Magnet magnet) {
+        //show floating menu fragment
 
     }
 
