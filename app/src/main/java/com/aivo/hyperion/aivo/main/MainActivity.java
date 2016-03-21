@@ -24,6 +24,7 @@ import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
+import com.aivo.hyperion.aivo.views.Floating_action_bar_fragment;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.mindmap.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
@@ -43,9 +44,13 @@ public class MainActivity extends AppCompatActivity
     Boolean isSideNoteVisible = false;
     Boolean isMainMenuVisible = true;
     Boolean isSearchPanelVisible = false;
+    Boolean isFloatingMenuHidden = true;
     RelativeLayout sidePanel;
     RelativeLayout searchPanel;
     LinearLayout mainMenuPanel;
+    Floating_action_bar_fragment floatingMenu;
+    FragmentTransaction fragmentTransaction;
+
 
     private static final String TAG = "MainActivity";
 
@@ -135,6 +140,7 @@ public class MainActivity extends AppCompatActivity
         sideNoteFragment = new SideNoteFragment();
         mainMenuFragment = new MainMenuFragment();
         searchFragment = new SearchFragment();
+        floatingMenu = new Floating_action_bar_fragment();
 
         sideBtn = (Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
@@ -147,20 +153,26 @@ public class MainActivity extends AppCompatActivity
         sModelMediator.createUser();
 
         if (savedInstanceState == null) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.contentAreaParent, mainMenuFragment);
             fragmentTransaction.add(R.id.contentAreaParent, sideNoteFragment);
             fragmentTransaction.add(R.id.contentAreaParent, searchFragment);
+            //fragmentTransaction.add(R.id.contentAreaParent,floatingMenu);
+           // fragmentTransaction.hide(floatingMenu);
             fragmentTransaction.commit();
         } else {
             mMagnetsNewPointF = savedInstanceState.getParcelable(MAGNETS_NEW_POINT_F);
             mMindmapTitle = savedInstanceState.getString(DEFAULT_MINDMAP_TITLE);
         }
+
     }
 
     @Override
     public void onStart(){
         super.onStart();
+        // crashes because after going back to foreground  setContentView(R.layout.activity_main); doesnt run therefore null pointer exceprion
+        // cant hadle fragment view if they are not yet there, move code to onCreateView
+
 
         if (sidePanel == null) {
             sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
@@ -179,6 +191,17 @@ public class MainActivity extends AppCompatActivity
         RelativeLayout.LayoutParams searchParams = (RelativeLayout.LayoutParams) searchPanel.getLayoutParams();
         // make the top margin negative so the view is moved to the top of the screen
         searchParams.topMargin = searchParams.topMargin * -1;
+    }
+
+    @Override
+    public void onRestart(){
+        super.onRestart();
+        if(sidePanel==null){
+
+            sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
+
+        }
+
     }
 
 
@@ -385,6 +408,24 @@ public class MainActivity extends AppCompatActivity
         openNoteFragment(magnet.getId(), true, magnet.getTitle(), magnet.getContent());
     }
 
+    @Override
+    public void onSelectMagnet(Magnet magnet) {
+        //show floating menu fragment
+        if(isFloatingMenuHidden){
+
+//            if(fragmentTransaction != null){
+//                fragmentTransaction.show(floatingMenu);
+//               // fragmentTransaction.commit();
+//
+//            }
+            FragmentTransaction ft =getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.contentAreaParent,floatingMenu);
+            ft.commit();
+        }
+
+
+    }
+
     /** OnNoteFragmentListener **/
     @Override
     public void onSave(int id, boolean isMagnet, String newTitle, String newContent) {
@@ -400,4 +441,8 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
+
+
+
 }

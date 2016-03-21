@@ -7,6 +7,7 @@
     android:id="@+id/search_bar"
     android:background="#336094"
     android:fadingEdge="horizontal"
+    android:clickable="true"
     android:fadingEdgeLength="5dp"
     android:layout_centerHorizontal="true"
     android:layout_alignParentTop="true"

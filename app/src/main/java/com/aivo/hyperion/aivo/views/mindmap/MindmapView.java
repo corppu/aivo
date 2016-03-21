@@ -556,6 +556,8 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                 if (magnetViewModel != null) {
                     magnetViewModel.setIsSelected(true);
                     mSelectedMagnetViewModel = magnetViewModel;
+                    ((MainActivity) this.getContext()).onSelectMagnet(mSelectedMagnetViewModel.getModel());
+
                     invalidate();
                     return true;
                 }
@@ -608,7 +610,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
         if (!tryOpenSelected(x, y) && trySelect(x, y) && mSelectedMagnetViewModel != null) {
             ((MainActivity) this.getContext()).onEditMagnet(mSelectedMagnetViewModel.getModel());
-        } else {
+        } else if (mSelectedLineViewModel == null && mSelectedMagnetGroupViewModel == null && mSelectedMagnetViewModel == null) {
             ((MainActivity) this.getContext()).onCreateMagnet(new PointF(x, y));
         }
 

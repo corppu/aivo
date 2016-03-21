@@ -79,25 +79,28 @@ public class Floating_action_bar_fragment extends Fragment implements View.OnCli
         View floatbarView = inflater.inflate(R.layout.fragment_floating_action_bar_fragment, container, false);
 
         trashBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_trash);
+        trashBtn.setOnClickListener(this);
         starBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_star);
+        starBtn.setOnClickListener(this);
         netBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_net);
+        netBtn.setOnClickListener(this);
         starView = (ImageView)floatbarView.findViewById(R.id.floatbar_img_star);
 
 
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_floating_action_bar_fragment, container, false);
+        return floatbarView;
     }
 
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+//        if (context instanceof OnFragmentInteractionListener) {
+//            mListener = (OnFragmentInteractionListener) context;
+//        } else {
+////            throw new RuntimeException(context.toString()
+////                    + " must implement OnFragmentInteractionListener");
+//        }
     }
     @Override
     public void onClick(View view) {
@@ -107,12 +110,14 @@ public class Floating_action_bar_fragment extends Fragment implements View.OnCli
                 break;
             case R.id.floatbar_btn_star:
 
-                if (!isFavourite){
+                if (isFavourite){
                     starView.setBackgroundResource(R.drawable.is_star_2x);
+                    isFavourite=false;
 
                 }else{
 
                     starView.setBackgroundResource(R.drawable.ic_star_gold_2x);
+                    isFavourite=true;
                 }
 
 
