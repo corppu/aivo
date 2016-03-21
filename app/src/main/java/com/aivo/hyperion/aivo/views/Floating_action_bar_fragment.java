@@ -1,6 +1,7 @@
 package com.aivo.hyperion.aivo.views;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,9 @@ import android.widget.ImageView;
 
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.main.MainActivity;
+import com.aivo.hyperion.aivo.models.Line;
+import com.aivo.hyperion.aivo.models.Magnet;
+import com.aivo.hyperion.aivo.models.MagnetGroup;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -106,18 +110,18 @@ public class Floating_action_bar_fragment extends Fragment implements View.OnCli
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.floatbar_btn_trash:
-
+                mMagnet.actionDelete();
                 break;
             case R.id.floatbar_btn_star:
 
                 if (isFavourite){
                     starView.setBackgroundResource(R.drawable.is_star_2x);
                     isFavourite=false;
-
+                    mMagnet.actionChangeColor(Color.GRAY);
                 }else{
-
                     starView.setBackgroundResource(R.drawable.ic_star_gold_2x);
                     isFavourite=true;
+                    mMagnet.actionChangeColor(Color.YELLOW);
                 }
 
 
@@ -147,7 +151,38 @@ public class Floating_action_bar_fragment extends Fragment implements View.OnCli
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-      //  void onFragmentInteraction(Uri uri);
+    }
+
+
+    private Magnet mMagnet;
+    private MagnetGroup mMagnetGroup;
+    private Line mLine;
+
+    public void openMagnetActions(Magnet magnet) {
+        mMagnetGroup = null;
+        mLine = null;
+        mMagnet = magnet;
+
+        if (magnet.getColor() == Color.YELLOW) {
+            starView.setBackgroundResource(R.drawable.ic_star_gold_2x);
+            isFavourite=true;
+        } else {
+            starView.setBackgroundResource(R.drawable.is_star_2x);
+            isFavourite=false;
+        }
+    }
+
+    public void openMagnetGroupActions(MagnetGroup magnetGroup) {
+        // TODO: do layout for these.
+        mMagnetGroup = magnetGroup;
+        mLine = null;
+        mMagnet = null;
+    }
+
+    public void openLineActions(Line line) {
+        // TODO: do layout for these.
+        mMagnetGroup = null;
+        mLine = line;
+        mMagnet = null;
     }
 }

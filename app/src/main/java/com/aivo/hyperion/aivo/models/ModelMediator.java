@@ -132,6 +132,26 @@ public class ModelMediator {
         return false;
     }
 
+
+    /** Start all threads...
+     *
+     * @return  True if success.
+     */
+    public boolean startAllThreads() {
+        if (mindmap == null) return false;
+        return true;
+    }
+
+
+    /** Save everything and join all threads.
+     *
+     * @return  True if success.
+     */
+    public boolean saveEverythingAndJoinAllThreads() {
+        if (mindmap == null) return true;
+        return storageModule.saveMindmap(user, mindmap);
+    }
+
     /** Save and close any open Mindmap.
      *
      * @return  True if no Mindmap is open after.

@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/floatBar"
     android:layout_width="280dp"
     android:layout_gravity="center_horizontal|bottom"
     android:layout_marginBottom="40dp"

@@ -119,6 +119,9 @@ public class MindmapFragment extends Fragment {
         void onCreateMagnet(MagnetGroup parent, PointF newPointF);
         void onEditMagnet(Magnet magnet);
         void onSelectMagnet(Magnet magnet);
+        void onSelectMagnetGroup(MagnetGroup magnetGroup);
+        void onSelectLine(Line line);
+        void onRemoveSelection();
     }
 
 }

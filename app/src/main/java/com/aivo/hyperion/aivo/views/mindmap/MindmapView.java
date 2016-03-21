@@ -51,7 +51,6 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     private Paint mPaint = new Paint();
     private float mScaleFactor = 1.0f;
     private PointF topLeft;
-    private Random random = new Random();
 
 
     // Models
@@ -73,8 +72,6 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         canvas.translate(-topLeft.x, -topLeft.y);
         canvas.getClipBounds(mClipBounds);
         getDrawingRect(mDrawingRect);
-
-        //Log.d(TAG, "Canvas clipbounds: " + mClipBounds.toString() + ". View DrawingRect:" + mDrawingRect.toString());
 
         mPaint.setColor(BACKGROUND_COLOR);
         canvas.drawRect(0, 0, MAX_X, MAX_Y, mPaint);
@@ -127,7 +124,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public void onMindmapClosed() {
-
+        MainActivity.getModelMediator().unregisterListener(this);
     }
 
     @Override
@@ -149,6 +146,11 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     @Override
     public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
         //Log.d(TAG, "magnetGroup has been deleted");
+
+        if (mSelectedMagnetGroupViewModel != null && mSelectedMagnetGroupViewModel.getModel() == magnetGroup) {
+            mSelectedMagnetGroupViewModel = null;
+            ((MainActivity)this.getContext()).onRemoveSelection();
+        }
 
         mMagnetGroupMagnetViewModelHashMap.remove(magnetGroup);
         invalidate();
@@ -172,6 +174,12 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     @Override
     public void onMagnetDelete(Magnet magnet) {
         //Log.d(TAG, "magnet has been deleted!");
+
+        if (mSelectedMagnetViewModel != null && mSelectedMagnetViewModel.getModel() == magnet) {
+            mSelectedMagnetViewModel = null;
+            ((MainActivity)this.getContext()).onRemoveSelection();
+        }
+
         mMagnetMagnetViewModelHashMap.remove(magnet);
         invalidate();
     }
@@ -195,6 +203,12 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public void onLineDelete(Line line) {
+
+        if (mSelectedLineViewModel != null && mSelectedLineViewModel.getLine() == line) {
+            mSelectedLineViewModel = null;
+            ((MainActivity)this.getContext()).onRemoveSelection();
+        }
+
         mLineViewModelHashMap.remove(line);
         invalidate();
     }
@@ -535,6 +549,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             }
             mSelectedMagnetViewModel.setIsSelected(false);
             mSelectedMagnetViewModel = null;
+            ((MainActivity)this.getContext()).onRemoveSelection();
         }
 
         if (mSelectedLineViewModel != null) {
@@ -543,11 +558,13 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             }
             mSelectedLineViewModel.setIsSelected(false);
             mSelectedLineViewModel = null;
+            ((MainActivity)this.getContext()).onRemoveSelection();
         }
 
         if (mSelectedMagnetGroupViewModel != null) {
             mSelectedMagnetGroupViewModel.setIsSelected(false);
             mSelectedMagnetGroupViewModel = null;
+            ((MainActivity)this.getContext()).onRemoveSelection();
         }
 
         for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
@@ -564,6 +581,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
                 magnetGroupViewModel.setIsSelected(true);
                 mSelectedMagnetGroupViewModel = magnetGroupViewModel;
+                ((MainActivity)this.getContext()).onSelectMagnetGroup(mSelectedMagnetGroupViewModel.getModel());
                 invalidate();
                 return true;
             }
@@ -573,6 +591,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             if (lineViewModel.contains(x,y)) {
                 lineViewModel.setIsSelected(true);
                 mSelectedLineViewModel = lineViewModel;
+                ((MainActivity)this.getContext()).onSelectLine(mSelectedLineViewModel.getLine());
                 invalidate();
                 return true;
             }

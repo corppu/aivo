@@ -38,7 +38,12 @@ public class LineViewModel {
     private PointF middlePointF = new PointF(0,0);
 
     public void refresh() {
-        middlePointF.set(mLine.getPoints().get(0));
+        if (mLine.getPoints().isEmpty()) {
+            middlePointF = null;
+        } else {
+            middlePointF = new PointF();
+            middlePointF.set(mLine.getPoints().get(0));
+        }
     }
 
     public Line getLine() {
@@ -58,11 +63,7 @@ public class LineViewModel {
         mIsGhost = true;
         mIsSelected = true;
 
-        middlePointF = new PointF();
-        middlePointF.set(
-                (mParentMagnetGroupViewModel.getCenterX() + mChildMagnetGroupViewModel.getCenterX()) / 2.0f,
-                (mParentMagnetGroupViewModel.getCenterY() + mChildMagnetGroupViewModel.getCenterY()) / 2.0f
-        );
+        middlePointF = null;
 
         int r = MainActivity.getRandom().nextInt(255);
         int g = MainActivity.getRandom().nextInt(255);
@@ -99,7 +100,7 @@ public class LineViewModel {
     }
 
     public void moveMiddlePoint(float newPointX, float newPointY) {
-        middlePointF.set(newPointX, newPointY);
+        if (middlePointF != null) middlePointF.set(newPointX, newPointY);
     }
 
     public void draw(Canvas canvas, Paint paint) {
@@ -108,21 +109,30 @@ public class LineViewModel {
             paint.setStrokeWidth(MagnetViewModel.HIGHLIGHT_BORDER_SIZE);
             if (mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);
 
-            canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), middlePointF.x, middlePointF.y, paint);
-            canvas.drawLine(middlePointF.x, middlePointF.y, mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
-            canvas.drawCircle(middlePointF.x, middlePointF.y, MagnetViewModel.CIRLCE_RADIUS + MagnetViewModel.HIGHLIGHT_BORDER_SIZE, paint);
+            if (middlePointF != null) {
+                canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), middlePointF.x, middlePointF.y, paint);
+                canvas.drawLine(middlePointF.x, middlePointF.y, mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
+                canvas.drawCircle(middlePointF.x, middlePointF.y, MagnetViewModel.CIRLCE_RADIUS + MagnetViewModel.HIGHLIGHT_BORDER_SIZE, paint);
+            } else {
+                canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
+            }
         }
 
         paint.setColor(mColor);
         paint.setStrokeWidth(MagnetViewModel.BORDER_SIZE);
         if (mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);
 
-        canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), middlePointF.x, middlePointF.y, paint);
-        canvas.drawLine(middlePointF.x, middlePointF.y, mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
-        canvas.drawCircle(middlePointF.x, middlePointF.y, MagnetViewModel.CIRLCE_RADIUS, paint);
+        if (middlePointF != null) {
+            canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), middlePointF.x, middlePointF.y, paint);
+            canvas.drawLine(middlePointF.x, middlePointF.y, mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
+            canvas.drawCircle(middlePointF.x, middlePointF.y, MagnetViewModel.CIRLCE_RADIUS, paint);
+        } else {
+            canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
+        }
     }
 
     boolean contains(float x, float y) {
+        if (middlePointF == null) return false;
         return x > middlePointF.x - MagnetViewModel.CIRLCE_RADIUS && x < middlePointF.x + MagnetViewModel.CIRLCE_RADIUS && y > middlePointF.y - MagnetViewModel.CIRLCE_RADIUS && y < middlePointF.y + MagnetViewModel.CIRLCE_RADIUS;
     }
 }
