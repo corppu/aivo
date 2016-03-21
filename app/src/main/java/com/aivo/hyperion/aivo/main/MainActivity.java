@@ -44,9 +44,13 @@ public class MainActivity extends AppCompatActivity
     Boolean isSideNoteVisible = false;
     Boolean isMainMenuVisible = true;
     Boolean isSearchPanelVisible = false;
+    Boolean isFloatingMenuHidden = true;
     RelativeLayout sidePanel;
     RelativeLayout searchPanel;
     LinearLayout mainMenuPanel;
+    Floating_action_bar_fragment floatingMenu;
+    FragmentTransaction fragmentTransaction;
+
 
     private static final String TAG = "MainActivity";
 
@@ -136,6 +140,7 @@ public class MainActivity extends AppCompatActivity
         sideNoteFragment = new SideNoteFragment();
         mainMenuFragment = new MainMenuFragment();
         searchFragment = new SearchFragment();
+        floatingMenu = new Floating_action_bar_fragment();
 
         sideBtn = (Button)findViewById(R.id.side_note_button);
         mainMenuButton = (Button)findViewById(R.id.main_menu_button);
@@ -148,10 +153,12 @@ public class MainActivity extends AppCompatActivity
         sModelMediator.createUser();
 
         if (savedInstanceState == null) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.add(R.id.contentAreaParent, mainMenuFragment);
             fragmentTransaction.add(R.id.contentAreaParent, sideNoteFragment);
             fragmentTransaction.add(R.id.contentAreaParent, searchFragment);
+            //fragmentTransaction.add(R.id.contentAreaParent,floatingMenu);
+           // fragmentTransaction.hide(floatingMenu);
             fragmentTransaction.commit();
         } else {
             mMagnetsNewPointF = savedInstanceState.getParcelable(MAGNETS_NEW_POINT_F);
@@ -404,6 +411,18 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onSelectMagnet(Magnet magnet) {
         //show floating menu fragment
+        if(isFloatingMenuHidden){
+
+//            if(fragmentTransaction != null){
+//                fragmentTransaction.show(floatingMenu);
+//               // fragmentTransaction.commit();
+//
+//            }
+            FragmentTransaction ft =getSupportFragmentManager().beginTransaction();
+            ft.add(R.id.contentAreaParent,floatingMenu);
+            ft.commit();
+        }
+
 
     }
 
