@@ -1,6 +1,5 @@
 package com.aivo.hyperion.aivo.main;
 
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.content.Context;
@@ -16,6 +15,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Magnet;
@@ -26,7 +26,7 @@ import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.models.actions.ActionHandler;
-import com.aivo.hyperion.aivo.views.Floating_action_bar_fragment;
+import com.aivo.hyperion.aivo.views.FloatingActionBarFragment;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.mindmap.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
@@ -37,77 +37,172 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity
         implements ModelListener, MindmapFragment.OnMindmapFragmentInteractionListener, NoteFragment.OnNoteFragmentInteractionListener {
 
-    SideNoteFragment sideNoteFragment;
-    MainMenuFragment mainMenuFragment;
-    SearchFragment searchFragment;
-    Button editBtn;
-    Button undoBtn;
-    Button redoBtn;
-    Button sideBtn;
-    Button mainMenuButton;
-    Button searchButton;
-    Boolean isSideNoteVisible = false;
-    Boolean isMainMenuVisible = true;
-    Boolean isSearchPanelVisible = false;
-    Boolean isFloatingMenuHidden = true;
-    RelativeLayout sidePanel;
-    RelativeLayout searchPanel;
-    LinearLayout mainMenuPanel;
-    Floating_action_bar_fragment floatingMenu;
-    FragmentTransaction fragmentTransaction;
+
+    static private Random sRandom = new Random();
+    public static Random getRandom() { return sRandom; }
+    private static Context sTheContext;
+    public static Context getContext() {
+        return sTheContext;
+    }
+    private static User sUser;
+    public static User getUser() {
+        return sUser;
+    }
+    private static ModelMediator sModelMediator;
+    public static ModelMediator getModelMediator() {
+        return sModelMediator;
+    }
+
+    private static Button sEditBtn;
+    private static Button sUndoBtn;
+    private static Button sRedoBtn;
+    private static Button sSideBtn;
+    private static Button sMainMenuButton;
+    private static Button sSearchButton;
 
 
     private static final String TAG = "MainActivity";
-
-    private static final String DEFAULT_USERNAME = "User 1";
-    private String mUserName;
-
-    private static final String DEFAULT_PASSWORD = "123456";
-    private String mPassword;
-
-    private static final String DEFAULT_MINDMAP_TITLE = "Mindmap 1";
-    private String mMindmapTitle;
-
+    private static final String DEFAULT_MINDMAP_TITLE = "Default";
+    private static String mMindmapTitle;
     private static final String MAGNETS_NEW_POINT_F = "magnets_new_point_f";
-    private PointF mMagnetsNewPointF;
+    private static PointF mMagnetsNewPointF;
 
 
-
-    private NoteFragment mNoteFragment;
-
+    private static MindmapFragment sMindmapFragment;
+    private static FloatingActionBarFragment sFloatingActionBarFragment;
+    private static SearchFragment sSearchFragment;
+    private static SideNoteFragment sSideNoteFragment;
+    private static MainMenuFragment sMainMenuFragment;
 
 
 
 
     private void openNoteFragment(int id, boolean isMagnet, String title, String content) {
-        mNoteFragment = NoteFragment.newInstance(id, isMagnet, title, content);
-        mNoteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
-        mNoteFragment.show(getFragmentManager(), "noteFragment");
+        NoteFragment noteFragment = NoteFragment.newInstance(id, isMagnet, title, content);
+        noteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
+        noteFragment.show(getSupportFragmentManager(), "noteFragment");
     }
 
     private void openMindmapFragment(String title) {
-        mMindmapFragment = MindmapFragment.newInstance(title);
-        getSupportFragmentManager().beginTransaction().replace(R.id.contentArea, mMindmapFragment).commit();
+        sMindmapFragment = MindmapFragment.newInstance(title);
+        sFloatingActionBarFragment = new FloatingActionBarFragment();
+        sSearchFragment = new SearchFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.contentArea, sMindmapFragment);
+        ft.add(R.id.contentAreaParent, sFloatingActionBarFragment);
+        ft.add(R.id.contentAreaParent, sSearchFragment);
+        ft.commit();
+
+        hideFloatingActionBar();
+        hideSearchFragment();
     }
 
+    private void initMenus() {
+        sSideNoteFragment = new SideNoteFragment();
+        sMainMenuFragment = new MainMenuFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.add(R.id.contentAreaParent, sMainMenuFragment);
+        ft.add(R.id.contentAreaParent, sSideNoteFragment);
+        ft.commit();
 
-    static private Random sRandom = new Random();
-    public static Random getRandom() { return sRandom; }
-
-    private static Context sTheContext;
-
-    public static Context getContext() {
-        return sTheContext;
+        hideMainMenuFragment();
+        hideSideNoteMenuFragment();
     }
 
-    private static User sUser;
-    public static User getUser() {
-        return sUser;
+    private void removeMenus() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.remove(sMainMenuFragment);
+        ft.remove(sSideNoteFragment);
+        ft.commit();
+
+        sMainMenuFragment = null;
+        sSideNoteFragment = null;
     }
 
-    private static ModelMediator sModelMediator;
-    public static ModelMediator getModelMediator() {
-        return sModelMediator;
+    private void hideSearchFragment() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.hide(sSearchFragment);
+        ft.commit();
+    }
+
+    private void showSearchFragment() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.show(sSearchFragment);
+        ft.commit();
+    }
+
+    private void hideFloatingActionBar() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.hide(sFloatingActionBarFragment);
+        ft.commit();
+    }
+
+    private void showFloatingActionBar() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.show(sFloatingActionBarFragment);
+        ft.commit();
+    }
+
+    private void hideMainMenuFragment() {
+        LinearLayout mainMenuPanel = (LinearLayout) findViewById(R.id.main_menu);
+        if (mainMenuPanel != null) mainMenuPanel.animate().translationX(-mainMenuPanel.getWidth());
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.hide(sMainMenuFragment);
+        ft.commit();
+    }
+
+    private void showMainMenuFragment() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.show(sMainMenuFragment);
+        ft.commit();
+
+        LinearLayout mainMenuPanel = (LinearLayout) findViewById(R.id.main_menu);
+        if (mainMenuPanel != null) mainMenuPanel.animate().translationX(0);
+    }
+
+    private void hideSideNoteMenuFragment() {
+        RelativeLayout sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
+        if (sidePanel != null) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)sidePanel.getLayoutParams();
+            if (params.rightMargin > 0) params.rightMargin *= -1;
+            Animation animation = new TranslateAnimation(-sidePanel.getWidth(), 0, 0, 0);
+            animation.setDuration(300);
+            animation.setFillAfter(true);
+            sidePanel.startAnimation(animation);
+        }
+
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.hide(sSideNoteFragment);
+        ft.commit();
+    }
+
+    private void showSideNoteMenuFragment() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.show(sSideNoteFragment);
+        ft.commit();
+
+        RelativeLayout sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
+        if (sidePanel != null) {
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)sidePanel.getLayoutParams();
+            if (params.rightMargin > 0) params.rightMargin *= -1;
+            Animation animation = new TranslateAnimation(0, -sidePanel.getWidth(), 0, 0);
+            animation.setDuration(300);
+            animation.setFillAfter(true);
+            sidePanel.startAnimation(animation);
+        }
+    }
+
+    private void removeMindmapFragment() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.remove(sMindmapFragment);
+        ft.remove(sSearchFragment);
+        ft.remove(sFloatingActionBarFragment);
+        ft.commit();
+
+        sMindmapFragment = null;
+        sSearchFragment = null;
+        sFloatingActionBarFragment = null;
     }
 
     @Override
@@ -119,96 +214,32 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        sideNoteFragment = new SideNoteFragment();
-        mainMenuFragment = new MainMenuFragment();
-        searchFragment = new SearchFragment();
-        floatingMenu = new Floating_action_bar_fragment();
-
-
-        editBtn = (Button)findViewById(R.id.edit_button);
-        undoBtn = (Button)findViewById(R.id.undo_button);
-        redoBtn = (Button)findViewById(R.id.redo_button);
-        sideBtn = (Button)findViewById(R.id.side_note_button);
-        mainMenuButton = (Button)findViewById(R.id.main_menu_button);
-        searchButton = (Button)findViewById(R.id.search_imagebutton);
-        setButtonsOnClickListeners();
+        initButtons();
 
         sTheContext = MainActivity.this;
         sModelMediator = new ModelMediator();
         sModelMediator.registerListener(this);
         sModelMediator.createUser();
 
-        if (savedInstanceState == null) {
-            fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.add(R.id.contentAreaParent, mainMenuFragment);
-            fragmentTransaction.add(R.id.contentAreaParent, sideNoteFragment);
-            fragmentTransaction.add(R.id.contentAreaParent, searchFragment);
-            fragmentTransaction.add(R.id.contentAreaParent, floatingMenu);
-            fragmentTransaction.hide(floatingMenu);
-            fragmentTransaction.commit();
-        } else {
+        if (savedInstanceState != null) {
             mMagnetsNewPointF = savedInstanceState.getParcelable(MAGNETS_NEW_POINT_F);
             mMindmapTitle = savedInstanceState.getString(DEFAULT_MINDMAP_TITLE);
         }
-
     }
 
     @Override
     public void onStart(){
         super.onStart();
-        // crashes because after going back to foreground  setContentView(R.layout.activity_main); doesnt run therefore null pointer exceprion
-        // cant hadle fragment view if they are not yet there, move code to onCreateView
-
         Log.d(TAG, "onStart");
-
-        if (mMindmapFragment == null) {
-            mMindmapFragment = (MindmapFragment) getSupportFragmentManager().findFragmentById(R.id.mindmapFragment);
-        }
-
-        if (mMindmapFragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.remove(mMindmapFragment);
-            ft.commit();
-        }
-
         if (!sModelMediator.openMindmap("Default")) sModelMediator.createMindmap("Default");
-
-
-        if (floatingMenu == null) {
-            floatingMenu = (Floating_action_bar_fragment) getSupportFragmentManager().findFragmentById(R.id.floatBar);
-        }
-
-        if (floatingMenu != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.hide(floatingMenu);
-            ft.commit();
-        }
-
-        if (sidePanel == null) {
-            sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
-        }
-        if (searchPanel == null) {
-            searchPanel = (RelativeLayout) findViewById(R.id.search_bar);
-        }
-        if (mainMenuPanel == null) {
-            mainMenuPanel = (LinearLayout) findViewById(R.id.main_menu);
-        }
-
-        RelativeLayout.LayoutParams sidePanelParams = (RelativeLayout.LayoutParams) sidePanel.getLayoutParams();
-        // make the right margin negative so the view is moved to the right of the screen
-        if (sidePanelParams.rightMargin > -1) sidePanelParams.rightMargin = sidePanelParams.rightMargin * -1;
-
-        RelativeLayout.LayoutParams searchParams = (RelativeLayout.LayoutParams) searchPanel.getLayoutParams();
-        // make the top margin negative so the view is moved to the top of the screen
-        if (searchParams.topMargin > -1) searchParams.topMargin = searchParams.topMargin * -1;
     }
-
-
 
 
     @Override
     protected void onResume() {
         super.onResume();
+        sSearchFragment.setListener((SearchFragment.OnSearchFragmentInteractionListener) sMindmapFragment.getView());
+
         Log.d(TAG, "onResume " + Boolean.toString(sModelMediator.startAllThreads()));
     }
 
@@ -220,24 +251,26 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+        Log.d("TAG", "onSaveInstanceState " + Boolean.toString(sModelMediator.closeMindmap()));
 
-        Log.d(TAG, "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
         outState.putParcelable(MAGNETS_NEW_POINT_F, mMagnetsNewPointF);
         outState.putString(DEFAULT_MINDMAP_TITLE, mMindmapTitle);
     }
 
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        Log.d("TAG", "onStop " + Boolean.toString(sModelMediator.closeMindmap()));
-    }
 
+    private void initButtons() {
+        sEditBtn = (Button) findViewById(R.id.edit_button);
+        sUndoBtn = (Button) findViewById(R.id.undo_button);
+        sUndoBtn.setEnabled(false);
+        sRedoBtn = (Button) findViewById(R.id.redo_button);
+        sRedoBtn.setEnabled(false);
+        sSideBtn = (Button) findViewById(R.id.side_note_button);
+        sMainMenuButton = (Button) findViewById(R.id.main_menu_button);
+        sSearchButton = (Button) findViewById(R.id.search_imagebutton);
 
-    public void setButtonsOnClickListeners(){
-
-        undoBtn.setOnClickListener(new View.OnClickListener() {
+        sUndoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Mindmap mindmap = sModelMediator.getMindmap();
@@ -245,14 +278,14 @@ public class MainActivity extends AppCompatActivity
                     ActionHandler actionHandler = sModelMediator.getMindmap().getActionHandler();
                     if (actionHandler != null && actionHandler.canUndo()) {
                         actionHandler.undo();
-                        redoBtn.setEnabled(true);
-                        undoBtn.setEnabled(actionHandler.canUndo());
+                        sRedoBtn.setEnabled(true);
+                        sUndoBtn.setEnabled(actionHandler.canUndo());
                     }
                 }
             }
         });
 
-        redoBtn.setOnClickListener(new View.OnClickListener() {
+        sRedoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Mindmap mindmap = sModelMediator.getMindmap();
@@ -260,85 +293,69 @@ public class MainActivity extends AppCompatActivity
                     ActionHandler actionHandler = sModelMediator.getMindmap().getActionHandler();
                     if (actionHandler != null && actionHandler.canRedo()) {
                         actionHandler.redo();
-                        undoBtn.setEnabled(true);
-                        redoBtn.setEnabled(actionHandler.canRedo());
+                        sUndoBtn.setEnabled(true);
+                        sRedoBtn.setEnabled(actionHandler.canRedo());
                     }
                 }
             }
         });
 
 
-        sideBtn.setOnClickListener(new Button.OnClickListener() {
+        sSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
             public void onClick(View v) {
-                // animate the side bar
-                if (isSideNoteVisible) {
-                    // Start the animation
-                    Animation animation = new TranslateAnimation(-sidePanel.getWidth(), 0, 0, 0);
-                    animation.setDuration(300);
-                    animation.setFillAfter(true);
-                    sidePanel.startAnimation(animation);
-
-                    isSideNoteVisible = false;
-                } else {
-                    // Start the animation
-                    Animation animation = new TranslateAnimation(0, -sidePanel.getWidth(), 0, 0);
-                    animation.setDuration(300);
-                    animation.setFillAfter(true);
-                    sidePanel.startAnimation(animation);
-
-                    isSideNoteVisible = true;
-                }
-            }
-
-        });
-
-        mainMenuButton.setOnClickListener(new Button.OnClickListener() {
-            public void onClick(View v) {
-                // animate the main menu panel
-                if (isMainMenuVisible) {
-                    mainMenuPanel.animate().translationX(-mainMenuPanel.getWidth());
-                    isMainMenuVisible = false;
-                } else {
-                    mainMenuPanel.animate().translationX(0);
-                    isMainMenuVisible = true;
+                Mindmap mindmap = sModelMediator.getMindmap();
+                if (mindmap != null) {
+                    if (sSearchFragment.isHidden()) {
+                        showSearchFragment();
+                    } else {
+                        hideSearchFragment();
+                    }
                 }
             }
         });
 
-        searchButton.setOnClickListener(new Button.OnClickListener() {
+        sMainMenuButton.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                if (isSearchPanelVisible) {
-                    Animation animation = new TranslateAnimation(0, 0, searchPanel.getHeight(), 0);
-                    animation.setDuration(250);
-                    animation.setFillAfter(true);
-                    searchPanel.startAnimation(animation);
-
-                    isSearchPanelVisible = false;
+                if (sMainMenuFragment.isVisible()) {
+                    hideMainMenuFragment();
                 } else {
-                    Animation animation = new TranslateAnimation(0, 0, 0, searchPanel.getHeight());
-                    animation.setDuration(250);
-                    animation.setFillAfter(true);
-                    searchPanel.startAnimation(animation);
+                    showMainMenuFragment();
+                }
+            }
+        });
 
-                    isSearchPanelVisible = true;
+        sSideBtn.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                if (sSideNoteFragment.isVisible()) {
+                    hideSideNoteMenuFragment();
+                } else {
+                    showSideNoteMenuFragment();
+                }
+            }
+        });
+
+        sEditBtn.setOnClickListener(new Button.OnClickListener() {
+            public void onClick(View v) {
+                if (sModelMediator.getUser() != null) {
+                    openNoteFragment(0, false, "", "");
                 }
             }
         });
     }
 
+    /** ModelListener interface implementation **/
 
     @Override
     public void onUserOpen(User user) {
         sUser = user;
     }
 
-    private MindmapFragment mMindmapFragment;
-    //private SearchFragment mSearchFragment;
-
     @Override
     public void onMindmapOpen(Mindmap mindmap) {
         mMindmapTitle = mindmap.getTitle();
         openMindmapFragment(mMindmapTitle);
+        initMenus();
     }
 
     @Override
@@ -348,7 +365,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMindmapTitleChange(Mindmap mindmap) {
-
+        mMindmapTitle = mindmap.getTitle();
     }
 
     @Override
@@ -358,9 +375,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMindmapClosed() {
-//        FragmentTransaction transaction = this.getSupportFragmentManager().beginTransaction();
-//        transaction.remove(getSupportFragmentManager().findFragmentById(R.id.mindmapFragment));
-//        transaction.commit();
+        removeMindmapFragment();
+        removeMenus();
     }
 
     @Override
@@ -374,47 +390,56 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMagnetGroupChange(MagnetGroup magnetGroup) {
-        undoBtn.setEnabled(true);
+        sUndoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canUndo());
+        sRedoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canRedo());
     }
 
     @Override
     public void onMagnetCreate(Magnet magnet) {
-        undoBtn.setEnabled(true);
+        sUndoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canUndo());
+        sRedoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canRedo());
     }
 
     @Override
     public void onMagnetChange(Magnet magnet) {
-        undoBtn.setEnabled(true);
+        sUndoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canUndo());
+        sRedoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canRedo());
     }
 
     @Override
     public void onMagnetDelete(Magnet magnet) {
-        undoBtn.setEnabled(true);
+        sUndoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canUndo());
+        sRedoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canRedo());
     }
 
     @Override
     public void onLineCreate(Line line) {
-        undoBtn.setEnabled(true);
+        sUndoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canUndo());
+        sRedoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canRedo());
     }
 
     @Override
     public void onLineChange(Line line) {
-        undoBtn.setEnabled(true);
+        sUndoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canUndo());
+        sRedoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canRedo());
     }
 
     @Override
     public void onLineDelete(Line line) {
-        undoBtn.setEnabled(true);
+        sUndoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canUndo());
+        sRedoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canRedo());
     }
 
     @Override
     public void onMagnetGroupCreate(MagnetGroup magnetGroup) {
-        undoBtn.setEnabled(true);
+        sUndoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canUndo());
+        sRedoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canRedo());
     }
 
     @Override
     public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
-        undoBtn.setEnabled(true);
+        sUndoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canUndo());
+        sRedoBtn.setEnabled(sModelMediator.getMindmap().getActionHandler().canRedo());
     }
 
     @Override
@@ -433,7 +458,7 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    /** OnMindmapFragmentListener **/
+    /** OnMindmapFragmentListener implementation **/
 
     @Override
     public void onCreateMagnet(PointF newPointF) {
@@ -454,14 +479,8 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSelectMagnet(Magnet magnet) {
-        //show floating menu fragment
-        if(isFloatingMenuHidden){
-            floatingMenu.openMagnetActions(magnet);
-
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.show(floatingMenu);
-            ft.commit();
-        }
+        sFloatingActionBarFragment.openMagnetActions(magnet);
+        showFloatingActionBar();
     }
 
     @Override
@@ -476,12 +495,11 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onRemoveSelection() {
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.hide(floatingMenu);
-        ft.commit();
+        hideFloatingActionBar();
+        hideSearchFragment();
     }
 
-    /** OnNoteFragmentListener **/
+    /** OnNoteFragmentListener implementation **/
     @Override
     public void onSave(int id, boolean isMagnet, String newTitle, String newContent) {
         if (isMagnet) {
@@ -495,9 +513,11 @@ public class MainActivity extends AppCompatActivity
                         Color.argb(255, sRandom.nextInt(255), sRandom.nextInt(255), sRandom.nextInt(255)));
             }
         }
+        else {
+            // FIXME: 22.3.2016 @lootabox!
+            Note note = sModelMediator.createNote();
+            note.setData(newTitle, newContent,
+                    Color.argb(255, sRandom.nextInt(255), sRandom.nextInt(255), sRandom.nextInt(255)));
+        }
     }
-
-
-
-
 }

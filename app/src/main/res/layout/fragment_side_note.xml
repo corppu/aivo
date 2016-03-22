@@ -6,11 +6,16 @@
     android:background="#000000"
     android:clickable="false"
     android:layout_alignParentRight="true"
+    android:layout_alignParentEnd="true"
     android:layout_marginRight="200dp"
-    android:layout_gravity="right"
+    android:layout_marginEnd="200dp"
+    android:layout_gravity="end"
     tools:context="com.aivo.hyperion.aivo.views.SideNoteFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
+    <ExpandableListView
+        android:id="@+id/expandableNoteListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </ExpandableListView>
 
 </RelativeLayout>

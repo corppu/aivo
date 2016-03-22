@@ -2,18 +2,15 @@ package com.aivo.hyperion.aivo.views;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.aivo.hyperion.aivo.R;
-import com.aivo.hyperion.aivo.main.MainActivity;
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
@@ -21,12 +18,12 @@ import com.aivo.hyperion.aivo.models.MagnetGroup;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link Floating_action_bar_fragment.OnFragmentInteractionListener} interface
+ * {@link FloatingActionBarFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link Floating_action_bar_fragment#newInstance} factory method to
+ * Use the {@link FloatingActionBarFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Floating_action_bar_fragment extends Fragment implements View.OnClickListener{
+public class FloatingActionBarFragment extends Fragment implements View.OnClickListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,7 +42,7 @@ public class Floating_action_bar_fragment extends Fragment implements View.OnCli
 
     private OnFragmentInteractionListener mListener;
 
-    public Floating_action_bar_fragment() {
+    public FloatingActionBarFragment() {
         // Required empty public constructor
     }
 
@@ -55,11 +52,11 @@ public class Floating_action_bar_fragment extends Fragment implements View.OnCli
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment Floating_action_bar_fragment.
+     * @return A new instance of fragment FloatingActionBarFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static Floating_action_bar_fragment newInstance(String param1, String param2) {
-        Floating_action_bar_fragment fragment = new Floating_action_bar_fragment();
+    public static FloatingActionBarFragment newInstance(String param1, String param2) {
+        FloatingActionBarFragment fragment = new FloatingActionBarFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -82,15 +79,6 @@ public class Floating_action_bar_fragment extends Fragment implements View.OnCli
 
         View floatbarView = inflater.inflate(R.layout.fragment_floating_action_bar_fragment, container, false);
 
-        trashBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_trash);
-        trashBtn.setOnClickListener(this);
-        starBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_star);
-        starBtn.setOnClickListener(this);
-        netBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_net);
-        netBtn.setOnClickListener(this);
-        starView = (ImageView)floatbarView.findViewById(R.id.floatbar_img_star);
-
-
         // Inflate the layout for this fragment
         return floatbarView;
     }
@@ -106,8 +94,42 @@ public class Floating_action_bar_fragment extends Fragment implements View.OnCli
 ////                    + " must implement OnFragmentInteractionListener");
 //        }
     }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        View floatbarView = this.getView();
+        if (trashBtn == null) {
+            trashBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_trash);
+            trashBtn.setOnClickListener(this);
+        }
+        if (starBtn == null) {
+            starBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_star);
+            starBtn.setOnClickListener(this);
+        }
+
+        if (netBtn == null) {
+            netBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_net);
+            netBtn.setOnClickListener(this);
+        }
+
+        if (starView == null) {
+            starView = (ImageView) floatbarView.findViewById(R.id.floatbar_img_star);
+        }
+    }
+
+
+
+
     @Override
     public void onClick(View view) {
+
+
+        if (starView == null) {
+            starView = (ImageView) getView().findViewById(R.id.floatbar_img_star);
+        }
         switch (view.getId()) {
             case R.id.floatbar_btn_trash:
                 mMagnet.actionDelete();

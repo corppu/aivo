@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/floatBar"
+    android:id="@+id/floatingActionBarFragment"
+    android:tag="floatingActionBarFragment"
     android:layout_width="280dp"
     android:layout_gravity="center_horizontal|bottom"
     android:layout_marginBottom="40dp"
@@ -8,68 +9,70 @@
     android:layout_centerHorizontal="true"
 
     android:background="@drawable/floating_menu_shape"
-    android:layout_height="60dp"
-    >
+    android:layout_height="60dp">
 
     <Button
-    android:layout_width="90dp"
-    android:background="@android:color/transparent"
-    android:id="@+id/floatbar_btn_trash"
-
-    android:gravity="center_horizontal"
-    android:layout_toLeftOf="@+id/floatbar_btn_star"
-    android:layout_height="match_parent" >
+        android:layout_width="90dp"
+        android:background="@android:color/transparent"
+        android:id="@+id/floatbar_btn_trash"
+        android:gravity="center_horizontal"
+        android:layout_toStartOf="@+id/floatbar_btn_star"
+        android:layout_toLeftOf="@+id/floatbar_btn_star"
+        android:layout_height="match_parent" >
     </Button>
 
-   <Button
-    android:layout_width="90dp"
-       android:id="@+id/floatbar_btn_star"
-    android:layout_height="match_parent"
-       android:layout_toLeftOf="@+id/floatbar_btn_net"
-       android:background="@android:color/transparent"
+    <Button
+        android:layout_width="90dp"
+        android:id="@+id/floatbar_btn_star"
+        android:layout_height="match_parent"
+        android:layout_toStartOf="@+id/floatbar_btn_net"
+        android:layout_toLeftOf="@+id/floatbar_btn_net"
+        android:background="@android:color/transparent"
 
-       android:layout_gravity="center_horizontal"
-       > </Button>
+        android:layout_gravity="center_horizontal"
+        >
+    </Button>
 
     <Button
         android:layout_width="90dp"
         android:id="@+id/floatbar_btn_net"
         android:background="@android:color/transparent"
+        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_gravity="right"
+        android:layout_gravity="end"
         android:layout_height="match_parent" >
-
-        </Button>
+    </Button>
 
 
     <ImageView
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:background="@drawable/ic_trash_bin_2x"
+        android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"
         android:layout_marginTop="7dp"
-
         />
+
     <ImageView
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:background="@drawable/ic_network_2x"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_marginRight="25dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginTop="7dp"
-
-
         />
+
     <ImageView
         android:layout_width="48dp"
         android:id="@+id/floatbar_img_star"
         android:layout_height="45dp"
         android:background="@drawable/is_star_2x"
         android:layout_marginRight="25dp"
+        android:layout_marginEnd="25dp"
         android:layout_marginTop="7dp"
         android:layout_centerInParent="true"
-
-
         />
 
 

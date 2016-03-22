@@ -26,14 +26,14 @@ import com.aivo.hyperion.aivo.models.Mindmap;
 import com.aivo.hyperion.aivo.models.ModelListener;
 import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
+import com.aivo.hyperion.aivo.views.SearchFragment;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Random;
+
 
 public class MindmapView extends View
-implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener, ModelListener {
+implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener, ScaleGestureDetector.OnScaleGestureListener, ModelListener, SearchFragment.OnSearchFragmentInteractionListener {
 
     // touch and drawing
     private final int BACKGROUND_COLOR = Color.WHITE;
@@ -731,4 +731,20 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public void onScaleEnd(ScaleGestureDetector detector) {
         //Log.d(TAG, "onScaleEnd: " + detector.toString());
     }
+
+    @Override
+    public void search(String text, boolean image, boolean video, boolean file) {
+        for (MagnetViewModel magnetViewModel : mMagnetMagnetViewModelHashMap.values()) {
+            if ((image == magnetViewModel.getModel().hasImage() && (video == magnetViewModel.getModel().hasVideo()) && magnetViewModel.getModel().getTitle().contains(text))) {
+                magnetViewModel.setIsGhost(false);
+                continue;
+            }
+
+            magnetViewModel.setIsGhost(true);
+        }
+
+        invalidate();
+    }
+
+
 }

@@ -4,7 +4,8 @@
     android:layout_width="388dp"
     android:layout_height="@dimen/search_height"
     android:layout_marginTop="@dimen/search_height"
-    android:id="@+id/search_bar"
+    android:id="@+id/searchFragment"
+    android:tag="searchFragment"
     android:background="#336094"
     android:fadingEdge="horizontal"
     android:clickable="true"
@@ -22,6 +23,7 @@
             android:layout_toLeftOf="@+id/searchButton2"
             android:layout_toStartOf="@+id/searchButton2"
             android:paddingLeft="10dp"
+            android:paddingStart="10dp"
             android:enabled="true"
             android:layout_alignBottom="@+id/searchButton2"
             android:layout_alignTop="@+id/searchButton2"
@@ -57,7 +59,9 @@
             android:layout_marginTop="7dp"
             android:layout_marginBottom="7dp"
             android:layout_marginRight="7dp"
-            android:paddingRight="7dp" />
+            android:layout_marginEnd="7dp"
+            android:paddingRight="7dp"
+            android:paddingEnd="7dp"/>
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -72,7 +76,8 @@
             android:layout_alignStart="@+id/editText"
             android:layout_marginBottom="7dp"
             android:layout_marginTop="7dp"
-            android:paddingRight="7dp" />
+            android:paddingRight="7dp"
+            android:paddingEnd="7dp"/>
 
         <CheckBox
             android:layout_width="wrap_content"
@@ -89,7 +94,8 @@
             android:layout_marginStart="86dp"
             android:layout_marginTop="7dp"
             android:layout_marginBottom="7dp"
-            android:paddingRight="7dp" />
+            android:paddingRight="7dp"
+            android:paddingEnd="7dp"/>
 
         <TextView
             android:layout_width="wrap_content"

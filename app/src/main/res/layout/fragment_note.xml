@@ -1,6 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/noteFragment"
+    android:tag="noteFragment"
     android:orientation="vertical"
     android:background="@drawable/shadow"
     android:fadingEdge="horizontal"
