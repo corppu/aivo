@@ -57,8 +57,9 @@ public class MainActivity extends AppCompatActivity
     private static Button sUndoBtn;
     private static Button sRedoBtn;
     private static Button sSideBtn;
-    private static Button sMainMenuButton;
-    private static Button sSearchButton;
+    private static Button sMainMenuBtn;
+    private static Button sSearchBtn;
+    private static Button sSettingsBtn;
 
 
     private static final String TAG = "MainActivity";
@@ -267,8 +268,9 @@ public class MainActivity extends AppCompatActivity
         sRedoBtn = (Button) findViewById(R.id.redo_button);
         sRedoBtn.setEnabled(false);
         sSideBtn = (Button) findViewById(R.id.side_note_button);
-        sMainMenuButton = (Button) findViewById(R.id.main_menu_button);
-        sSearchButton = (Button) findViewById(R.id.search_imagebutton);
+        sMainMenuBtn = (Button) findViewById(R.id.main_menu_button);
+        sSearchBtn = (Button) findViewById(R.id.search_imagebutton);
+        sSettingsBtn = (Button) findViewById(R.id.settings_imagebutton);
 
         sUndoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -300,8 +302,22 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        sSettingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Mindmap mindmap = sModelMediator.getMindmap();
+                if (mindmap != null) {
+                    ActionHandler actionHandler = sModelMediator.getMindmap().getActionHandler();
+                    if (actionHandler != null && actionHandler.canRedo()) {
+                        actionHandler.redo();
+                        sSettingsBtn.setEnabled(true);
+                        sSettingsBtn.setEnabled(actionHandler.canRedo());
+                    }
+                }
+            }
+        });
 
-        sSearchButton.setOnClickListener(new View.OnClickListener() {
+        sSearchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Mindmap mindmap = sModelMediator.getMindmap();
@@ -315,7 +331,7 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        sMainMenuButton.setOnClickListener(new Button.OnClickListener() {
+        sMainMenuBtn.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 if (sMainMenuFragment.isVisible()) {
                     hideMainMenuFragment();
