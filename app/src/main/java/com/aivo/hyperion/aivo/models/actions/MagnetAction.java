@@ -19,7 +19,10 @@ public abstract class MagnetAction extends Action {
         List< Magnet > magnetRow;
 
         // Find the magnet row to add the magnet to
-        if (rowIndex == magnetRows.size() || createNewRow) {
+        if (rowIndex >= magnetRows.size()) {
+            magnetRow = new ArrayList<>();
+            magnetRows.add(magnetRow);
+        } else if (createNewRow) {
             magnetRow = new ArrayList<>();
             magnetRows.add(rowIndex, magnetRow);
         } else
