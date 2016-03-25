@@ -4,7 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="note_width">363dp</dimen>
-    <dimen name="note_height">477dp</dimen>
+    <dimen name="note_height">363dp</dimen>
     <dimen name="side_note_width">200dp</dimen>
     <dimen name="search_height">84dp</dimen>
     <dimen name="canvas_width">3840px</dimen>

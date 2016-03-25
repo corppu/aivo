@@ -6,15 +6,12 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.support.v4.app.DialogFragment;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -39,8 +36,7 @@ import java.util.List;
  * create an instance of this fragment.
  *
  */
-public class NoteFragment extends DialogFragment implements OnTouchListener, View.OnClickListener {
-    // Persistent SharedPrefs data:
+public class NoteFragment extends DialogFragment implements View.OnClickListener {
     private static final String TAG = "NoteFragment";
 
     private static final String ARG_ID = "arg_id";
@@ -92,12 +88,6 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
             mIsMagnet = getArguments().getBoolean(ARG_IS_MAGNET);
             mCurrentNoteTitle = getArguments().getString(ARG_CURRENT_NOTE_TITLE);
             mCurrentNoteContent = getArguments().getString(ARG_CURRENT_NOTE_CONTENT);
-            SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
-            editor.putInt(ARG_ID, mId);
-            editor.putBoolean(ARG_IS_MAGNET, mIsMagnet);
-            editor.putString(ARG_CURRENT_NOTE_TITLE, mCurrentNoteContent);
-            editor.putString(ARG_CURRENT_NOTE_CONTENT, mCurrentNoteContent);
-            editor.commit();
         }
 
         else if (savedInstanceState != null) {
@@ -105,14 +95,6 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
             mIsMagnet = savedInstanceState.getBoolean(ARG_IS_MAGNET);
             mCurrentNoteTitle = savedInstanceState.getString(ARG_CURRENT_NOTE_TITLE);
             mCurrentNoteContent = savedInstanceState.getString(ARG_CURRENT_NOTE_CONTENT);
-        }
-
-        else {
-            SharedPreferences sharedPreferences = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE);
-            mId = sharedPreferences.getInt(ARG_ID, mId);
-            mIsMagnet = sharedPreferences.getBoolean(ARG_IS_MAGNET, mIsMagnet);
-            mCurrentNoteTitle = sharedPreferences.getString(ARG_CURRENT_NOTE_TITLE, mCurrentNoteTitle);
-            mCurrentNoteContent = sharedPreferences.getString(ARG_CURRENT_NOTE_CONTENT, mCurrentNoteContent);
         }
 
         setRetainInstance(true);
@@ -179,23 +161,14 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
     @Override
     public void onPause() {
         super.onPause();
-
-
-//        mCurrentNoteTitle = ((EditText)(this.getDialog().findViewById(R.id.titleEditText))).getText().toString();
-//        mCurrentNoteContent = ((EditText)(this.getDialog().findViewById(R.id.contentEditText))).getText().toString();
-
-        // Save instance state to temporary storage drive.
-        SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
-        editor.putInt(ARG_ID, mId);
-        editor.putBoolean(ARG_IS_MAGNET, mIsMagnet);
-        editor.putString(ARG_CURRENT_NOTE_TITLE, mCurrentNoteTitle);
-        editor.putString(ARG_CURRENT_NOTE_CONTENT, mCurrentNoteContent);
-        editor.commit();
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        mCurrentNoteTitle = ((EditText)this.getDialog().findViewById(R.id.titleEditText)).getText().toString();
+        mCurrentNoteContent = ((EditText)this.getDialog().findViewById(R.id.contentEditText)).getText().toString();
 
         // Save instance state for temporary RAM.
         outState.putInt(ARG_ID, mId);
@@ -208,11 +181,6 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
     }
 
     /**
@@ -254,8 +222,23 @@ public class NoteFragment extends DialogFragment implements OnTouchListener, Vie
             case R.id.imageButton:
                 // TODO: Attach an image
                 break;
-            case R.id.expandImageButton:
-                // TODO: Resize note
+                case R.id.expandImageButton:
+
+                    if (view.getTag() != "maximized") {
+                        view.setTag("maximized");
+                        view.setBackgroundResource(R.drawable.ic_minimize);
+
+                        getDialog().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT,
+                                WindowManager.LayoutParams.MATCH_PARENT);
+                    } else {
+                        int width = getResources().getDimensionPixelSize(R.dimen.note_width);
+                        int height = getResources().getDimensionPixelSize(R.dimen.note_height);
+                        view.setTag("minimized");
+                        view.setBackgroundResource(R.drawable.ic_maximize);
+
+                        getDialog().getWindow().setLayout(width, height);
+                    }
+
                 break;
             default:
                 break;
