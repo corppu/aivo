@@ -30,13 +30,11 @@ public class MagnetMove extends MagnetAction {
         this.rowIndexOld = rowcol[0];
         this.colIndexOld = rowcol[1];
         this.createNewRow = true;
-        this.removedRow = magnetGroupOld.getIsMagnetAloneOnRow(magnet); // Row is removed, if it becomes empty
+        this.removedRow = getIsMagnetAloneOnRow(magnet); // Row is removed, if it becomes empty
     }
 
     public MagnetMove(ModelMediator mediator, Magnet magnet, MagnetGroup magnetGroupNew,
                       final int rowIndexNew, final int colIndexNew, final boolean createNewRow) {
-        if (rowIndexNew < 0 || colIndexNew < 0)
-            throw new InternalError("Tried to create a MagnetMove action with negative row/col indexes!");
 
         setMediator(mediator);
         this.magnetGroupNew = magnetGroupNew;
@@ -48,7 +46,7 @@ public class MagnetMove extends MagnetAction {
         this.rowIndexOld = rowcol[0];
         this.colIndexOld = rowcol[1];
         this.createNewRow = createNewRow;
-        this.removedRow = magnetGroupOld.getIsMagnetAloneOnRow(magnet); // Row is removed, if it becomes empty
+        this.removedRow = getIsMagnetAloneOnRow(magnet); // Row is removed, if it becomes empty
     }
 
     @Override

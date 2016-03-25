@@ -115,14 +115,6 @@ public class MagnetGroup {
         return count;
     }
 
-    public boolean getIsMagnetAloneOnRow(Magnet magnet) {
-        for (List<Magnet> magnetRow : magnets)
-            if (magnetRow.contains(magnet)) {
-                return magnetRow.size() == 1;
-            }
-        return false;
-    }
-
     // Should only be called from line, when creating a mindmap from json!
     protected void addLine(Line line) {
         lines.add(line);

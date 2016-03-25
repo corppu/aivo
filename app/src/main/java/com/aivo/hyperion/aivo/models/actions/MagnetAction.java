@@ -1,5 +1,7 @@
 package com.aivo.hyperion.aivo.models.actions;
 
+import android.util.Log;
+
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
@@ -135,10 +137,11 @@ public abstract class MagnetAction extends Action {
 
     protected int[] getMagnetRowCol(Magnet target) {
         int rowIndex = -1;
-        int colIndex = -1;
+        int colIndex;
 
         for (List< Magnet > magnetRow : target.getMagnetGroup().getMagnets()) {
             ++rowIndex;
+            colIndex = -1;
             for (Magnet magnet : magnetRow) {
                 ++colIndex;
                 if (magnet == target)
@@ -146,5 +149,13 @@ public abstract class MagnetAction extends Action {
             }
         }
         throw new InternalError("Tried to find row/col of a magnet, that had no group or was not in its group!");
+    }
+
+    protected boolean getIsMagnetAloneOnRow(Magnet magnet) {
+        for (List<Magnet> magnetRow : magnet.getMagnetGroup().getMagnets())
+            if (magnetRow.contains(magnet)) {
+                return magnetRow.size() == 1;
+            }
+        throw new InternalError("Tried to check if a magnet was alone on its row, but the magnet had no group or was not in its group!");
     }
 }

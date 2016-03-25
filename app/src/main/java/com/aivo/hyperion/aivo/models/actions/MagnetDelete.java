@@ -19,7 +19,7 @@ public class MagnetDelete extends MagnetAction {
         final int[] rowcol = getMagnetRowCol(magnet);
         this.rowIndex = rowcol[0];
         this.colIndex = rowcol[1];
-        this.removedRow = magnetGroup.getIsMagnetAloneOnRow(magnet); // Row is removed, if it becomes empty
+        this.removedRow = getIsMagnetAloneOnRow(magnet); // Row is removed, if it becomes empty
     }
 
     @Override
