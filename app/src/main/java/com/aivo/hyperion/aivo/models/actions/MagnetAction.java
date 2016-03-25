@@ -111,9 +111,9 @@ public abstract class MagnetAction extends Action {
 
             // Handle "resurrection" of a group, if necessary
             if (magnetGroupNew.getMagnetCount() == 1) {
+                listener.onMagnetGroupCreate(magnetGroupNew);
                 for (Line line : magnetGroupNew.getLines())
                     listener.onLineCreate(line);
-                listener.onMagnetGroupCreate(magnetGroupNew);
             }
             else
                 listener.onMagnetGroupChange(magnetGroupNew);
