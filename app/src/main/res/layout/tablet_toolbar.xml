@@ -29,36 +29,54 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:clickable="true"
-            android:background="@android:drawable/ic_menu_edit"
+            android:background="@drawable/edit_button"
             style="?android:attr/borderlessButtonStyle"
             android:enabled="false"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/undo_button"
-            android:layout_toStartOf="@+id/undo_button"/>
+            android:layout_toStartOf="@+id/undo_button" />
 
        <Button
            android:id="@+id/undo_button"
            android:layout_width="50dp"
            android:layout_height="50dp"
            android:clickable="true"
-           android:background="@android:drawable/ic_media_previous"
+           android:background="@drawable/undo_button"
            style="?android:attr/borderlessButtonStyle"
            android:enabled="false"
            android:layout_centerHorizontal="true"
            android:layout_centerVertical="true"
            android:layout_toLeftOf="@+id/redo_button"
-           android:layout_toStartOf="@+id/redo_button"/>
+           android:layout_toStartOf="@+id/redo_button"
+           android:layout_marginLeft="20dp"/>
 
         <Button
             android:id="@+id/redo_button"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:clickable="true"
-            android:background="@android:drawable/ic_media_next"
+            android:background="@drawable/redo_button"
             style="?android:attr/borderlessButtonStyle"
             android:enabled="false"
             android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:layout_centerHorizontal="true"/>
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+
+        <Button
+            android:id="@+id/settings_imagebutton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:clickable="true"
+            android:background="@drawable/settings_button"
+            style="?android:attr/borderlessButtonStyle"
+            android:layout_alignTop="@+id/redo_button"
+            android:layout_toRightOf="@+id/redo_button"
+            android:layout_toEndOf="@+id/redo_button"
+            android:enabled="true"
+            android:layout_marginRight="20dp"/>
 
         <Button
             android:id="@+id/search_imagebutton"
@@ -66,13 +84,16 @@
             android:layout_height="50dp"
             android:clickable="true"
             android:background="@drawable/search_button"
-            android:layout_toRightOf="@+id/redo_button"
-            android:layout_toEndOf="@+id/redo_button"
             style="?android:attr/borderlessButtonStyle"
-            android:enabled="true" />
+            android:enabled="true"
+            android:layout_alignTop="@+id/settings_imagebutton"
+            android:layout_toRightOf="@+id/settings_imagebutton"
+            android:layout_toEndOf="@+id/settings_imagebutton" />
+
 
         <Button
             android:text="Side Note"
+            android:textColor="#FFFFFF"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:id="@+id/side_note_button"
