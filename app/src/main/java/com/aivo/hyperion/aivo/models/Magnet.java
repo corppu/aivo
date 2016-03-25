@@ -18,6 +18,7 @@ public class Magnet extends Note {
     // Local properties
     private int id;
     private MagnetGroup magnetGroup;
+    private boolean favourite;
 
     // DO NOT USE! Only to be used by actions.
     public void setMagnetGroup(MagnetGroup newMagnetGroup) { magnetGroup = newMagnetGroup; }
@@ -38,6 +39,7 @@ public class Magnet extends Note {
         this.title = title;
         this.content = content;
         this.color = color;
+        this.favourite = false;
     }
 
     public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup, Note noteReference) {
@@ -47,6 +49,7 @@ public class Magnet extends Note {
         this.content = noteReference.getContent();
         this.color = noteReference.getColor();
         this.id = mediator.getMindmap().getNextId();
+        this.favourite = false;
     }
 
     /** Used to construct a magnet from a json object.
@@ -60,6 +63,7 @@ public class Magnet extends Note {
             this.title = json.getString("title");
             this.content = json.getString("content");
             this.color = json.getInt("color");
+            this.favourite = json.getBoolean("favourite");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -73,6 +77,7 @@ public class Magnet extends Note {
             object.put("title", title);
             object.put("content", content);
             object.put("color", color);
+            object.put("favourite", favourite);
 
         } catch (JSONException e) {
             e.printStackTrace();
