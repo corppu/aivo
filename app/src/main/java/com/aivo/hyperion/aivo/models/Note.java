@@ -63,7 +63,9 @@ public class Note {
         content = newContent;
         color = newColor;
 
-        for (ModelListener listener : mediator.getListeners()) listener.onNoteChange(this);
+        // This check is required, because Magnets also use this function
+        if (this.getClass().isInstance(new Note(mediator)))
+            for (ModelListener listener : mediator.getListeners()) listener.onNoteChange(this);
     }
 
     public boolean hasImage() {

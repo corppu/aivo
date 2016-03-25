@@ -113,6 +113,12 @@ public class Line {
         thickness = newThickness;
     }
 
+    // DO NOT USE! Only for MagnetMove action!
+    public void setGroups(final MagnetGroup magnetGroup1, final MagnetGroup magnetGroup2) {
+        this.magnetGroup1 = magnetGroup1;
+        this.magnetGroup2 = magnetGroup2;
+    }
+
     public void actionChangeType(final int newType) {
         Action action = new LineChangeData(mediator, this, newType, thickness);
         mediator.getMindmap().getActionHandler().executeAction(action);

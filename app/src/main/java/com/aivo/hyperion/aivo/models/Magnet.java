@@ -11,18 +11,15 @@ import com.aivo.hyperion.aivo.models.actions.MagnetMove;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.List;
-
 public class Magnet extends Note {
 
     // Local properties
     private int id;
     private MagnetGroup magnetGroup;
-    private boolean favourite;
+    private boolean isFavourite;
 
-    // DO NOT USE! Only to be used by actions.
-    public void setMagnetGroup(MagnetGroup newMagnetGroup) { magnetGroup = newMagnetGroup; }
     public MagnetGroup getMagnetGroup() { return magnetGroup; }
+    public boolean getIsFavourite() { return isFavourite; }
     public int getId() { return id; }
     
     private void setMediator(ModelMediator modelMediator_) {
@@ -39,7 +36,7 @@ public class Magnet extends Note {
         this.title = title;
         this.content = content;
         this.color = color;
-        this.favourite = false;
+        this.isFavourite = false;
     }
 
     public Magnet(ModelMediator mediator_, MagnetGroup magnetGroup, Note noteReference) {
@@ -49,7 +46,7 @@ public class Magnet extends Note {
         this.content = noteReference.getContent();
         this.color = noteReference.getColor();
         this.id = mediator.getMindmap().getNextId();
-        this.favourite = false;
+        this.isFavourite = false;
     }
 
     /** Used to construct a magnet from a json object.
@@ -63,7 +60,7 @@ public class Magnet extends Note {
             this.title = json.getString("title");
             this.content = json.getString("content");
             this.color = json.getInt("color");
-            this.favourite = json.getBoolean("favourite");
+            this.isFavourite = json.getBoolean("isFavourite");
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -77,7 +74,7 @@ public class Magnet extends Note {
             object.put("title", title);
             object.put("content", content);
             object.put("color", color);
-            object.put("favourite", favourite);
+            object.put("isFavourite", isFavourite);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -85,18 +82,29 @@ public class Magnet extends Note {
         return object;
     }
 
+    // DO NOT USE! Only to be used by actions.
+    public void setMagnetGroup(MagnetGroup newMagnetGroup) { magnetGroup = newMagnetGroup; }
+
+    // DO NOT USE! Only to be used by MagnetFavouriteToggle action.
+    public void setFavourite(final boolean isFavourite) { this.isFavourite = isFavourite; }
+
     public void actionChangeData(String newTitle) {
-        Action action = new MagnetChangeData(mediator, this, newTitle, content, color);
+        Action action = new MagnetChangeData(mediator, this, newTitle, content, color, isFavourite);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
     public void actionChangeData(String newTitle, String newContent) {
-        Action action = new MagnetChangeData(mediator, this, newTitle, newContent, color);
+        Action action = new MagnetChangeData(mediator, this, newTitle, newContent, color, isFavourite);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
     public void actionChangeColor(final int newColor) {
-        Action action = new MagnetChangeData(mediator, this, title, content, newColor);
+        Action action = new MagnetChangeData(mediator, this, title, content, newColor, isFavourite);
+        mediator.getMindmap().getActionHandler().executeAction(action);
+    }
+
+    public void actionChangeFavourite(final boolean newFavourite) {
+        Action action = new MagnetChangeData(mediator, this, title, content, color, newFavourite);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 

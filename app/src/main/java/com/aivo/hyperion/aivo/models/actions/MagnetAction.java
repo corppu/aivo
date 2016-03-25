@@ -75,6 +75,19 @@ public abstract class MagnetAction extends Action {
         magnet.setMagnetGroup(null);
     }
 
+    protected void moveMagnetGroupLines(MagnetGroup magnetGroupOld, MagnetGroup magnetGroupNew, List<Line> lines) {
+        for (Line line : lines) {
+            if (line.getMagnetGroup1() == magnetGroupOld)
+                line.setGroups(magnetGroupNew, line.getMagnetGroup2());
+            else if (line.getMagnetGroup2() == magnetGroupOld)
+                line.setGroups(line.getMagnetGroup1(), magnetGroupNew);
+            else throw new InternalError("Tried to move lines from a group they were not connected to!");
+            
+            magnetGroupOld.getLines().remove(line);
+            magnetGroupNew.getLines().add(line);
+        }
+    }
+
     protected void notifyMagnetCreatedIntoGroup(Magnet magnet, MagnetGroup magnetGroup) {
         for (ModelListener listener : mediator.getListeners()) {
             listener.onMagnetCreate(magnet);

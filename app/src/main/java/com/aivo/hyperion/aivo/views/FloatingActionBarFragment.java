@@ -139,11 +139,11 @@ public class FloatingActionBarFragment extends Fragment implements View.OnClickL
                 if (isFavourite){
                     starView.setBackgroundResource(R.drawable.is_star_2x);
                     isFavourite=false;
-                    mMagnet.actionChangeColor(Color.GRAY);
+                    mMagnet.actionChangeFavourite(false);
                 }else{
                     starView.setBackgroundResource(R.drawable.ic_star_gold_2x);
                     isFavourite=true;
-                    mMagnet.actionChangeColor(Color.YELLOW);
+                    mMagnet.actionChangeFavourite(true);
                 }
 
 
@@ -185,13 +185,11 @@ public class FloatingActionBarFragment extends Fragment implements View.OnClickL
         mLine = null;
         mMagnet = magnet;
 
-        if (magnet.getColor() == Color.YELLOW) {
+        isFavourite = mMagnet.getIsFavourite();
+        if (isFavourite)
             starView.setBackgroundResource(R.drawable.ic_star_gold_2x);
-            isFavourite=true;
-        } else {
+        else
             starView.setBackgroundResource(R.drawable.is_star_2x);
-            isFavourite=false;
-        }
     }
 
     public void openMagnetGroupActions(MagnetGroup magnetGroup) {

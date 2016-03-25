@@ -13,8 +13,11 @@ public class MagnetChangeData extends Action {
     private String contentOld;
     private int colorNew;
     private int colorOld;
+    private boolean favouriteNew;
+    private boolean favouriteOld;
 
-    public MagnetChangeData(ModelMediator mediator, Magnet magnet, String titleNew, String contentNew, final int colorNew) {
+    public MagnetChangeData(ModelMediator mediator, Magnet magnet, String titleNew, String contentNew,
+                            final int colorNew, final boolean favouriteNew) {
         setMediator(mediator);
 
         this.magnet = magnet;
@@ -22,21 +25,25 @@ public class MagnetChangeData extends Action {
         this.titleNew = titleNew;
         this.contentNew = contentNew;
         this.colorNew = colorNew;
+        this.favouriteNew = favouriteNew;
 
         this.titleOld = magnet.getTitle();
         this.contentOld = magnet.getContent();
         this.colorOld = magnet.getColor();
+        this.favouriteOld = magnet.getIsFavourite();
     }
 
     @Override
     void execute() {
         magnet.setData(titleNew, contentNew, colorNew);
+        magnet.setFavourite(favouriteNew);
         for (ModelListener listener : mediator.getListeners()) { listener.onMagnetChange(magnet); }
     }
 
     @Override
     void undo() {
         magnet.setData(titleOld, contentOld, colorOld);
+        magnet.setFavourite(favouriteOld);
         for (ModelListener listener : mediator.getListeners()) { listener.onMagnetChange(magnet); }
     }
 }
