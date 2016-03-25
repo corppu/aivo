@@ -716,7 +716,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public boolean onScale(ScaleGestureDetector detector) {
         //Log.d(TAG, "onScale: " + detector.toString());
 
-        mScaleFactor = Math.min(Math.max(0.25f,mScaleFactor * detector.getScaleFactor()), 1.0f);
+        mScaleFactor = Math.min(Math.max(0.25f,mScaleFactor * detector.getScaleFactor()), 2.0f);
         invalidate();
         return true;
     }
