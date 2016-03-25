@@ -115,6 +115,14 @@ public class MagnetGroup {
         return count;
     }
 
+    public boolean getIsMagnetAloneOnRow(Magnet magnet) {
+        for (List<Magnet> magnetRow : magnets)
+            if (magnetRow.contains(magnet)) {
+                return magnetRow.size() == 1;
+            }
+        return false;
+    }
+
     // Should only be called from line, when creating a mindmap from json!
     protected void addLine(Line line) {
         lines.add(line);
@@ -124,12 +132,13 @@ public class MagnetGroup {
         mediator.getMindmap().actionCreateLine(this, magnetGroup);
     }
 
-    public void actionCreateMagnet(final int rowIndex, final int colIndex,
+    public void actionCreateMagnet(final int rowIndex, final int colIndex, final boolean createNewRowAlways,
                                    String title, String content, final int color) {
-        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex, title, content, color);
+        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex, createNewRowAlways, title, content, color);
     }
-    public void actionCreateMagnet(final int rowIndex, final int colIndex, Note noteReference) {
-        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex, noteReference);
+    public void actionCreateMagnet(final int rowIndex, final int colIndex,
+                                   final boolean createNewRowAlways, Note noteReference) {
+        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex, createNewRowAlways, noteReference);
     }
 
     public void actionCreateMagnetChild(PointF pointF, String title, String content, final int color) {

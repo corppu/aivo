@@ -31,7 +31,7 @@ public class MagnetCreateChild extends MagnetAction {
 
     @Override
     void execute() {
-        insertMagnetIntoGroup(magnet, magnetGroup, 0, 0);
+        insertMagnetIntoGroup(magnet, magnetGroup, 0, 0, true);
 
         for (ModelListener listener : mediator.getListeners()) {
             listener.onMagnetCreate(magnet);

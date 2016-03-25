@@ -11,6 +11,8 @@ import com.aivo.hyperion.aivo.models.actions.MagnetMove;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class Magnet extends Note {
 
     // Local properties
@@ -93,8 +95,8 @@ public class Magnet extends Note {
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
-    public void actionMoveTo(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex) {
-        Action action = new MagnetMove(mediator, this, newMagnetGroup, rowIndex, colIndex);
+    public void actionMoveTo(MagnetGroup newMagnetGroup, final int rowIndex, final int colIndex, final boolean createNewRowAlways) {
+        Action action = new MagnetMove(mediator, this, newMagnetGroup, rowIndex, colIndex, createNewRowAlways);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 

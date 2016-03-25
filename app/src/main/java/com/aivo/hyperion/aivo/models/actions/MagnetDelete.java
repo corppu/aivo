@@ -10,6 +10,7 @@ public class MagnetDelete extends MagnetAction {
     private MagnetGroup magnetGroup;
     private int rowIndex;
     private int colIndex;
+    private boolean removedRow;
 
     public MagnetDelete(ModelMediator mediator, Magnet magnet) {
         setMediator(mediator);
@@ -18,6 +19,7 @@ public class MagnetDelete extends MagnetAction {
         final int[] rowcol = getMagnetRowCol(magnet);
         this.rowIndex = rowcol[0];
         this.colIndex = rowcol[1];
+        this.removedRow = magnetGroup.getIsMagnetAloneOnRow(magnet); // Row is removed, if it becomes empty
     }
 
     @Override
@@ -30,7 +32,7 @@ public class MagnetDelete extends MagnetAction {
     @Override
     void undo() {
 
-        insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex);
+        insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex, removedRow);
         notifyMagnetCreatedIntoGroup(magnet, magnetGroup);
     }
 }

@@ -16,6 +16,8 @@ public class MagnetMove extends MagnetAction {
     private int colIndexNew;
     private int rowIndexOld;
     private int colIndexOld;
+    private boolean createNewRow;
+    private boolean removedRow;
 
     public MagnetMove(ModelMediator mediator, Magnet magnet, PointF pointF) {
         setMediator(mediator);
@@ -27,10 +29,12 @@ public class MagnetMove extends MagnetAction {
         final int[] rowcol = getMagnetRowCol(magnet);
         this.rowIndexOld = rowcol[0];
         this.colIndexOld = rowcol[1];
+        this.createNewRow = true;
+        this.removedRow = magnetGroupOld.getIsMagnetAloneOnRow(magnet); // Row is removed, if it becomes empty
     }
 
     public MagnetMove(ModelMediator mediator, Magnet magnet, MagnetGroup magnetGroupNew,
-                      final int rowIndexNew, final int colIndexNew) {
+                      final int rowIndexNew, final int colIndexNew, final boolean createNewRow) {
         if (rowIndexNew < 0 || colIndexNew < 0)
             throw new InternalError("Tried to create a MagnetMove action with negative row/col indexes!");
 
@@ -43,13 +47,15 @@ public class MagnetMove extends MagnetAction {
         final int[] rowcol = getMagnetRowCol(magnet);
         this.rowIndexOld = rowcol[0];
         this.colIndexOld = rowcol[1];
+        this.createNewRow = createNewRow;
+        this.removedRow = magnetGroupOld.getIsMagnetAloneOnRow(magnet); // Row is removed, if it becomes empty
     }
 
     @Override
     void execute() {
         // Remove from previous MagnetGroup, add to new
         removeMagnetFromGroup(magnet, magnetGroupOld);
-        insertMagnetIntoGroup(magnet, magnetGroupNew, rowIndexNew, colIndexNew);
+        insertMagnetIntoGroup(magnet, magnetGroupNew, rowIndexNew, colIndexNew, createNewRow);
         notifyMagnetMoved(magnet, magnetGroupOld, magnetGroupNew);
     }
 
@@ -57,7 +63,7 @@ public class MagnetMove extends MagnetAction {
     void undo() {
         // Remove magnet from new group, add to old
         removeMagnetFromGroup(magnet, magnetGroupNew);
-        insertMagnetIntoGroup(magnet, magnetGroupOld, rowIndexOld, colIndexOld);
+        insertMagnetIntoGroup(magnet, magnetGroupOld, rowIndexOld, colIndexOld, removedRow);
         notifyMagnetMoved(magnet, magnetGroupNew, magnetGroupOld);
     }
 }

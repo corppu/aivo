@@ -150,12 +150,16 @@ public class Mindmap {
      *                      If greater than element count in row, magnet is created in the end.
      */
     public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex,
+                                   final boolean createNewRowAlways,
                                    String title, String content, final int color) {
-        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex, title, content, color);
+
+        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex, createNewRowAlways, title, content, color);
         getActionHandler().executeAction(action);
     }
-    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex, Note noteReference) {
-        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex, noteReference);
+    public void actionCreateMagnet(MagnetGroup magnetGroup, final int rowIndex, final int colIndex,
+                                   final boolean createNewRowAlways, Note noteReference) {
+
+        Action action = new MagnetCreate(mediator, magnetGroup, rowIndex, colIndex, createNewRowAlways, noteReference);
         getActionHandler().executeAction(action);
     }
 

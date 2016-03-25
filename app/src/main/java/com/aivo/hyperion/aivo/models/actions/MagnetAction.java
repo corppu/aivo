@@ -11,16 +11,18 @@ import java.util.List;
 public abstract class MagnetAction extends Action {
 
 
-    protected void insertMagnetIntoGroup(Magnet magnet, MagnetGroup magnetGroup, final int rowIndex, final int colIndex) {
+    protected void insertMagnetIntoGroup(Magnet magnet, MagnetGroup magnetGroup,
+                                         final int rowIndex, final int colIndex, final boolean createNewRow) {
         final List<List< Magnet >> magnetRows = magnetGroup.getMagnets();
         List< Magnet > magnetRow;
 
         // Find the magnet row to add the magnet to
-        if (rowIndex >= magnetRows.size()) {
+        if (rowIndex == magnetRows.size() || createNewRow) {
             magnetRow = new ArrayList<>();
-            magnetRows.add(magnetRow);
+            magnetRows.add(rowIndex, magnetRow);
         } else
             magnetRow = magnetRows.get(rowIndex);
+
         // Add the magnet in the correct position
         if (colIndex >= magnetRow.size())
             magnetRow.add(magnet);

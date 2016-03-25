@@ -13,6 +13,7 @@ public class MagnetCreate extends MagnetAction {
     private Magnet magnet;
     private int rowIndex;
     private int colIndex;
+    private boolean createNewRow;
 
     public MagnetCreate(ModelMediator mediator, PointF pointF,
                         String title, String content, final int color) {
@@ -21,6 +22,7 @@ public class MagnetCreate extends MagnetAction {
         this.magnet = new Magnet(mediator, magnetGroup, title, content, color);
         this.rowIndex = 0;
         this.colIndex = 0;
+        this.createNewRow = true;
     }
 
     public MagnetCreate(ModelMediator mediator, PointF pointF, Note noteReference) {
@@ -29,36 +31,33 @@ public class MagnetCreate extends MagnetAction {
         this.magnet = new Magnet(mediator, magnetGroup, noteReference);
         this.rowIndex = 0;
         this.colIndex = 0;
+        this.createNewRow = true;
     }
 
     public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup, final int rowIndex, final int colIndex,
-                        String title, String content, final int color) {
-        if (rowIndex < 0 || colIndex < 0)
-            throw new InternalError("Tried to create a MagnetCreate action with negative row/col indexes!");
-
+                        final boolean createNewRow, String title, String content, final int color) {
         setMediator(mediator);
         this.magnetGroup = magnetGroup;
         this.magnet = new Magnet(mediator, magnetGroup, title, content, color);
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;
+        this.createNewRow = createNewRow;
     }
 
-    public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup,
-                        final int rowIndex, final int colIndex, Note noteReference) {
-        if (rowIndex < 0 || colIndex < 0)
-            throw new InternalError("Tried to create a MagnetCreate action with negative row/col indexes!");
-
+    public MagnetCreate(ModelMediator mediator, MagnetGroup magnetGroup, final int rowIndex, final int colIndex,
+                        final boolean createNewRow,  Note noteReference) {
         setMediator(mediator);
         this.magnetGroup = magnetGroup;
         this.magnet = new Magnet(mediator, magnetGroup, noteReference);
         this.rowIndex = rowIndex;
         this.colIndex = colIndex;
+        this.createNewRow = createNewRow;
     }
 
     @Override
     public void execute() {
 
-        insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex);
+        insertMagnetIntoGroup(magnet, magnetGroup, rowIndex, colIndex, createNewRow);
         notifyMagnetCreatedIntoGroup(magnet, magnetGroup);
     }
 
