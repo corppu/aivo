@@ -167,7 +167,11 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public void onMagnetChange(Magnet magnet) {
         //Log.d(TAG, "magnet has changed");
 
-        mMagnetMagnetViewModelHashMap.get(magnet).refresh();
+        MagnetViewModel magnetViewModel = mMagnetMagnetViewModelHashMap.get(magnet);
+        magnetViewModel.refresh();
+        if (magnetViewModel == mSelectedMagnetViewModel) {
+            ((MainActivity) getContext()).onSelectMagnet(magnet);
+        }
         invalidate();
     }
 

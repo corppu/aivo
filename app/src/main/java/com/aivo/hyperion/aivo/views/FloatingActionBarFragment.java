@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.aivo.hyperion.aivo.R;
@@ -33,10 +34,10 @@ public class FloatingActionBarFragment extends Fragment implements View.OnClickL
     private String mParam1;
     private String mParam2;
 
-    private Button starBtn;
-    private Button trashBtn;
-    private Button netBtn;
-    private ImageView starView;
+    private ImageButton starBtn;
+    private ImageButton trashBtn;
+    private ImageButton netBtn;
+    //private ImageView starView;
 
     private Boolean isFavourite=false;
 
@@ -102,21 +103,17 @@ public class FloatingActionBarFragment extends Fragment implements View.OnClickL
 
         View floatbarView = this.getView();
         if (trashBtn == null) {
-            trashBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_trash);
+            trashBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_trash);
             trashBtn.setOnClickListener(this);
         }
         if (starBtn == null) {
-            starBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_star);
+            starBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_star);
             starBtn.setOnClickListener(this);
         }
 
         if (netBtn == null) {
-            netBtn = (Button) floatbarView.findViewById(R.id.floatbar_btn_net);
+            netBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_net);
             netBtn.setOnClickListener(this);
-        }
-
-        if (starView == null) {
-            starView = (ImageView) floatbarView.findViewById(R.id.floatbar_img_star);
         }
     }
 
@@ -127,9 +124,6 @@ public class FloatingActionBarFragment extends Fragment implements View.OnClickL
     public void onClick(View view) {
 
 
-        if (starView == null) {
-            starView = (ImageView) getView().findViewById(R.id.floatbar_img_star);
-        }
         switch (view.getId()) {
             case R.id.floatbar_btn_trash:
                 mMagnet.actionDelete();
@@ -137,11 +131,11 @@ public class FloatingActionBarFragment extends Fragment implements View.OnClickL
             case R.id.floatbar_btn_star:
 
                 if (isFavourite){
-                    starView.setBackgroundResource(R.drawable.is_star_2x);
+                    starBtn.setBackgroundResource(R.drawable.is_star_2x);
                     isFavourite=false;
                     mMagnet.actionChangeFavourite(false);
                 }else{
-                    starView.setBackgroundResource(R.drawable.ic_star_gold_2x);
+                    starBtn.setBackgroundResource(R.drawable.ic_star_gold_2x);
                     isFavourite=true;
                     mMagnet.actionChangeFavourite(true);
                 }
@@ -187,9 +181,9 @@ public class FloatingActionBarFragment extends Fragment implements View.OnClickL
 
         isFavourite = mMagnet.getIsFavourite();
         if (isFavourite)
-            starView.setBackgroundResource(R.drawable.ic_star_gold_2x);
+            starBtn.setBackgroundResource(R.drawable.ic_star_gold_2x);
         else
-            starView.setBackgroundResource(R.drawable.is_star_2x);
+            starBtn.setBackgroundResource(R.drawable.is_star_2x);
     }
 
     public void openMagnetGroupActions(MagnetGroup magnetGroup) {
