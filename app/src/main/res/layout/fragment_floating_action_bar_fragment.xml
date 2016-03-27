@@ -1,80 +1,70 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/floatingActionBarFragment"
     android:tag="floatingActionBarFragment"
-    android:layout_width="280dp"
+    android:layout_width="160dp"
     android:layout_gravity="center_horizontal|bottom"
-    android:layout_marginBottom="40dp"
     android:clickable="true"
     android:layout_alignParentBottom="true"
     android:layout_centerHorizontal="true"
-
     android:background="@drawable/floating_menu_shape"
-    android:layout_height="60dp">
+    android:layout_height="?attr/actionBarSize">
 
-    <Button
-        android:layout_width="90dp"
-        android:background="@android:color/transparent"
+    <ImageButton
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="50dp"
+        android:background="@drawable/ic_trash_bin_2x"
         android:id="@+id/floatbar_btn_trash"
-        android:gravity="center_horizontal"
         android:layout_toStartOf="@+id/floatbar_btn_star"
         android:layout_toLeftOf="@+id/floatbar_btn_star"
         android:layout_height="match_parent" >
-    </Button>
+    </ImageButton>
 
-    <Button
-        android:layout_width="90dp"
+    <View android:layout_height="fill_parent"
+        android:layout_width="2px"
+        android:background="#90909090"
+        android:layout_toLeftOf="@+id/floatbar_btn_star"
+        android:layout_toStartOf="@+id/floatbar_btn_star"
+        />
+
+    <ImageButton
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="50dp"
         android:id="@+id/floatbar_btn_star"
         android:layout_height="match_parent"
-        android:layout_toStartOf="@+id/floatbar_btn_net"
-        android:layout_toLeftOf="@+id/floatbar_btn_net"
-        android:background="@android:color/transparent"
-
+        android:layout_centerInParent="true"
+        android:background="@drawable/is_star_2x"
         android:layout_gravity="center_horizontal"
         >
-    </Button>
+    </ImageButton>
 
-    <Button
-        android:layout_width="90dp"
+    <View android:layout_height="fill_parent"
+        android:layout_width="2px"
+        android:background="#90909090"
+        android:layout_toLeftOf="@+id/floatbar_btn_net"
+        android:layout_toStartOf="@+id/floatbar_btn_net"/>
+
+    <ImageButton
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="50dp"
         android:id="@+id/floatbar_btn_net"
-        android:background="@android:color/transparent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="end"
-        android:layout_height="match_parent" >
-    </Button>
-
-
-    <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:background="@drawable/ic_trash_bin_2x"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="7dp"
-        />
-
-    <ImageView
-        android:layout_width="45dp"
-        android:layout_height="45dp"
+        android:layout_toRightOf="@id/floatbar_btn_star"
+        android:layout_toEndOf="@id/floatbar_btn_star"
         android:background="@drawable/ic_network_2x"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginTop="7dp"
-        />
-
-    <ImageView
-        android:layout_width="48dp"
-        android:id="@+id/floatbar_img_star"
-        android:layout_height="45dp"
-        android:background="@drawable/is_star_2x"
-        android:layout_marginRight="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginTop="7dp"
-        android:layout_centerInParent="true"
-        />
-
-
-
+        android:layout_height="match_parent" >
+    </ImageButton>
 </RelativeLayout>
