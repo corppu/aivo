@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -17,7 +18,6 @@ import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
 
-import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.main.MainActivity;
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Magnet;
@@ -38,19 +38,81 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     // touch and drawing
     private final int BACKGROUND_COLOR = Color.WHITE;
     private final int BORDER_COLOR = Color.BLACK;
-    private final float MIN_X; //= -360.0f; //xxhdpi
-    private final float MIN_Y; //= -380.0f; //xxhdpi
-    private final float MAX_X;
-    private final float MAX_Y;
 
-    static private String TAG = "MindmapViews";
+    private RectF mOuterRectF = new RectF(0,0,0,0);
+
+    private PointF topLeft = new PointF(0,0);
+    private MagnetGroupViewModel leftMostMagnetGroup;
+    private MagnetGroupViewModel rightMostMagnetGroup;
+    private MagnetGroupViewModel topMostMagnetGroup;
+    private MagnetGroupViewModel bottomMostMagnetGroup;
+
+    private void findOuterRectF() {
+        mOuterRectF.set(0,0,0,0);
+        RectF outerRectFa = new RectF();
+        RectF outerRectFb = new RectF();
+        for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
+            magnetGroupViewModel.getOuterRectF(outerRectFa);
+
+            if (leftMostMagnetGroup == null) {
+                leftMostMagnetGroup = magnetGroupViewModel;
+                mOuterRectF.left = outerRectFa.left;
+            }
+            else {
+                leftMostMagnetGroup.getOuterRectF(outerRectFb);
+                if (outerRectFa.left <= outerRectFb.left) {
+                    leftMostMagnetGroup = magnetGroupViewModel;
+                    mOuterRectF.left = outerRectFa.left;
+                }
+            }
+
+            if (topMostMagnetGroup == null) {
+                topMostMagnetGroup = magnetGroupViewModel;
+                mOuterRectF.top = outerRectFa.top;
+            }
+            else {
+                topMostMagnetGroup.getOuterRectF(outerRectFb);
+                if (outerRectFa.top <= outerRectFb.top) {
+                    topMostMagnetGroup = magnetGroupViewModel;
+                    mOuterRectF.top = outerRectFa.top;
+                }
+            }
+            if (rightMostMagnetGroup == null) {
+                rightMostMagnetGroup = magnetGroupViewModel;
+                mOuterRectF.right = outerRectFa.right;
+            }
+            else {
+                rightMostMagnetGroup.getOuterRectF(outerRectFb);
+                if (outerRectFa.right >= outerRectFb.right) {
+                    rightMostMagnetGroup = magnetGroupViewModel;
+                    mOuterRectF.right = outerRectFa.right;
+                }
+            }
+
+            if (bottomMostMagnetGroup == null) {
+                bottomMostMagnetGroup = magnetGroupViewModel;
+                mOuterRectF.bottom = outerRectFa.bottom;
+            }
+            else {
+                bottomMostMagnetGroup.getOuterRectF(outerRectFb);
+                if (outerRectFa.bottom >= outerRectFb.bottom) {
+                    bottomMostMagnetGroup = magnetGroupViewModel;
+                    mOuterRectF.bottom = outerRectFa.bottom;
+                }
+            }
+        }
+    }
+
+
+
+
+    static private String TAG = "MindmapView";
     private Rect mClipBounds = new Rect();
     private Rect mDrawingRect = new Rect();
     private GestureDetector mGestureDetector;
     private ScaleGestureDetector mScaleGestureDetector;
     private Paint mPaint = new Paint();
     private float mScaleFactor = 1.0f;
-    private PointF topLeft;
 
 
     // Models
@@ -67,6 +129,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+
         canvas.drawColor(BORDER_COLOR);
         canvas.scale(mScaleFactor, mScaleFactor);
         canvas.translate(-topLeft.x, -topLeft.y);
@@ -74,7 +137,8 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         getDrawingRect(mDrawingRect);
 
         mPaint.setColor(BACKGROUND_COLOR);
-        canvas.drawRect(0, 0, MAX_X, MAX_Y, mPaint);
+
+        canvas.drawRect(mOuterRectF, mPaint);
 
         for (LineViewModel lineViewModel : mLineViewModelHashMap.values()) {
             lineViewModel.draw(canvas, mPaint);
@@ -132,6 +196,8 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         MagnetGroupViewModel magnetGroupViewModel = new MagnetGroupViewModel(magnetGroup, mMagnetMagnetViewModelHashMap);
         mMagnetGroupMagnetViewModelHashMap.put(magnetGroup, magnetGroupViewModel);
         //Log.d(TAG, "magnetGroup has been created!");
+
+        findOuterRectF();
         invalidate();
     }
 
@@ -139,7 +205,10 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public void onMagnetGroupChange(MagnetGroup magnetGroup) {
         //Log.d(TAG, "magnetGroup has changed!");
 
-        mMagnetGroupMagnetViewModelHashMap.get(magnetGroup).refresh();
+        MagnetGroupViewModel magnetGroupViewModel = mMagnetGroupMagnetViewModelHashMap.get(magnetGroup);
+        magnetGroupViewModel.refresh();
+
+        findOuterRectF();
         invalidate();
     }
 
@@ -153,6 +222,21 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         }
 
         mMagnetGroupMagnetViewModelHashMap.remove(magnetGroup);
+
+        if (magnetGroup == leftMostMagnetGroup.getModel()) {
+            leftMostMagnetGroup = null;
+        }
+        if (magnetGroup == topMostMagnetGroup.getModel()) {
+            topMostMagnetGroup = null;
+        }
+        if (magnetGroup == rightMostMagnetGroup.getModel()) {
+            rightMostMagnetGroup = null;
+        }
+        if (magnetGroup == bottomMostMagnetGroup.getModel()) {
+            bottomMostMagnetGroup = null;
+        }
+
+        findOuterRectF();
         invalidate();
     }
 
@@ -160,6 +244,8 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public void onMagnetCreate(Magnet magnet) {
         mMagnetMagnetViewModelHashMap.put(magnet, new MagnetViewModel(magnet));
         //Log.d(TAG, "magnet has been deleted");
+
+        findOuterRectF();
         invalidate();
     }
 
@@ -172,6 +258,8 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         if (magnetViewModel == mSelectedMagnetViewModel) {
             ((MainActivity) getContext()).onSelectMagnet(magnet);
         }
+
+        findOuterRectF();
         invalidate();
     }
 
@@ -185,6 +273,8 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         }
 
         mMagnetMagnetViewModelHashMap.remove(magnet);
+
+        findOuterRectF();
         invalidate();
     }
 
@@ -406,7 +496,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         return true;
     }
 
-    boolean onActionMoveEvent(MotionEvent e) {
+    boolean onActionMoveEvent(MotionEvent e, float distanceX, float distanceY) {
         if (mActionDownMagnetViewModels.size() == 0 && mActionDownMagnetGroupViewModels.size() == 0 && mActionDownLineViewModels.size() == 0) return false;
         int pointerIndex;
         int pointerId;
@@ -421,21 +511,23 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
                 magnetGroupViewModel = mActionDownMagnetGroupViewModels.get(pointerId);
                 if (magnetGroupViewModel != null) {
-                    magnetGroupViewModel.move(x, y);
+                    magnetGroupViewModel.moveDistance(distanceX, distanceY);
                 }
                 else {
                     lineViewModel = mActionDownLineViewModels.get(pointerId);
                     if (lineViewModel != null) {
-                        lineViewModel.moveMiddlePoint(x, y);
+                        lineViewModel.moveMiddlePointByDistance(x, y);
                     }
                     else {
                         MagnetViewModel magnetViewModel = mActionDownMagnetViewModels.get(pointerId);
                         if (magnetViewModel != null) {
-                            magnetViewModel.move(x, y);
+                            magnetViewModel.moveDistance(distanceX, distanceY);
                         }
                     }
                 }
             }
+
+        findOuterRectF();
         return true;
     }
 
@@ -460,12 +552,12 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                     break;
 
                 case MotionEvent.ACTION_MOVE:
-                    if(onActionMoveEvent(e)) {
-
-                        invalidate();
-                        return true;
-                    }
-                    break;
+//                    if(onActionMoveEvent(e)) {
+//
+//                        invalidate();
+//                        return true;
+//                    }
+//                    break;
 
                 default:
                     break;
@@ -476,42 +568,23 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     public MindmapView(Context context) {
         super(context);
-        MAX_X = context.getResources().getDimension(R.dimen.canvas_width);
-        MIN_X = -2*getPaddingLeft();
-        MAX_Y = context.getResources().getDimension(R.dimen.canvas_height);
-        MIN_Y = -2*getPaddingTop();
-        topLeft = new PointF(MIN_X, MIN_Y);
         init(context, null, 0, 0);
     }
 
     public MindmapView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        MAX_X = context.getResources().getDimension(R.dimen.canvas_width);
-        MIN_X = -2*getPaddingLeft();
-        MAX_Y = context.getResources().getDimension(R.dimen.canvas_height);
-        MIN_Y = -2*getPaddingTop();
-        topLeft = new PointF(MIN_X, MIN_Y);
         init(context, attrs, defStyleAttr, 0);
     }
 
     public MindmapView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        MAX_X = context.getResources().getDimension(R.dimen.canvas_width);
-        MIN_X = -2*getPaddingLeft();
-        MAX_Y = context.getResources().getDimension(R.dimen.canvas_height);
-        MIN_Y = -2*getPaddingTop();
-        topLeft = new PointF(MIN_X, MIN_Y);
         init(context, attrs, 0, 0);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public MindmapView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        MAX_X = context.getResources().getDimension(R.dimen.canvas_width);
-        MIN_X = -2*getPaddingLeft();
-        MAX_Y = context.getResources().getDimension(R.dimen.canvas_height);
-        MIN_Y = -2*getPaddingTop();
-        topLeft = new PointF(MIN_X, MIN_Y);
+
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
@@ -519,7 +592,6 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
          mScaleGestureDetector = new ScaleGestureDetector(context, this);
          mGestureDetector = new GestureDetector(context, this);
          mGestureDetector.setIsLongpressEnabled(true);
-
 
          MainActivity.getModelMediator().registerListener(this);
 
@@ -539,7 +611,9 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
          for (Line line : MainActivity.getModelMediator().getMindmap().getLines()) {
              onLineCreate(line);
          }
-      }
+
+         findOuterRectF();
+     }
 
     private MagnetGroupViewModel mSelectedMagnetGroupViewModel;
     private MagnetViewModel mSelectedMagnetViewModel;
@@ -547,13 +621,14 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
 
     private boolean trySelect(float x, float y) {
+        ((MainActivity)this.getContext()).onRemoveSelection();
+
         if (mSelectedMagnetViewModel != null) {
             if (mSelectedMagnetViewModel.contains(mSelectedMagnetViewModel, x, y)) {
                 return true;
             }
             mSelectedMagnetViewModel.setIsSelected(false);
             mSelectedMagnetViewModel = null;
-            ((MainActivity)this.getContext()).onRemoveSelection();
         }
 
         if (mSelectedLineViewModel != null) {
@@ -562,13 +637,11 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             }
             mSelectedLineViewModel.setIsSelected(false);
             mSelectedLineViewModel = null;
-            ((MainActivity)this.getContext()).onRemoveSelection();
         }
 
         if (mSelectedMagnetGroupViewModel != null) {
             mSelectedMagnetGroupViewModel.setIsSelected(false);
             mSelectedMagnetGroupViewModel = null;
-            ((MainActivity)this.getContext()).onRemoveSelection();
         }
 
         for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
@@ -666,9 +739,55 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
-       if (mActionDownMagnetViewModels.size() != 0 || mActionDownMagnetGroupViewModels.size() != 0 || mActionDownLineViewModels.size() != 0) return true;
-        topLeft.x = Math.min(Math.max(MIN_X, topLeft.x + distanceX / mScaleFactor), MAX_X - mDrawingRect.right + getPaddingRight() + getPaddingLeft());
-        topLeft.y = Math.min(Math.max(MIN_Y, topLeft.y + distanceY / mScaleFactor), MAX_Y - mDrawingRect.bottom + getPaddingBottom() + getPaddingTop());
+
+        if(mScaleFactor != 0) {
+            distanceX /= mScaleFactor;
+            distanceY /= mScaleFactor;
+        }
+
+        Log.d(TAG, "distance " + Float.toString(distanceX) + "," +  Float.toString(distanceY));
+
+        if (mActionDownMagnetViewModels.size() == 0 && mActionDownMagnetGroupViewModels.size() == 0 && mActionDownLineViewModels.size() == 0) {
+            topLeft.x += distanceX; //Math.min(Math.max(mOuterRectF.left, topLeft.x + distanceX), mOuterRectF.right);
+            topLeft.y += distanceY; //Math.min(Math.max(mOuterRectF.top, topLeft.y + distanceY), mOuterRectF.bottom);
+        }
+        else {
+            int pointerIndex;
+            int pointerId;
+
+            LineViewModel lineViewModel;
+            MagnetGroupViewModel magnetGroupViewModel;
+            for (pointerIndex = 0; pointerIndex < e2.getPointerCount(); pointerIndex++) {
+
+                pointerId = e2.getPointerId(pointerIndex);
+
+                magnetGroupViewModel = mActionDownMagnetGroupViewModels.get(pointerId);
+                if (magnetGroupViewModel != null) {
+                    //magnetGroupViewModel.move(x, y);
+                    magnetGroupViewModel.moveDistance(distanceX, distanceY);
+                    findOuterRectF();
+                } else {
+                    lineViewModel = mActionDownLineViewModels.get(pointerId);
+                    if (lineViewModel != null) {
+                        lineViewModel.moveMiddlePointByDistance(distanceX, distanceY);
+                    } else {
+                        MagnetViewModel magnetViewModel = mActionDownMagnetViewModels.get(pointerId);
+                        if (magnetViewModel != null) {
+                            //magnetViewModel.move(x, y);
+                            magnetViewModel.moveDistance(distanceX, distanceY);
+                            findOuterRectF();
+                        }
+                    }
+                }
+            }
+        }
+
+        if (topLeft.x < mOuterRectF.left) topLeft.x = mOuterRectF.left;
+        else if (topLeft.x > mOuterRectF.right) topLeft.x = mOuterRectF.right;
+        if (topLeft.y < mOuterRectF.top) topLeft.y = mOuterRectF.top;
+        else  if (topLeft.y > mOuterRectF.bottom) topLeft.y = mOuterRectF.bottom;
+
+
         invalidate();
         return true;
     }
@@ -749,6 +868,4 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
         invalidate();
     }
-
-
 }

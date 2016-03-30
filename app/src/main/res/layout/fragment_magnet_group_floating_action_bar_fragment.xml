@@ -1,0 +1,48 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/magnetGroupFloatingActionBarFragment"
+    android:tag="floatingActionBarFragment"
+    android:layout_width="160dp"
+    android:layout_gravity="center_horizontal|bottom"
+    android:clickable="true"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:background="@drawable/floating_menu_shape"
+    android:layout_height="?attr/actionBarSize">
+
+    <ImageButton
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="50dp"
+        android:background="@drawable/ic_trash_bin_2x"
+        android:id="@+id/floatbar_btn_trash"
+        android:layout_toStartOf="@+id/floatbar_btn_change_title"
+        android:layout_toLeftOf="@+id/floatbar_btn_change_title"
+        android:layout_height="match_parent" >
+    </ImageButton>
+
+    <View android:layout_height="fill_parent"
+        android:layout_width="2px"
+        android:background="#90909090"
+        android:layout_toLeftOf="@+id/floatbar_btn_change_title"
+        android:layout_toStartOf="@+id/floatbar_btn_change_title"
+        />
+
+    <ImageButton
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="50dp"
+        android:id="@+id/floatbar_btn_change_title"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="@android:drawable/title_bar"
+        android:layout_gravity="center_horizontal">
+    </ImageButton>
+</RelativeLayout>

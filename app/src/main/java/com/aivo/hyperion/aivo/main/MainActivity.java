@@ -26,7 +26,7 @@ import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.models.actions.ActionHandler;
-import com.aivo.hyperion.aivo.views.FloatingActionBarFragment;
+import com.aivo.hyperion.aivo.views.MagnetFloatingActionBarFragment;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
 import com.aivo.hyperion.aivo.views.mindmap.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity
 
 
     private static MindmapFragment sMindmapFragment;
-    private static FloatingActionBarFragment sFloatingActionBarFragment;
+    private static MagnetFloatingActionBarFragment sMagnetFloatingActionBarFragment;
     private static SearchFragment sSearchFragment;
     private static SideNoteFragment sSideNoteFragment;
     private static MainMenuFragment sMainMenuFragment;
@@ -86,11 +86,11 @@ public class MainActivity extends AppCompatActivity
 
     private void openMindmapFragment(String title) {
         sMindmapFragment = MindmapFragment.newInstance(title);
-        sFloatingActionBarFragment = new FloatingActionBarFragment();
+        sMagnetFloatingActionBarFragment = new MagnetFloatingActionBarFragment();
         sSearchFragment = new SearchFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.contentArea, sMindmapFragment);
-        ft.add(R.id.contentAreaParent, sFloatingActionBarFragment);
+        ft.add(R.id.contentAreaParent, sMagnetFloatingActionBarFragment);
         ft.add(R.id.contentAreaParent, sSearchFragment);
         ft.commit();
 
@@ -134,13 +134,13 @@ public class MainActivity extends AppCompatActivity
 
     private void hideFloatingActionBar() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.hide(sFloatingActionBarFragment);
+        ft.hide(sMagnetFloatingActionBarFragment);
         ft.commit();
     }
 
     private void showFloatingActionBar() {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.show(sFloatingActionBarFragment);
+        ft.show(sMagnetFloatingActionBarFragment);
         ft.commit();
     }
 
@@ -198,12 +198,12 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.remove(sMindmapFragment);
         ft.remove(sSearchFragment);
-        ft.remove(sFloatingActionBarFragment);
+        ft.remove(sMagnetFloatingActionBarFragment);
         ft.commit();
 
         sMindmapFragment = null;
         sSearchFragment = null;
-        sFloatingActionBarFragment = null;
+        sMagnetFloatingActionBarFragment = null;
     }
 
     @Override
@@ -495,7 +495,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onSelectMagnet(Magnet magnet) {
-        sFloatingActionBarFragment.openMagnetActions(magnet);
+        sMagnetFloatingActionBarFragment.openMagnetActions(magnet);
         showFloatingActionBar();
     }
 

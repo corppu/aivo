@@ -92,6 +92,10 @@ public class MagnetGroupViewModel {
         return null;
     }
 
+    public void getOuterRectF(RectF outerRectF) {
+        outerRectF.set(mOuterRectF);
+    }
+
     public void refresh() {
         mTitle = mMagnetGroup.getTitle();
         magnetViewModels = new ArrayList<>();
@@ -234,10 +238,7 @@ public class MagnetGroupViewModel {
         }
      }
 
-    public void move(float newTouchPointX, float newTouchPointY) {
-        float distanceX = mOuterRectF.centerX() - newTouchPointX;
-        float distanceY = mOuterRectF.centerY() - newTouchPointY;
-
+    public void moveDistance(float distanceX, float distanceY) {
         mOuterRectF.left -= distanceX;
         mOuterRectF.right -= distanceX;
         mOuterRectF.top -= distanceY;
@@ -248,6 +249,13 @@ public class MagnetGroupViewModel {
                 magnetViewModel.moveDistance(distanceX, distanceY);
             }
         }
+    }
+
+    public void move(float newTouchPointX, float newTouchPointY) {
+        float distanceX = mOuterRectF.centerX() - newTouchPointX;
+        float distanceY = mOuterRectF.centerY() - newTouchPointY;
+
+        moveDistance(distanceX, distanceY);
     }
 
     static boolean contains(MagnetGroupViewModel magnetGroupViewModel, float x, float y) {

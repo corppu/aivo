@@ -99,8 +99,13 @@ public class LineViewModel {
         this.mColor = color;
     }
 
-    public void moveMiddlePoint(float newPointX, float newPointY) {
-        if (middlePointF != null) middlePointF.set(newPointX, newPointY);
+    public void setMiddlePointF(float x, float y) {
+        middlePointF = new PointF(x, y);
+    }
+
+    public void moveMiddlePointByDistance(float distanceX, float distanceY) {
+        middlePointF.x -= distanceX;
+        middlePointF.y -= distanceY;
     }
 
     public void draw(Canvas canvas, Paint paint) {

@@ -112,7 +112,7 @@ public class MagnetViewModel {
 
 
 
-    private RectF mOuterRectF =new RectF(-1f, -1f, -1f, -1f);
+    private RectF mOuterRectF = new RectF(-1f, -1f, -1f, -1f);
     private PointF mCenterPointF;
     private PointF mTopIconCenterPointF;
     private PointF mBottomIconCenterPointF;
@@ -134,11 +134,9 @@ public class MagnetViewModel {
     static public final int OUTER_HALF_WIDTH_WITH_INDICATOR_SIZE = HALF_WIDTH + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
     static public final int OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE = HALF_HEIGHT + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
 
-
     public float getCenterX() {
         return mCenterPointF.x;
     }
-
     public float getCenterY() {
         return mCenterPointF.y;
     }

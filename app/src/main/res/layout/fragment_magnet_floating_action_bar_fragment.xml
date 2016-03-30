@@ -1,5 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/floatingActionBarFragment"
+    android:id="@+id/magnetFloatingActionBarFragment"
     android:tag="floatingActionBarFragment"
     android:layout_width="160dp"
     android:layout_gravity="center_horizontal|bottom"
