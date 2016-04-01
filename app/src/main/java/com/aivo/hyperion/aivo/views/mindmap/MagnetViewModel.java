@@ -22,6 +22,17 @@ import com.aivo.hyperion.aivo.models.Magnet;
  * Created by corppu on 23.2.2016.
  */
 public class MagnetViewModel {
+    private boolean mHasMoved = false;
+    public boolean getHasMoved()
+    {
+        return mHasMoved;
+    }
+    public void setHasMoved(boolean hasMoved)
+    {
+        mHasMoved = hasMoved;
+        Log.d("mHasMoved", Boolean.toString(mHasMoved));
+    }
+
     public void refresh() {
         mColor = mMagnet.getColor();
         mTitle = mMagnet.getTitle();
@@ -38,7 +49,11 @@ public class MagnetViewModel {
     private boolean mIsSelected;
 
     public boolean getIsGhost() { return mIsGhost; }
-    public void setIsGhost(boolean isGhost) { mIsGhost = isGhost; }
+    public void setIsGhost(boolean isGhost)
+    {
+        mIsGhost = isGhost;
+        Log.d("mIsGhost", Boolean.toString(mIsGhost));
+    }
     public boolean getIsSelected() { return  mIsSelected; }
     public void setIsSelected(boolean isSelected)
     {
@@ -98,7 +113,7 @@ public class MagnetViewModel {
 
 
     public void getOuterRectF(RectF outerRectF) {
-        outerRectF.set(mOuterRectF);
+        outerRectF.set(new RectF(mOuterRectF));
     }
     public void getCenterPointF(PointF centerPointF) {
         centerPointF.set(mCenterPointF);
