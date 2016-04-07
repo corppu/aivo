@@ -10,8 +10,8 @@ import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -39,16 +39,16 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     private final int BACKGROUND_COLOR = Color.WHITE;
     private final int BORDER_COLOR = Color.BLACK;
 
-    private RectF mOuterRectF = new RectF(0,0,0,0);
+    private RectF mOuterRectF = new RectF(0, 0, 0, 0);
 
-    private PointF topLeft = new PointF(0,0);
+    private PointF topLeft = new PointF(0, 0);
     private MagnetGroupViewModel leftMostMagnetGroup;
     private MagnetGroupViewModel rightMostMagnetGroup;
     private MagnetGroupViewModel topMostMagnetGroup;
     private MagnetGroupViewModel bottomMostMagnetGroup;
 
     private void findOuterRectF() {
-        mOuterRectF.set(0,0,0,0);
+        mOuterRectF.set(0, 0, 0, 0);
         RectF outerRectFa = new RectF();
         RectF outerRectFb = new RectF();
         for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
@@ -57,8 +57,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             if (leftMostMagnetGroup == null) {
                 leftMostMagnetGroup = magnetGroupViewModel;
                 mOuterRectF.left = outerRectFa.left;
-            }
-            else {
+            } else {
                 leftMostMagnetGroup.getOuterRectF(outerRectFb);
                 if (outerRectFa.left <= outerRectFb.left) {
                     leftMostMagnetGroup = magnetGroupViewModel;
@@ -69,8 +68,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             if (topMostMagnetGroup == null) {
                 topMostMagnetGroup = magnetGroupViewModel;
                 mOuterRectF.top = outerRectFa.top;
-            }
-            else {
+            } else {
                 topMostMagnetGroup.getOuterRectF(outerRectFb);
                 if (outerRectFa.top <= outerRectFb.top) {
                     topMostMagnetGroup = magnetGroupViewModel;
@@ -80,8 +78,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             if (rightMostMagnetGroup == null) {
                 rightMostMagnetGroup = magnetGroupViewModel;
                 mOuterRectF.right = outerRectFa.right;
-            }
-            else {
+            } else {
                 rightMostMagnetGroup.getOuterRectF(outerRectFb);
                 if (outerRectFa.right >= outerRectFb.right) {
                     rightMostMagnetGroup = magnetGroupViewModel;
@@ -92,8 +89,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             if (bottomMostMagnetGroup == null) {
                 bottomMostMagnetGroup = magnetGroupViewModel;
                 mOuterRectF.bottom = outerRectFa.bottom;
-            }
-            else {
+            } else {
                 bottomMostMagnetGroup.getOuterRectF(outerRectFb);
                 if (outerRectFa.bottom >= outerRectFb.bottom) {
                     bottomMostMagnetGroup = magnetGroupViewModel;
@@ -107,8 +103,6 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         if (mOuterRectF.right < getWidth()) mOuterRectF.right = getWidth();
         if (mOuterRectF.bottom < getHeight()) mOuterRectF.bottom = getHeight();
     }
-
-
 
 
     static private String TAG = "MindmapView";
@@ -216,7 +210,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public void onMagnetGroupDelete(MagnetGroup magnetGroup) {
         if (mSelectedMagnetGroupViewModel != null && mSelectedMagnetGroupViewModel.getModel() == magnetGroup) {
             mSelectedMagnetGroupViewModel = null;
-            ((MainActivity)this.getContext()).onRemoveSelection();
+            ((MainActivity) this.getContext()).onRemoveSelection();
         }
 
         mMagnetGroupMagnetViewModelHashMap.remove(magnetGroup);
@@ -261,7 +255,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public void onMagnetDelete(Magnet magnet) {
         if (mSelectedMagnetViewModel != null && mSelectedMagnetViewModel.getModel() == magnet) {
             mSelectedMagnetViewModel = null;
-            ((MainActivity)this.getContext()).onRemoveSelection();
+            ((MainActivity) this.getContext()).onRemoveSelection();
         }
 
         mMagnetMagnetViewModelHashMap.remove(magnet);
@@ -292,7 +286,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
         if (mSelectedLineViewModel != null && mSelectedLineViewModel.getLine() == line) {
             mSelectedLineViewModel = null;
-            ((MainActivity)this.getContext()).onRemoveSelection();
+            ((MainActivity) this.getContext()).onRemoveSelection();
         }
 
         mLineViewModelHashMap.remove(line);
@@ -334,222 +328,15 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         return (canvasY - mClipBounds.top) * mScaleFactor;
     }
 
-
-    boolean onActionDownEvent(MotionEvent e) {
-        MagnetGroupViewModel magnetGroupViewModel;
-        MagnetViewModel magnetViewModel;
-        LineViewModel lineViewModel;
-        int pointerIndex = e.getActionIndex();
-        int pointerId = e.getPointerId(pointerIndex);
-        float canvasX = getCanvasX(e.getX(pointerIndex));
-        float canvasY = getCanvasY(e.getY(pointerIndex));
-
-        for (MagnetGroupViewModel magnetGroupViewModelParent : mMagnetGroupMagnetViewModelHashMap.values()) {
-            if (MagnetGroupViewModel.contains(magnetGroupViewModelParent, canvasX, canvasY)
-                    && mActionDownMagnetGroupViewModels.indexOfValue(magnetGroupViewModelParent) == -1) {
-                magnetViewModel = MagnetGroupViewModel.getMagnetViewModel(magnetGroupViewModelParent, canvasX, canvasY);
-
-                if (magnetViewModel != null) {
-
-                    if (magnetGroupViewModelParent.getSize() > 1) {
-                        magnetViewModel.setIsGhost(true);
-                        mActionDownMagnetViewModels.put(pointerId, magnetViewModel);
-                        return true;
-                    }
-//                    else if (magnetViewModel.getIsSelected() && MagnetViewModel.bottomIconPressed(magnetViewModel, canvasX, canvasY)) {
-//
-//                        magnetGroupViewModel = new MagnetGroupViewModel(canvasX, canvasY);
-//                        lineViewModel = new LineViewModel(magnetGroupViewModelParent, magnetGroupViewModel);
-//
-//                        mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModel);
-//                        mActionDownLineViewModels.append(pointerId, lineViewModel);
-//                        lineViewModel.setIsGhost(true);
-//                        return true;
-//                    }
-                    else {
-                        magnetViewModel.setIsGhost(true);
-                    }
-                }
-
-
-                magnetGroupViewModelParent.setIsGhost(true);
-                mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModelParent);
-                return true;
-            }
-         }
-
-
-       for (LineViewModel lineViewModell : mLineViewModelHashMap.values()) {
-            if (lineViewModell.contains(canvasX, canvasY)
-                    && mActionDownLineViewModels.indexOfValue(lineViewModell) == -1) {
-                mActionDownLineViewModels.append(pointerId, lineViewModell);
-                lineViewModell.setIsGhost(true);
-                break;
-            }
-        }
-
-        return true;
-    }
-
-
-    boolean onActionUpEvent(MotionEvent e) {
-
-        int pointerIndex = e.getActionIndex();
-        int pointerId = e.getPointerId(pointerIndex);
-
-        PointF pointF = new PointF();
-        MagnetViewModel magnetViewModel = mActionDownMagnetViewModels.get(pointerId);
-
-        MagnetGroupViewModel magnetGroupViewModel;
-        if (magnetViewModel != null) {
-            magnetViewModel.setIsGhost(false);
-            mActionDownMagnetViewModels.remove(pointerId);
-
-
-            magnetGroupViewModel = mMagnetGroupMagnetViewModelHashMap.get(magnetViewModel.getModel().getMagnetGroup());
-            magnetGroupViewModel.setIsGhost(false);
-            if (MagnetGroupViewModel.contains(magnetGroupViewModel, magnetViewModel.getCenterX(), magnetViewModel.getCenterY())) {
-                int[] rowCol = MagnetGroupViewModel.getRowCol(magnetGroupViewModel, magnetViewModel);
-                if (magnetGroupViewModel.getMagnetViewModel(rowCol[0], rowCol[1]) != magnetViewModel) {
-
-                    if (magnetViewModel.getHasMoved()) {
-                        magnetViewModel.getModel().actionMoveTo(magnetGroupViewModel.getModel(), rowCol[0], rowCol[1], false);
-                        magnetViewModel.setHasMoved(false);
-                    }
-                } else {
-                    magnetGroupViewModel.refresh();
-                }
-                return true;
-            }
-
-            for (MagnetGroupViewModel magnetGroupViewModelz : mMagnetGroupMagnetViewModelHashMap.values()) {
-                if (MagnetGroupViewModel.contains(magnetGroupViewModelz, magnetViewModel.getCenterX(), magnetViewModel.getCenterY())) {
-                    if (magnetViewModel.getHasMoved()) {
-                        int[] rowCol = MagnetGroupViewModel.getRowCol(magnetGroupViewModelz, magnetViewModel);
-                        magnetViewModel.getModel().actionMoveTo(magnetGroupViewModelz.getModel(), rowCol[0], rowCol[1], false);
-                        magnetViewModel.setHasMoved(false);
-                    }
-                    return true;
-                }
-            }
-
-
-            if (magnetViewModel.getHasMoved()) {
-                magnetViewModel.getCenterPointF(pointF);
-                magnetViewModel.getModel().actionMoveTo(pointF);
-                magnetViewModel.setHasMoved(false);
-            }
-            return true;
-        }
-
-
-        magnetGroupViewModel = mActionDownMagnetGroupViewModels.get(pointerId);
-        if (magnetGroupViewModel != null) {
-            magnetGroupViewModel.setIsGhost(false);
-            mActionDownMagnetGroupViewModels.remove(pointerId);
-
-            magnetGroupViewModel.getCenterPointF(pointF);
-            MagnetGroup magnetGroup = magnetGroupViewModel.getModel();
-            if (magnetGroup != null) {
-
-                if (magnetGroupViewModel.getSize() == 1) {
-
-                    magnetViewModel = magnetGroupViewModel.getMagnetViewModel(0,0);
-                    for (MagnetGroupViewModel magnetGroupViewModelz : mMagnetGroupMagnetViewModelHashMap.values()) {
-                        if (magnetGroupViewModelz.getModel() == magnetGroupViewModel.getModel()) continue;
-                        if (MagnetGroupViewModel.contains(magnetGroupViewModelz, pointF.x, pointF.y)) {
-                            if (!magnetViewModel.getModel().getMagnetGroup().equals(magnetGroupViewModelz.getModel())) {
-
-                                int[] rowCol = MagnetGroupViewModel.getRowCol(magnetGroupViewModelz, magnetViewModel);
-                                magnetViewModel.getModel().actionMoveTo(magnetGroupViewModelz.getModel(), rowCol[0], rowCol[1], false);
-                            } else {
-                                continue;
-                            }
-
-                            return true;
-                        }
-                    }
-                }
-
-
-                pointF.x -= magnetGroupViewModel.halfWidth();
-                pointF.y -= magnetGroupViewModel.halfHeight();
-                if (magnetGroupViewModel.getHasMoved()) {
-                    magnetGroup.actionMoveTo(pointF);
-                    magnetGroupViewModel.setHasMoved(false);
-                }
-                invalidate();
-            } else {
-                LineViewModel lineViewModel = mActionDownLineViewModels.get(pointerId);
-
-                if (lineViewModel != null) {
-                    mActionDownLineViewModels.remove(pointerId);
-                    lineViewModel.setIsGhost(false);
-
-                    for (MagnetGroupViewModel magnetGroupViewModelz : mMagnetGroupMagnetViewModelHashMap.values()) {
-                        if (MagnetGroupViewModel.contains(magnetGroupViewModelz, pointF.x, pointF.y) && lineViewModel.getParent().getModel() != magnetGroupViewModelz.getModel()) {
-                            lineViewModel.getParent().getModel().actionCreateLine(magnetGroupViewModelz.getModel());
-                            invalidate();
-                            return true;
-                        }
-                    }
-
-                    ((MainActivity)this.getContext()).onCreateMagnet(lineViewModel.getParent().getModel(), pointF);
-                }
-                else {
-                    ((MainActivity)this.getContext()).onCreateMagnet(pointF);
-                }
-            }
-
-            invalidate();
-            return true;
-        }
-
-        LineViewModel lineViewModel = mActionDownLineViewModels.get(e.getPointerId(pointerIndex));
-        if (lineViewModel != null) {
-            mActionDownLineViewModels.remove(e.getPointerId(pointerIndex));
-            lineViewModel.setIsGhost(false);
-            lineViewModel.getLine().actionMovePoint(lineViewModel.getLine().getPoints().get(0), lineViewModel.getMiddlePointF());
-            invalidate();
-        }
-        return true;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent e) {
+        mScrollInProgress = false;
         mScaleGestureDetector.onTouchEvent(e);
         mGestureDetector.onTouchEvent(e);
 
-        if (!mScaleGestureDetector.isInProgress()) {
-            switch (e.getActionMasked()) {
-                case MotionEvent.ACTION_DOWN:
-                case MotionEvent.ACTION_POINTER_DOWN:
-
-                    onActionDownEvent(e);
-                    invalidate();
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_POINTER_UP:
-                        onActionUpEvent(e);
-                        invalidate();
-                    break;
-
-                case MotionEvent.ACTION_MOVE:
-                    if (movedInsideOnScroll) {
-                        break;
-                    }
-
-                    for (int i = 0; i < mActionDownMagnetGroupViewModels.size(); ++i) {
-                        mActionDownMagnetGroupViewModels.valueAt(i).move(getCanvasX(e.getX(e.getActionIndex())), getCanvasY(e.getY(e.getActionIndex())));
-                        invalidate();
-                    }
-
-                default:
-                    break;
-            }
-        }
-        movedInsideOnScroll = false;
+        if (mScaleGestureDetector.isInProgress() || mScrollInProgress) return true;
+        if (e.getActionMasked() == MotionEvent.ACTION_MOVE) onActionMove(e);
+        if (e.getActionMasked() == MotionEvent.ACTION_UP) onActionUpEvent(e);
         return true;
     }
 
@@ -574,46 +361,46 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         init(context, attrs, defStyleAttr, defStyleRes);
     }
 
-     private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-         mScaleGestureDetector = new ScaleGestureDetector(context, this);
-         mGestureDetector = new GestureDetector(context, this);
-         mGestureDetector.setIsLongpressEnabled(true);
+    private void init(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        mScaleGestureDetector = new ScaleGestureDetector(context, this);
+        mGestureDetector = new GestureDetector(context, this);
+        mGestureDetector.setIsLongpressEnabled(true);
 
-         MainActivity.getModelMediator().registerListener(this);
+        MainActivity.getModelMediator().registerListener(this);
 
-         mMagnetMagnetViewModelHashMap.clear();
-         mMagnetGroupMagnetViewModelHashMap.clear();
-         mLineViewModelHashMap.clear();
+        mMagnetMagnetViewModelHashMap.clear();
+        mMagnetGroupMagnetViewModelHashMap.clear();
+        mLineViewModelHashMap.clear();
 
-         for(MagnetGroup magnetGroup : MainActivity.getModelMediator().getMindmap().getMagnetGroups()) {
-             for (List<Magnet> magnets : magnetGroup.getMagnets()) {
-                 for (Magnet magnet : magnets) {
-                     onMagnetCreate(magnet);
-                 }
-             }
-             onMagnetGroupCreate(magnetGroup);
-         }
+        for (MagnetGroup magnetGroup : MainActivity.getModelMediator().getMindmap().getMagnetGroups()) {
+            for (List<Magnet> magnets : magnetGroup.getMagnets()) {
+                for (Magnet magnet : magnets) {
+                    onMagnetCreate(magnet);
+                }
+            }
+            onMagnetGroupCreate(magnetGroup);
+        }
 
-         for (Line line : MainActivity.getModelMediator().getMindmap().getLines()) {
-             onLineCreate(line);
-         }
+        for (Line line : MainActivity.getModelMediator().getMindmap().getLines()) {
+            onLineCreate(line);
+        }
 
-         findOuterRectF();
-     }
+        findOuterRectF();
+    }
 
     private MagnetGroupViewModel mSelectedMagnetGroupViewModel;
     private MagnetViewModel mSelectedMagnetViewModel;
     private LineViewModel mSelectedLineViewModel;
 
-
     private boolean trySelect(float canvasX, float canvasY) {
-        ((MainActivity)this.getContext()).onRemoveSelection();
+        ((MainActivity) this.getContext()).onRemoveSelection();
 
         if (mSelectedMagnetViewModel != null) {
             if (mSelectedMagnetViewModel.contains(mSelectedMagnetViewModel, canvasX, canvasY)) {
                 return true;
             }
             mSelectedMagnetViewModel.setIsSelected(false);
+            mSelectedMagnetViewModel.setIsHighLighted(false);
             mSelectedMagnetViewModel = null;
         }
 
@@ -622,11 +409,13 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                 return true;
             }
             mSelectedLineViewModel.setIsSelected(false);
+            mSelectedLineViewModel.setIsHighLighted(false);
             mSelectedLineViewModel = null;
         }
 
         if (mSelectedMagnetGroupViewModel != null) {
             mSelectedMagnetGroupViewModel.setIsSelected(false);
+            mSelectedMagnetGroupViewModel.setIsHighLighted(false);
             mSelectedMagnetGroupViewModel = null;
         }
 
@@ -635,6 +424,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                 MagnetViewModel magnetViewModel = MagnetGroupViewModel.getMagnetViewModel(magnetGroupViewModel, canvasX, canvasY);
                 if (magnetViewModel != null) {
                     magnetViewModel.setIsSelected(true);
+                    magnetViewModel.setIsHighLighted(true);
                     mSelectedMagnetViewModel = magnetViewModel;
                     ((MainActivity) this.getContext()).onSelectMagnet(mSelectedMagnetViewModel.getModel());
 
@@ -643,18 +433,20 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
                 }
 
                 magnetGroupViewModel.setIsSelected(true);
+                magnetGroupViewModel.setIsHighLighted(true);
                 mSelectedMagnetGroupViewModel = magnetGroupViewModel;
-                ((MainActivity)this.getContext()).onSelectMagnetGroup(mSelectedMagnetGroupViewModel.getModel());
+                ((MainActivity) this.getContext()).onSelectMagnetGroup(mSelectedMagnetGroupViewModel.getModel());
                 invalidate();
                 return true;
             }
         }
 
         for (LineViewModel lineViewModel : mLineViewModelHashMap.values()) {
-            if (lineViewModel.contains(canvasX,canvasY)) {
+            if (lineViewModel.contains(canvasX, canvasY)) {
                 lineViewModel.setIsSelected(true);
+                lineViewModel.setIsHighLighted(true);
                 mSelectedLineViewModel = lineViewModel;
-                ((MainActivity)this.getContext()).onSelectLine(mSelectedLineViewModel.getLine());
+                ((MainActivity) this.getContext()).onSelectLine(mSelectedLineViewModel.getLine());
                 invalidate();
                 return true;
             }
@@ -666,16 +458,21 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
+        if (mSearchActive) {
+            clearStates();
+            mSearchActive = false;
+        }
         final float canvasX = getCanvasX(e.getX());
         final float canvasY = getCanvasY(e.getY());
-        if(!tryOpenSelected(canvasX, canvasY)) trySelect(canvasX, canvasY);
+        if (!tryOpenSelected(canvasX, canvasY)) trySelect(canvasX, canvasY);
         invalidate();
         return true;
     }
 
     public boolean tryOpenSelected(float canvasX, float canvasY) {
+
         if (mSelectedMagnetViewModel != null) {
-            if (mSelectedMagnetViewModel.contains(mSelectedMagnetViewModel, canvasX, canvasY)) {
+            if (MagnetViewModel.contains(mSelectedMagnetViewModel, canvasX, canvasY)) {
                 ((MainActivity) this.getContext()).onEditMagnet(mSelectedMagnetViewModel.getModel());
                 invalidate();
                 return true;
@@ -686,6 +483,11 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public boolean onDoubleTap(MotionEvent e) {
+        if (mSearchActive) {
+            clearStates();
+            mSearchActive = false;
+        }
+
         final float canvasX = getCanvasX(e.getX());
         final float canvasY = getCanvasY(e.getY());
 
@@ -709,123 +511,243 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         return true;
     }
 
+    private void pressViewModel(ViewModel viewModel, float canvasTouchX, float canvasTouchY) {
+        viewModel.setHasMoved(false);
+        viewModel.setIsGhost(true);
+        viewModel.setIsHighLighted(true);
+        viewModel.setLastTouchPoint(canvasTouchX, canvasTouchY);
+    }
+
+    private void moveViewModel(ViewModel viewModel, float canvasTouchX, float canvasTouchY) {
+        viewModel.setHasMoved(true);
+        float distanceX = viewModel.getLastTouchX() - canvasTouchX;
+        float distanceY = viewModel.getLastTouchY() - canvasTouchY;
+        viewModel.setLastTouchPoint(canvasTouchX, canvasTouchY);
+        viewModel.moveBy(distanceX, distanceY);
+    }
+
+    private void unPressViewModel(ViewModel viewModel) {
+        viewModel.setHasMoved(false);
+        viewModel.setIsGhost(false);
+        if (!viewModel.getIsSelected())
+            viewModel.setIsHighLighted(false);
+    }
+
     @Override
     public void onShowPress(MotionEvent e) {
+        if (mSearchActive) {
+            clearStates();
+            mSearchActive = false;
+        }
+
+        final int pointerIndex = e.getActionIndex();
+        final int pointerId = e.getPointerId(pointerIndex);
+        final float canvasX = getCanvasX(e.getX(pointerIndex));
+        final float canvasY = getCanvasY(e.getY(pointerIndex));
+
+        for (MagnetViewModel magnetViewModel : mMagnetMagnetViewModelHashMap.values()) {
+            if (!magnetViewModel.getIsGhost() && MagnetViewModel.contains(magnetViewModel, canvasX, canvasY) && magnetViewModel.getModel().getMagnetGroup().getMagnetCount() != 1) {
+                pressViewModel(magnetViewModel, canvasX, canvasY);
+                mActionDownMagnetViewModels.append(pointerId, magnetViewModel);
+                invalidate();
+                return;
+            }
+        }
+
+        for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
+            if (!magnetGroupViewModel.getIsGhost() && MagnetGroupViewModel.contains(magnetGroupViewModel, canvasX, canvasY)) {
+                pressViewModel(magnetGroupViewModel, canvasX, canvasY);
+                mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModel);
+                invalidate();
+                return;
+            }
+        }
+
+        for (LineViewModel lineViewModel : mLineViewModelHashMap.values()) {
+            if (!lineViewModel.getIsGhost() && lineViewModel.contains(canvasX, canvasY)) {
+                pressViewModel(lineViewModel, canvasX, canvasY);
+                mActionDownLineViewModels.append(pointerId, lineViewModel);
+                invalidate();
+                return;
+            }
+        }
+    }
+
+    MagnetGroupViewModel getMagnetGroupViewModel(MagnetViewModel magnetViewModel, @Nullable MagnetGroupViewModel ignore) {
+
+        RectF magnetRectF = new RectF();
+        magnetViewModel.getOuterRectF(magnetRectF);
+        RectF groupRectF = new RectF();
+
+        for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
+            magnetGroupViewModel.getOuterRectF(groupRectF);
+            if (magnetGroupViewModel != ignore && groupRectF.intersect(magnetRectF)) {
+                return magnetGroupViewModel;
+            }
+        }
+        return null;
+    }
+
+    private boolean onActionUpEvent(MotionEvent e) {
+        int pointerIndex = e.getActionIndex();
+        int pointerId = e.getPointerId(pointerIndex);
+        RectF viewModelOuterRectF = new RectF();
+        MagnetViewModel magnetViewModel = mActionDownMagnetViewModels.get(pointerId);
+
+        if (magnetViewModel != null) {
+            mActionDownMagnetViewModels.remove(pointerId);
+
+            if (magnetViewModel.getHasMoved()) {
+                MagnetGroupViewModel magnetGroupViewModel = magnetViewModel.getMagnetGroupViewModel();
+                if (magnetGroupViewModel.getSize() == 1) {
+                    magnetGroupViewModel = getMagnetGroupViewModel(magnetViewModel, magnetGroupViewModel);
+                } else {
+                    magnetGroupViewModel = getMagnetGroupViewModel(magnetViewModel, null);
+                }
+
+                if (magnetGroupViewModel != null && !magnetGroupViewModel.getIsGhost()) {
+                    int [] rowCol = MagnetGroupViewModel.getRowCol(magnetGroupViewModel, magnetViewModel);
+                    magnetViewModel.getModel().actionMoveTo(magnetGroupViewModel.getModel(), rowCol[0], rowCol[1], false);
+                }
+
+                // Move to new point
+                else {
+                    magnetViewModel.getOuterRectF(viewModelOuterRectF);
+                    magnetViewModel.getModel().actionMoveTo(new PointF(viewModelOuterRectF.left, viewModelOuterRectF.top));
+                }
+            }
+
+            unPressViewModel(magnetViewModel);
+            invalidate();
+            return true;
+        }
+
+        MagnetGroupViewModel magnetGroupViewModel = mActionDownMagnetGroupViewModels.get(pointerId);
+        LineViewModel lineViewModel = mActionDownLineViewModels.get(pointerId);
+        if (magnetGroupViewModel != null && lineViewModel != null) {
+            mActionDownMagnetGroupViewModels.remove(pointerId);
+            mActionDownLineViewModels.remove(pointerId);
+            unPressViewModel(lineViewModel);
+            unPressViewModel(magnetGroupViewModel);
+
+            magnetGroupViewModel.getOuterRectF(viewModelOuterRectF);
+
+            ((MainActivity) getContext())
+                    .onCreateMagnet(
+                            lineViewModel.getParent().getModel(),
+                            new PointF(viewModelOuterRectF.left, viewModelOuterRectF.top));
+        }
+
+        else if (magnetGroupViewModel != null) {
+            mActionDownMagnetGroupViewModels.remove(pointerId);
+
+            if (magnetGroupViewModel.getHasMoved()) {
+                MagnetGroupViewModel magnetGroupViewModelB = null;
+                if (magnetGroupViewModel.getSize() == 1) magnetGroupViewModelB = getMagnetGroupViewModel(magnetGroupViewModel.getMagnetViewModel(0, 0), magnetGroupViewModel);
+                if (magnetGroupViewModelB != null && !magnetGroupViewModelB.getIsGhost()) {
+                    int [] rowCol = MagnetGroupViewModel.getRowCol(magnetGroupViewModelB, magnetGroupViewModel.getMagnetViewModel(0,0));
+                    magnetGroupViewModel.getMagnetViewModel(0,0).getModel().actionMoveTo(magnetGroupViewModelB.getModel(), rowCol[0], rowCol[1], false);
+                } else {
+                    magnetGroupViewModel.getOuterRectF(viewModelOuterRectF);
+                    magnetGroupViewModel.getModel().actionMoveTo(new PointF(viewModelOuterRectF.left, viewModelOuterRectF.top));
+                }
+            }
+
+            unPressViewModel(magnetGroupViewModel);
+        }
+
+        else if (lineViewModel != null) {
+            mActionDownLineViewModels.remove(pointerId);
+
+            if (lineViewModel.getHasMoved()) {
+                lineViewModel.getLine().actionMovePoint(lineViewModel.getLine().getPoints().get(0), lineViewModel.getMiddlePointF());
+            }
+
+            unPressViewModel(lineViewModel);
+        }
+
+        invalidate();
+        return true;
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
+     return true;
+    }
+
+
+    private boolean mScrollInProgress;
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        if (mActionDownMagnetViewModels.size() == 0 && mActionDownMagnetGroupViewModels.size() == 0 && mActionDownLineViewModels.size() == 0) {
+            mScrollInProgress = true;
+            topLeft.x += distanceX / mScaleFactor;
+            topLeft.y += distanceY / mScaleFactor;
+            invalidate();
+        }
+
         return true;
     }
 
-    boolean movedInsideOnScroll = false;
-    @Override
-    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+    private void onActionMove(MotionEvent e) {
+        int pointerId;
+        MagnetViewModel magnetViewModel;
+        MagnetGroupViewModel magnetGroupViewModel;
+        LineViewModel lineViewModel;
+        float canvasX;
+        float canvasY;
+        for (int pointerIndex = 0; pointerIndex < e.getPointerCount(); pointerIndex++) {
+            pointerId = e.getPointerId(pointerIndex);
+            canvasX = getCanvasX(e.getX(pointerIndex));
+            canvasY = getCanvasY(e.getY(pointerIndex));
 
-        if(mScaleFactor != 0) {
-            distanceX /= mScaleFactor;
-            distanceY /= mScaleFactor;
-        }
+            lineViewModel = mActionDownLineViewModels.get(pointerId);
+            magnetViewModel = mActionDownMagnetViewModels.get(pointerId);
+            magnetGroupViewModel = mActionDownMagnetGroupViewModels.get(pointerId);
 
-        if (mActionDownMagnetViewModels.size() == 0 && mActionDownMagnetGroupViewModels.size() == 0 && mActionDownLineViewModels.size() == 0) {
-            topLeft.x += distanceX;
-            topLeft.y += distanceY;
-        }
-        else {
-            movedInsideOnScroll = true;
-            int pointerIndex;
-            int pointerId;
-            RectF rectF = new RectF();
-            LineViewModel lineViewModel;
-            MagnetGroupViewModel magnetGroupViewModel;
-            for (pointerIndex = 0; pointerIndex < e2.getPointerCount(); pointerIndex++) {
+            if (magnetGroupViewModel != null) {
+                moveViewModel(magnetGroupViewModel, canvasX, canvasY);
+                continue;
+            }
 
-                pointerId = e2.getPointerId(pointerIndex);
+            if (magnetViewModel != null) {
+                moveViewModel(magnetViewModel, canvasX, canvasY);
+                continue;
+            }
 
-                magnetGroupViewModel = mActionDownMagnetGroupViewModels.get(pointerId);
-                if (magnetGroupViewModel != null) {
-                    //magnetGroupViewModel.move(x, y);
-                    magnetGroupViewModel.moveDistance(distanceX, distanceY);
-                    magnetGroupViewModel.setHasMoved(true);
-                    findOuterRectF();
-                    magnetGroupViewModel.getOuterRectF(rectF);
-
-                    rectF.left = getTouchX(rectF.left);
-                    rectF.top = getTouchY(rectF.top);
-                    rectF.right = getTouchX(rectF.right);
-                    rectF.bottom = getTouchY(rectF.bottom);
-
-                    if (rectF.left < 0) {
-                        topLeft.x = getCanvasX(rectF.left);
-                    }
-                    else if (rectF.right > getWidth()) {
-                        topLeft.x = getCanvasX(rectF.right) - getWidth();
-                    }
-
-                    if (rectF.top < 0) {
-                        topLeft.y = getCanvasY(rectF.top);
-                    }
-
-                    else if (rectF.bottom > getHeight()) {
-                        topLeft.y = getCanvasY(rectF.bottom) - getHeight();
-                    }
-                } else {
-                    lineViewModel = mActionDownLineViewModels.get(pointerId);
-                    if (lineViewModel != null) {
-                        lineViewModel.moveMiddlePointByDistance(distanceX, distanceY);
-                    } else {
-                        MagnetViewModel magnetViewModel = mActionDownMagnetViewModels.get(pointerId);
-                        if (magnetViewModel != null) {
-                            //magnetViewModel.move(x, y);
-                            magnetViewModel.moveDistance(distanceX, distanceY);
-                            magnetViewModel.setHasMoved(true);
-                            findOuterRectF();
-                            magnetViewModel.getOuterRectF(rectF);
-
-                            rectF.left = getTouchX(rectF.left);
-                            rectF.top = getTouchY(rectF.top);
-                            rectF.right = getTouchX(rectF.right);
-                            rectF.bottom = getTouchY(rectF.bottom);
-
-                            if (rectF.left < 0) {
-                                topLeft.x = getCanvasX(rectF.left);
-                            }
-                            else if (rectF.right > getWidth()) {
-                                topLeft.x = getCanvasX(rectF.right) - getWidth();
-                            }
-
-                            if (rectF.top < 0) {
-                                topLeft.y = getCanvasY(rectF.top);
-                            }
-
-                            else if (rectF.bottom > getHeight()) {
-                                topLeft.y = getCanvasY(rectF.bottom) - getHeight();
-                            }
-                        }
-                    }
-                }
+            if (lineViewModel != null && lineViewModel.getMiddlePointF() != null) {
+                moveViewModel(lineViewModel, canvasX, canvasY);
             }
         }
         invalidate();
-        return true;
+    }
+
+    private void createChildAction(int pointerId, float canvasX, float canvasY, MagnetGroupViewModel magnetGroupViewModelParent) {
+        mActionDownMagnetGroupViewModels.remove(pointerId);
+        MagnetGroupViewModel magnetGroupViewModelChild = new MagnetGroupViewModel(canvasX, canvasY);
+        magnetGroupViewModelChild.setLastTouchPoint(canvasX, canvasY);
+        mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModelChild);
+        LineViewModel lineViewModel = new LineViewModel(magnetGroupViewModelParent, magnetGroupViewModelChild);
+        mActionDownLineViewModels.append(pointerId, lineViewModel);
+
+        magnetGroupViewModelParent.setIsGhost(false);
+        if (magnetGroupViewModelParent != mSelectedMagnetGroupViewModel) magnetGroupViewModelParent.setIsHighLighted(false);
+        if (magnetGroupViewModelParent.getSize() == 1) {
+            MagnetViewModel magnetViewModelParent = magnetGroupViewModelParent.getMagnetViewModel(0,0);
+            magnetViewModelParent.setIsGhost(false);
+            if (magnetViewModelParent != mSelectedMagnetViewModel) magnetViewModelParent.setIsHighLighted(false);
+        }
     }
 
     @Override
     public void onLongPress(MotionEvent e) {
         int pointerId = e.getPointerId(e.getActionIndex());
         MagnetGroupViewModel magnetGroupViewModelParent = mActionDownMagnetGroupViewModels.get(pointerId);
-        if (magnetGroupViewModelParent != null && magnetGroupViewModelParent.getSize() == 1) {
+        if (magnetGroupViewModelParent != null) {
             MagnetGroup magnetGroup = magnetGroupViewModelParent.getModel();
             if (magnetGroup != null) {
-                    mActionDownMagnetGroupViewModels.remove(pointerId);
-                    magnetGroupViewModelParent.setIsGhost(false);
-                    MagnetGroupViewModel magnetGroupViewModel = new MagnetGroupViewModel(getCanvasX(e.getX()), getCanvasY(e.getY()));
-                    LineViewModel lineViewModel = new LineViewModel(magnetGroupViewModelParent, magnetGroupViewModel);
-
-                    mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModel);
-                    mActionDownLineViewModels.append(pointerId, lineViewModel);
-                    lineViewModel.setIsGhost(true);
-                    invalidate();
+                createChildAction(pointerId, getCanvasX(e.getX()), getCanvasY(e.getY()), magnetGroupViewModelParent);
+                invalidate();
             }
         }
     }
@@ -853,15 +775,75 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     @Override
     public void search(String text, boolean image, boolean video, boolean file) {
-        for (MagnetViewModel magnetViewModel : mMagnetMagnetViewModelHashMap.values()) {
-            if ((image == magnetViewModel.getModel().hasImage() && (video == magnetViewModel.getModel().hasVideo()) && magnetViewModel.getModel().getTitle().contains(text))) {
-                magnetViewModel.setIsGhost(false);
-                continue;
+
+        //clearStates();
+        mSearchActive = true;
+
+        if (mActionDownMagnetGroupViewModels.size() == 0 && mActionDownMagnetViewModels.size() == 0 && mActionDownLineViewModels.size() == 0) {
+            ((MainActivity)this.getContext()).onRemoveSelection();
+            mSelectedLineViewModel = null;
+            mSelectedMagnetViewModel = null;
+            mSelectedMagnetGroupViewModel = null;
+
+            for (LineViewModel lineViewModel : mLineViewModelHashMap.values()) {
+                lineViewModel.setIsGhost(true);
+                lineViewModel.setIsHighLighted(false);
+                lineViewModel.setIsSelected(false);
             }
 
-            magnetViewModel.setIsGhost(true);
+            for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
+                magnetGroupViewModel.setIsHighLighted(false);
+                magnetGroupViewModel.setIsGhost(true);
+                magnetGroupViewModel.setIsSelected(false);
+            }
+
+            for (MagnetViewModel magnetViewModel : mMagnetMagnetViewModelHashMap.values()) {
+                magnetViewModel.setIsSelected(false);
+
+                if ((image == magnetViewModel.getModel().hasImage() && (video == magnetViewModel.getModel().hasVideo()) && magnetViewModel.getModel().getTitle().contains(text))) {
+                    magnetViewModel.setIsGhost(false);
+                    magnetViewModel.setIsHighLighted(true);
+                    continue;
+                }
+
+                magnetViewModel.setIsGhost(true);
+                magnetViewModel.setIsHighLighted(false);
+            }
+
+            invalidate();
+        }
+    }
+
+
+    boolean mSearchActive;
+    public void clearStates() {
+
+        mActionDownLineViewModels.clear();
+        mActionDownMagnetViewModels.clear();
+        mActionDownMagnetGroupViewModels.clear();
+        mSelectedLineViewModel = null;
+        mSelectedMagnetViewModel = null;
+        mSelectedMagnetGroupViewModel = null;
+        ((MainActivity) getContext()).onRemoveSelection();
+
+        for (LineViewModel lineViewModel : mLineViewModelHashMap.values()) {
+            lineViewModel.setIsGhost(false);
+            lineViewModel.setIsSelected(false);
+            lineViewModel.setIsHighLighted(false);
         }
 
-        invalidate();
+        for (MagnetGroupViewModel magnetGroupViewModel : mMagnetGroupMagnetViewModelHashMap.values()) {
+            magnetGroupViewModel.setIsGhost(false);
+            magnetGroupViewModel.setIsSelected(false);
+            magnetGroupViewModel.setIsHighLighted(false);
+            magnetGroupViewModel.setHasMoved(false);
+        }
+
+        for (MagnetViewModel magnetViewModel : mMagnetMagnetViewModelHashMap.values()) {
+            magnetViewModel.setIsGhost(false);
+            magnetViewModel.setIsSelected(false);
+            magnetViewModel.setIsHighLighted(false);
+            magnetViewModel.setHasMoved(false);
+        }
     }
 }

@@ -4,18 +4,21 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
+import android.graphics.RectF;
+import android.util.Log;
 
 
 import com.aivo.hyperion.aivo.main.MainActivity;
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
  * Created by corpp on 23.2.2016.
  */
-public class LineViewModel {
+public class LineViewModel implements ViewModel{
 
     public PointF getMiddlePointF() {
         return middlePointF;
@@ -27,9 +30,56 @@ public class LineViewModel {
     private boolean mIsGhost = true;
     private boolean mIsSelected = true;
 
+    private boolean mIsHighLighted;
+    public boolean getIsHighLighted()
+    {
+        return mIsHighLighted;
+    }
+
+    @Override
+    public void setLastTouchPoint(float canvasTouchX, float canvasTouchY) {
+
+    }
+
+    private float mLastTouchX;
+    private float mLastTouchY;
+    @Override
+    public float getLastTouchX() {
+        return mLastTouchX;
+    }
+
+    @Override
+    public float getLastTouchY() {
+        return mLastTouchY;
+    }
+
+    @Override
+    public void moveBy(float distanceX, float distanceY) {
+        middlePointF.x -= distanceX;
+        middlePointF.y -= distanceY;
+    }
+
+    public void setIsHighLighted(boolean isHighLighted)
+    {
+        mIsHighLighted = isHighLighted;
+        Log.d("mIsHighLighted", Boolean.toString(mIsHighLighted));
+    }
     public boolean getIsGhost() { return mIsGhost; }
     public void setIsGhost(boolean isGhost) { mIsGhost = isGhost; }
     public boolean getIsSelected() { return  mIsSelected; }
+
+    private boolean mHasMoved;
+
+    @Override
+    public void setHasMoved(boolean hasMoved) {
+        mHasMoved = hasMoved;
+    }
+
+    @Override
+    public boolean getHasMoved() {
+        return mHasMoved;
+    }
+
     public void setIsSelected(boolean isSelected) {
         mIsSelected = isSelected;
     }
@@ -71,6 +121,47 @@ public class LineViewModel {
         mColor = Color.argb(255, r, g, b);
     }
 
+    private void createMiddlePointF() {
+        RectF rectFParent = new RectF();
+        RectF rectFChild = new RectF();
+
+        float parentSideX;
+        float parentSideY;
+        float childSideX;
+        float childSideY;
+
+        mParentMagnetGroupViewModel.getOuterRectF(rectFParent);
+        mChildMagnetGroupViewModel.getOuterRectF(rectFChild);
+
+        // The child is in the right side  of parent
+        if (mParentMagnetGroupViewModel.getCenterX() < mChildMagnetGroupViewModel.getCenterX()) {
+            parentSideX = rectFParent.right;
+            childSideX = rectFChild.left;
+        }
+        // The child is in the left side of parent
+        else {
+            parentSideX = rectFParent.left;
+            childSideX = rectFChild.right;
+        }
+
+        // The child is in the bottom side of parent
+        if (mParentMagnetGroupViewModel.getCenterY() < mChildMagnetGroupViewModel.getCenterY()) {
+            parentSideY = rectFParent.bottom;
+            childSideY = rectFChild.top;
+        }
+
+        // The child is in the top side of parent
+        else {
+            parentSideY = rectFParent.top;
+            childSideY = rectFChild.bottom;
+        }
+
+        middlePointF = new PointF(
+                (parentSideX + childSideX) / 2.0f,
+                (parentSideY + childSideY) / 2.0f
+        );
+    }
+
     public LineViewModel(Line line, Map<MagnetGroup, MagnetGroupViewModel> magnetMagnetGroupViewModelMap) {
         mParentMagnetGroupViewModel = magnetMagnetGroupViewModelMap.get(line.getMagnetGroup1());
         mChildMagnetGroupViewModel = magnetMagnetGroupViewModelMap.get(line.getMagnetGroup2());
@@ -78,12 +169,8 @@ public class LineViewModel {
         mIsGhost = false;
         mIsSelected = false;
 
-        middlePointF = new PointF();
         if (line.getPoints().isEmpty()) {
-            middlePointF.set(
-                    (mParentMagnetGroupViewModel.getCenterX() + mChildMagnetGroupViewModel.getCenterX()) / 2.0f,
-                    (mParentMagnetGroupViewModel.getCenterY() + mChildMagnetGroupViewModel.getCenterY()) / 2.0f
-            );
+            createMiddlePointF();
         }
         else refresh();
 
