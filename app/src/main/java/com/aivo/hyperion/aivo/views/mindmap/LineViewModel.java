@@ -38,7 +38,8 @@ public class LineViewModel implements ViewModel{
 
     @Override
     public void setLastTouchPoint(float canvasTouchX, float canvasTouchY) {
-
+        mLastTouchX = canvasTouchX;
+        mLastTouchY = canvasTouchY;
     }
 
     private float mLastTouchX;
@@ -55,8 +56,10 @@ public class LineViewModel implements ViewModel{
 
     @Override
     public void moveBy(float distanceX, float distanceY) {
-        middlePointF.x -= distanceX;
-        middlePointF.y -= distanceY;
+        if(middlePointF != null) {
+            middlePointF.x -= distanceX;
+            middlePointF.y -= distanceY;
+        }
     }
 
     public void setIsHighLighted(boolean isHighLighted)
@@ -188,11 +191,6 @@ public class LineViewModel implements ViewModel{
 
     public void setMiddlePointF(float x, float y) {
         middlePointF = new PointF(x, y);
-    }
-
-    public void moveMiddlePointByDistance(float distanceX, float distanceY) {
-        middlePointF.x -= distanceX;
-        middlePointF.y -= distanceY;
     }
 
     public void draw(Canvas canvas, Paint paint) {
