@@ -89,18 +89,26 @@ public class MindmapFragment extends Fragment {
         }
     }
 
+
+
     @Override
     public void onPause() {
         super.onPause();
+        PointF topLeft = ((MindmapView) getView()).getTopLeft();
         SharedPreferences.Editor editor = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).edit();
-        editor.putString(ARG_MINDMAP_TITLE, mMindmapTitle);
+        editor.putFloat("topCam", topLeft.y);
+        editor.putFloat("leftCam", topLeft.x);
         editor.commit();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mMindmapTitle = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE).getString(ARG_MINDMAP_TITLE, mMindmapTitle);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(TAG, Context.MODE_PRIVATE);
+        float top = sharedPreferences.getFloat("topCam", 0);
+        float left = sharedPreferences.getFloat("leftCam", 0);
+        PointF topLeft = new PointF(left, top);
+        ((MindmapView)getView()).setTopLeft(topLeft);
     }
 
 

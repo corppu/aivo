@@ -99,7 +99,7 @@ public class LineViewModel implements ViewModel{
         }
     }
 
-    public Line getLine() {
+    public Line getModel() {
         return mLine;
     }
     public MagnetGroupViewModel getParent() {
