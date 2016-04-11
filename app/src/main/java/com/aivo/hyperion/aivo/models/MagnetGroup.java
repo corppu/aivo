@@ -121,6 +121,10 @@ public class MagnetGroup {
     }
 
     public void actionCreateLine(MagnetGroup magnetGroup) {
+        if (magnetGroup == this) return;
+        for (Line lineA : magnetGroup.lines) {
+            if (lineA.getMagnetGroup1() == this || lineA.getMagnetGroup2() == this) return;
+        }
         mediator.getMindmap().actionCreateLine(this, magnetGroup);
     }
 

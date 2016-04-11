@@ -232,6 +232,11 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         }
 
         findOuterRectF();
+
+        if(mMagnetGroupMagnetViewModelHashMap.size() == 0) {
+            topLeft.set(mOuterRectF.left, mOuterRectF.top);
+        }
+
         invalidate();
     }
 
@@ -487,7 +492,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
             MagnetViewModel magnetViewModel = (MagnetViewModel) mSelectedViewModel;
             ((MainActivity) this.getContext()).onEditMagnet(magnetViewModel.getModel());
 
-        } else if (mSelectedViewModel != null) {
+        } else if (mSelectedViewModel == null) {
             ((MainActivity) this.getContext()).onCreateMagnet(new PointF(canvasX, canvasY));
         }
 
@@ -686,8 +691,15 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         if (mActionDownMagnetViewModels.size() == 0 && mActionDownMagnetGroupViewModels.size() == 0 && mActionDownLineViewModels.size() == 0) {
             mScrollInProgress = true;
-            topLeft.x += distanceX / mScaleFactor;
-            topLeft.y += distanceY / mScaleFactor;
+
+
+            final float minLeft = mOuterRectF.left - mClipBounds.width() / 2;
+            final float minTop = mOuterRectF.left - mClipBounds.height() / 2;
+            final float maxLeft = mOuterRectF.right - mClipBounds.width() / 2;
+            final float maxTop = mOuterRectF.bottom - mClipBounds.height() / 2;
+
+            topLeft.x = Math.max(Math.min(maxLeft, topLeft.x + distanceX / mScaleFactor), minLeft);
+            topLeft.y = Math.max(Math.min(maxTop, topLeft.y + distanceY / mScaleFactor), minTop);
             invalidate();
         }
 
