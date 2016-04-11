@@ -38,7 +38,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
     // touch and drawing
     private final int BACKGROUND_COLOR = Color.WHITE;
-    private final int BORDER_COLOR = Color.BLACK;
+    private final int BORDER_COLOR = Color.WHITE;
 
     private RectF mOuterRectF = new RectF(0, 0, 0, 0);
 
