@@ -102,6 +102,13 @@ public class LineViewModel implements ViewModel{
     public Line getModel() {
         return mLine;
     }
+
+    @Override
+    public void getOuterRectF(RectF outerRectF) {
+        if (middlePointF == null) outerRectF.set(Float.MAX_VALUE, Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
+        else outerRectF.set(middlePointF.x, middlePointF.y, middlePointF.x, middlePointF.y);
+    }
+
     public MagnetGroupViewModel getParent() {
         return mParentMagnetGroupViewModel;
     }
