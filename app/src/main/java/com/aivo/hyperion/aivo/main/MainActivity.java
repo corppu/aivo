@@ -1,5 +1,7 @@
 package com.aivo.hyperion.aivo.main;
 
+import android.app.SearchManager;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.content.Context;
@@ -84,13 +86,17 @@ public class MainActivity extends AppCompatActivity
     private static SideNoteFragment sSideNoteFragment;
     private static MainMenuFragment sMainMenuFragment;
 
-
+    public static void setNoteFragment(NoteFragment noteFragment) {
+        sNoteFragment = noteFragment;
+    }
+    private static NoteFragment sNoteFragment = null;
 
 
     private void openNoteFragment(int id, boolean isMagnet, String title, String content) {
-        NoteFragment noteFragment = NoteFragment.newInstance(id, isMagnet, title, content);
-        noteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
-        noteFragment.show(getSupportFragmentManager(), "noteFragment");
+        if (sNoteFragment != null) return;
+        sNoteFragment = NoteFragment.newInstance(id, isMagnet, title, content);
+        sNoteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
+        sNoteFragment.show(getSupportFragmentManager(), "noteFragment");
     }
 
     private void openMindmapFragment(String title) {

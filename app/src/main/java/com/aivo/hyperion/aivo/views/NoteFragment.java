@@ -342,5 +342,6 @@ public class NoteFragment extends DialogFragment implements View.OnClickListener
             getDialog().setDismissMessage(null);
         }
         super.onDestroyView();
+        MainActivity.setNoteFragment(null);
     }
 }

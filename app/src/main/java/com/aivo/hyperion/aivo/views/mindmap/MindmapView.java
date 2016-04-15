@@ -717,6 +717,8 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
         if(mSelectedViewModel == lineViewModel) {
             ((MainActivity)getContext()).onSelectLine(lineViewModel);
         }
+
+        invalidate();
     }
 
     @Override

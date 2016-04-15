@@ -89,7 +89,11 @@ public class LineViewModel implements ViewModel{
 
 
     public boolean contains(float x, float y) {
-        return ptSegDist(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), x, y) <= MagnetViewModel.HIGHLIGHT_BORDER_SIZE;
+        if (middlePointF == null) {
+            return ptSegDist(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), x, y) <= MagnetViewModel.HIGHLIGHT_BORDER_SIZE;
+        }
+        return ptSegDist(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), middlePointF.x, middlePointF.y, x, y) <= MagnetViewModel.HIGHLIGHT_BORDER_SIZE
+                || ptSegDist(mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), middlePointF.x, middlePointF.y, x, y) <= MagnetViewModel.HIGHLIGHT_BORDER_SIZE;
     }
 
     public PointF getMiddlePointF() {
@@ -223,46 +227,55 @@ public class LineViewModel implements ViewModel{
         mColor = MainActivity.getUser().getTheme().getColorLine();
     }
 
-    private void createMiddlePointF() {
-        RectF rectFParent = new RectF();
-        RectF rectFChild = new RectF();
 
-        float parentSideX;
-        float parentSideY;
-        float childSideX;
-        float childSideY;
+//    Float parentSideX = 0f;
+//    Float parentSideY = 0f;
+//    Float childSideX = 0f;
+//    Float childSideY = 0f;
 
-        mParentMagnetGroupViewModel.getOuterRectF(rectFParent);
-        mChildMagnetGroupViewModel.getOuterRectF(rectFChild);
+    public PointF createMiddlePointF() {
+//        //getLineStartAndEnd();
+//        return new PointF(
+//                (parentSideX + childSideX) / 2.0f,
+//                (parentSideY + childSideY) / 2.0f
+//        );
 
-        // The child is in the right side  of parent
-        if (mParentMagnetGroupViewModel.getCenterX() < mChildMagnetGroupViewModel.getCenterX()) {
-            parentSideX = rectFParent.right;
-            childSideX = rectFChild.left;
-        }
-        // The child is in the left side of parent
-        else {
-            parentSideX = rectFParent.left;
-            childSideX = rectFChild.right;
-        }
-
-        // The child is in the bottom side of parent
-        if (mParentMagnetGroupViewModel.getCenterY() < mChildMagnetGroupViewModel.getCenterY()) {
-            parentSideY = rectFParent.bottom;
-            childSideY = rectFChild.top;
-        }
-
-        // The child is in the top side of parent
-        else {
-            parentSideY = rectFParent.top;
-            childSideY = rectFChild.bottom;
-        }
-
-        middlePointF = new PointF(
-                (parentSideX + childSideX) / 2.0f,
-                (parentSideY + childSideY) / 2.0f
+        return new PointF(
+                (mParentMagnetGroupViewModel.getCenterX() + mChildMagnetGroupViewModel.getCenterX()) / 2f,
+                (mParentMagnetGroupViewModel.getCenterY() + mChildMagnetGroupViewModel.getCenterY()) / 2f
         );
     }
+//
+//    private void getLineStartAndEnd() {
+//        RectF rectFParent = new RectF();
+//        RectF rectFChild = new RectF();
+//
+//        mParentMagnetGroupViewModel.getOuterRectF(rectFParent);
+//        mChildMagnetGroupViewModel.getOuterRectF(rectFChild);
+//
+//        // The child is in the right side  of parent
+//        if (mParentMagnetGroupViewModel.getCenterX() < mChildMagnetGroupViewModel.getCenterX()) {
+//            parentSideX = rectFParent.right;
+//            childSideX = rectFChild.left;
+//        }
+//        // The child is in the left side of parent
+//        else {
+//            parentSideX = rectFParent.left;
+//            childSideX = rectFChild.right;
+//        }
+//
+//        // The child is in the bottom side of parent
+//        if (mParentMagnetGroupViewModel.getCenterY() < mChildMagnetGroupViewModel.getCenterY()) {
+//            parentSideY = rectFParent.bottom;
+//            childSideY = rectFChild.top;
+//        }
+//
+//        // The child is in the top side of parent
+//        else {
+//            parentSideY = rectFParent.top;
+//            childSideY = rectFChild.bottom;
+//        }
+//    }
 
     public LineViewModel(Line line, Map<MagnetGroup, MagnetGroupViewModel> magnetMagnetGroupViewModelMap) {
         mParentMagnetGroupViewModel = magnetMagnetGroupViewModelMap.get(line.getMagnetGroup1());

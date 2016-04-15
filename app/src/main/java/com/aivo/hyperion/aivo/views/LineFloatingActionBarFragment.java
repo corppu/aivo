@@ -3,6 +3,7 @@ package com.aivo.hyperion.aivo.views;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import com.aivo.hyperion.aivo.views.mindmap.LineViewModel;
 public class LineFloatingActionBarFragment extends Fragment implements View.OnClickListener{
 
     private ImageButton trashBtn;
+    private ImageButton toggleMiddlePointBtn;
 
     private OnFragmentInteractionListener mListener;
 
@@ -64,6 +66,10 @@ public class LineFloatingActionBarFragment extends Fragment implements View.OnCl
             trashBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_trash);
             trashBtn.setOnClickListener(this);
         }
+        if (toggleMiddlePointBtn == null) {
+            toggleMiddlePointBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_middle_point_toggle);
+            toggleMiddlePointBtn.setOnClickListener(this);
+        }
     }
 
 
@@ -77,7 +83,13 @@ public class LineFloatingActionBarFragment extends Fragment implements View.OnCl
                 break;
 
             default:
-
+                Log.d("ASD", "ASD");
+                if (mLineViewModel.getModel().getPoints().size() == 0) {
+                    mLineViewModel.getModel().actionAddPoint(mLineViewModel.createMiddlePointF(), 0);
+                }
+                else {
+                    mLineViewModel.getModel().actionDeletePoint(mLineViewModel.getModel().getPoints().get(0));
+                }
                 break;
         }
     }
