@@ -1,5 +1,7 @@
 package com.aivo.hyperion.aivo.models.actions;
 
+import android.graphics.PointF;
+
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import com.aivo.hyperion.aivo.models.ModelListener;
@@ -12,6 +14,7 @@ public class LineCreate extends Action {
 
     private Line line;
 
+    // Normal constructor
     public LineCreate(ModelMediator mediator, MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
         if (magnetGroup1 == magnetGroup2)
             throw new InternalError("Tried to LineCreate from a group to the same group!");
@@ -23,6 +26,20 @@ public class LineCreate extends Action {
 
         setMediator(mediator);
         this.line = new Line(mediator, magnetGroup1, magnetGroup2);
+    }
+
+    // Constructor with mid point
+    public LineCreate(ModelMediator mediator, MagnetGroup magnetGroup1, MagnetGroup magnetGroup2, PointF midPoint) {
+        if (magnetGroup1 == magnetGroup2)
+            throw new InternalError("Tried to LineCreate from a group to the same group!");
+        else {
+            for (Line line : magnetGroup1.getLines())
+                if (line.getMagnetGroup1() == magnetGroup2 || line.getMagnetGroup2() == magnetGroup2)
+                    throw new InternalError("Tried to LineCreate between already connected groups!");
+        }
+
+        setMediator(mediator);
+        this.line = new Line(mediator, magnetGroup1, magnetGroup2, midPoint);
     }
 
     @Override

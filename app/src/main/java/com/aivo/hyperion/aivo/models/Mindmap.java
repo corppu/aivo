@@ -198,6 +198,17 @@ public class Mindmap {
         getActionHandler().executeAction(action);
     }
 
+    /** Creates a new line through an action, with a line point in specified coordinates.
+     *
+     * @param magnetGroup1  Connecting magnet group.
+     * @param magnetGroup2  Connecting magnet group.
+     * @param midPoint      Line point to create between groups.
+     */
+    public void actionCreateLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2, PointF midPoint) {
+        Action action = new LineCreate(mediator, magnetGroup1, magnetGroup2, midPoint);
+        getActionHandler().executeAction(action);
+    }
+
     /** Removes this Mindmap. IRREVERSIBLE!
      *
      */
