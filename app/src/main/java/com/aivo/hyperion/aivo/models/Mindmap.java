@@ -194,6 +194,10 @@ public class Mindmap {
      * @param magnetGroup2  Connecting magnet group.
      */
     public void actionCreateLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
+        if (magnetGroup1 == magnetGroup2) return;
+        for (Line line : magnetGroup1.lines) {
+            if (line.getMagnetGroup1() == magnetGroup2 || line.getMagnetGroup2() == magnetGroup2) return;
+        }
         Action action = new LineCreate(mediator, magnetGroup1, magnetGroup2);
         getActionHandler().executeAction(action);
     }

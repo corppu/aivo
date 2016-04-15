@@ -334,7 +334,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
             MagnetGroupViewModel magnetGroupViewModelB = getMagnetGroupViewModel(magnetGroupViewModel.getMagnetViewModel(0,0), magnetGroupViewModel);
             if (magnetGroupViewModelB != null && magnetGroupViewModelB.getModel() != null) {
-                lineViewModel.getParent().getModel().actionCreateLine(magnetGroupViewModelB.getModel());
+                MainActivity.getModelMediator().getMindmap().actionCreateLine(lineViewModel.getParent().getModel(), magnetGroupViewModelB.getModel());
             } else {
                 ((MainActivity) getContext())
                         .onCreateMagnet(
@@ -524,7 +524,7 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
     private void createChildAction(int pointerId, float canvasX, float canvasY, MagnetGroupViewModel magnetGroupViewModelParent) {
         mActionDownMagnetGroupViewModels.remove(pointerId);
         MagnetGroupViewModel magnetGroupViewModelChild = new MagnetGroupViewModel(canvasX, canvasY);
-        magnetGroupViewModelChild.setLastTouchPoint(canvasX, canvasY);
+        magnetGroupViewModelChild.setLastTouchPoint(magnetGroupViewModelChild.getCenterX(), magnetGroupViewModelChild.getCenterY());
         mActionDownMagnetGroupViewModels.append(pointerId, magnetGroupViewModelChild);
         LineViewModel lineViewModel = new LineViewModel(magnetGroupViewModelParent, magnetGroupViewModelChild);
         mActionDownLineViewModels.append(pointerId, lineViewModel);

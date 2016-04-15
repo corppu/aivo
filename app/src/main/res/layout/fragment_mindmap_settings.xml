@@ -1,0 +1,23 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="388dp"
+    android:layout_height="@dimen/search_height"
+    android:id="@+id/mindmapSettingsFragment"
+    android:tag="mindmapSettingsFragment"
+    android:background="#336094"
+    android:fadingEdge="horizontal"
+    android:clickable="true"
+    android:fadingEdgeLength="5dp"
+    android:layout_centerHorizontal="true"
+    android:layout_alignParentTop="true"
+    android:paddingLeft="6dp">
+
+
+    <ImageButton
+        android:id="@+id/toggleThemeButton"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@android:drawable/gallery_thumb"/>
+
+</RelativeLayout>
