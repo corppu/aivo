@@ -123,6 +123,27 @@ public class MagnetGroupViewModel implements ViewModel {
     public MagnetGroup getModel() {
         return mMagnetGroup;
     }
+
+    @Override
+    public float getLeft() {
+        return mOuterRectF.left;
+    }
+
+    @Override
+    public float getTop() {
+        return mOuterRectF.top;
+    }
+
+    @Override
+    public float getRight() {
+        return mOuterRectF.right;
+    }
+
+    @Override
+    public float getBottom() {
+        return mOuterRectF.bottom;
+    }
+
     public int getSize() {
         return mSize;
     }

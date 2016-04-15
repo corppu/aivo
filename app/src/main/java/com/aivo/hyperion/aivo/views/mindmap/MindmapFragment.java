@@ -3,23 +3,16 @@ package com.aivo.hyperion.aivo.views.mindmap;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.PointF;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.aivo.hyperion.aivo.R;
-import com.aivo.hyperion.aivo.main.MainActivity;
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
-import com.aivo.hyperion.aivo.models.Mindmap;
-import com.aivo.hyperion.aivo.models.ModelListener;
-import com.aivo.hyperion.aivo.models.Note;
-import com.aivo.hyperion.aivo.models.User;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -126,9 +119,9 @@ public class MindmapFragment extends Fragment {
         void onCreateMagnet(PointF pointF);
         void onCreateMagnet(MagnetGroup parent, PointF newPointF);
         void onEditMagnet(Magnet magnet);
-        void onSelectMagnet(Magnet magnet);
-        void onSelectMagnetGroup(MagnetGroup magnetGroup);
-        void onSelectLine(Line line);
+        void onSelectMagnet(MagnetViewModel magnetViewModel);
+        void onSelectMagnetGroup(MagnetGroupViewModel magnetGroupViewModel);
+        void onSelectLine(LineViewModel lineViewModel);
         void onRemoveSelection();
     }
 

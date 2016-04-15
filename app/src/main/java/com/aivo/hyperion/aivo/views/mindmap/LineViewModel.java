@@ -15,10 +15,82 @@ import com.aivo.hyperion.aivo.models.MagnetGroup;
 import java.util.ArrayList;
 import java.util.Map;
 
+
 /**
  * Created by corpp on 23.2.2016.
  */
 public class LineViewModel implements ViewModel{
+
+    /**
+     * Gives the square of the distance between the point and the line segment.
+     *
+     * @param x1
+     *            the x coordinate of the starting point of the line segment.
+     * @param y1
+     *            the y coordinate of the starting point of the line segment.
+     * @param x2
+     *            the x coordinate of the end point of the line segment.
+     * @param y2
+     *            the y coordinate of the end point of the line segment.
+     * @param px
+     *            the x coordinate of the test point.
+     * @param py
+     *            the y coordinate of the test point.
+     * @return the the square of the distance between the point and the line
+     *         segment.
+     */
+    public static double ptSegDistSq(double x1, double y1, double x2, double y2, double px,
+                                     double py) {
+        /*
+         * A = (x2 - x1, y2 - y1) P = (px - x1, py - y1)
+         */
+        x2 -= x1; // A = (x2, y2)
+        y2 -= y1;
+        px -= x1; // P = (px, py)
+        py -= y1;
+        double dist;
+        if (px * x2 + py * y2 <= 0.0) { // P*A
+            dist = px * px + py * py;
+        } else {
+            px = x2 - px; // P = A - P = (x2 - px, y2 - py)
+            py = y2 - py;
+            if (px * x2 + py * y2 <= 0.0) { // P*A
+                dist = px * px + py * py;
+            } else {
+                dist = px * y2 - py * x2;
+                dist = dist * dist / (x2 * x2 + y2 * y2); // pxA/|A|
+            }
+        }
+        if (dist < 0) {
+            dist = 0;
+        }
+        return dist;
+    }
+    /**
+     * Gives the distance between the point and the line segment.
+     *
+     * @param x1
+     *            the x coordinate of the starting point of the line segment.
+     * @param y1
+     *            the y coordinate of the starting point of the line segment.
+     * @param x2
+     *            the x coordinate of the end point of the line segment.
+     * @param y2
+     *            the y coordinate of the end point of the line segment.
+     * @param px
+     *            the x coordinate of the test point.
+     * @param py
+     *            the y coordinate of the test point.
+     * @return the the distance between the point and the line segment.
+     */
+    public static double ptSegDist(double x1, double y1, double x2, double y2, double px, double py) {
+        return Math.sqrt(ptSegDistSq(x1, y1, x2, y2, px, py));
+    }
+
+
+    public boolean contains(float x, float y) {
+        return ptSegDist(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), x, y) <= MagnetViewModel.HIGHLIGHT_BORDER_SIZE;
+    }
 
     public PointF getMiddlePointF() {
         return middlePointF;
@@ -104,6 +176,30 @@ public class LineViewModel implements ViewModel{
     }
 
     @Override
+    public float getLeft() {
+        if (middlePointF == null) return Float.MAX_VALUE;
+        return middlePointF.x;
+    }
+
+    @Override
+    public float getTop() {
+        if (middlePointF == null) return Float.MAX_VALUE;
+        return middlePointF.y;
+    }
+
+    @Override
+    public float getRight() {
+        if (middlePointF == null) return Float.MAX_VALUE;
+        return middlePointF.x;
+    }
+
+    @Override
+    public float getBottom() {
+        if (middlePointF == null) return Float.MAX_VALUE;
+        return middlePointF.y;
+    }
+
+    @Override
     public void getOuterRectF(RectF outerRectF) {
         if (middlePointF == null) outerRectF.set(Float.MAX_VALUE, Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE);
         else outerRectF.set(middlePointF.x, middlePointF.y, middlePointF.x, middlePointF.y);
@@ -122,13 +218,9 @@ public class LineViewModel implements ViewModel{
         mLine = null;
         mIsGhost = true;
         mIsSelected = true;
-
         middlePointF = null;
 
-        int r = MainActivity.getRandom().nextInt(255);
-        int g = MainActivity.getRandom().nextInt(255);
-        int b = MainActivity.getRandom().nextInt(255);
-        mColor = Color.argb(255, r, g, b);
+        mColor = MainActivity.getUser().getTheme().getColorLine();
     }
 
     private void createMiddlePointF() {
@@ -179,15 +271,11 @@ public class LineViewModel implements ViewModel{
         mIsGhost = false;
         mIsSelected = false;
 
-        if (line.getPoints().isEmpty()) {
-            createMiddlePointF();
-        }
-        else refresh();
-
-//        int r = MainActivity.getRandom().nextInt(255);
-//        int g = MainActivity.getRandom().nextInt(255);
-//        int b = MainActivity.getRandom().nextInt(255);
-//        mColor = Color.argb(255, r, g, b);
+//        if (line.getPoints().isEmpty()) {
+//            createMiddlePointF();
+//        }
+//        else
+        refresh();
 
        mColor = MainActivity.getUser().getTheme().getColorLine();
     }
@@ -226,11 +314,6 @@ public class LineViewModel implements ViewModel{
         } else {
             canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
         }
-    }
-
-    boolean contains(float x, float y) {
-        if (middlePointF == null) return false;
-        return x > middlePointF.x - MagnetViewModel.CIRLCE_RADIUS && x < middlePointF.x + MagnetViewModel.CIRLCE_RADIUS && y > middlePointF.y - MagnetViewModel.CIRLCE_RADIUS && y < middlePointF.y + MagnetViewModel.CIRLCE_RADIUS;
     }
 }
 

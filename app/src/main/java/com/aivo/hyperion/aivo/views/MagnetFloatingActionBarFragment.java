@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.aivo.hyperion.aivo.R;
-import com.aivo.hyperion.aivo.models.Line;
-import com.aivo.hyperion.aivo.models.Magnet;
-import com.aivo.hyperion.aivo.models.MagnetGroup;
+import com.aivo.hyperion.aivo.views.mindmap.MagnetViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -24,7 +22,7 @@ public class MagnetFloatingActionBarFragment extends Fragment implements View.On
     private ImageButton starBtn;
     private ImageButton trashBtn;
     private ImageButton netBtn;
-    private Boolean isFavourite = false;
+    private Boolean mIsFavourite = false;
 
     private OnFragmentInteractionListener mListener;
 
@@ -87,18 +85,18 @@ public class MagnetFloatingActionBarFragment extends Fragment implements View.On
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.floatbar_btn_trash:
-                mMagnet.actionDelete();
+                mMagnetViewModel.getModel().actionDelete();
                 break;
             case R.id.floatbar_btn_star:
 
-                if (isFavourite){
+                if (mIsFavourite){
                     starBtn.setBackgroundResource(R.drawable.is_star_2x);
-                    isFavourite=false;
-                    mMagnet.actionChangeFavourite(false);
-                }else{
+                    mIsFavourite = false;
+                    mMagnetViewModel.getModel().actionChangeFavourite(false);
+                } else{
                     starBtn.setBackgroundResource(R.drawable.ic_star_gold_2x);
-                    isFavourite=true;
-                    mMagnet.actionChangeFavourite(true);
+                    mIsFavourite = true;
+                    mMagnetViewModel.getModel().actionChangeFavourite(true);
                 }
 
 
@@ -130,13 +128,13 @@ public class MagnetFloatingActionBarFragment extends Fragment implements View.On
     public interface OnFragmentInteractionListener {
     }
 
-    private Magnet mMagnet;
+    private MagnetViewModel mMagnetViewModel;
 
-    public void openMagnetActions(Magnet magnet) {
-        mMagnet = magnet;
+    public void openMagnetActions(MagnetViewModel magnetViewModel) {
+        mMagnetViewModel = magnetViewModel;
 
-        isFavourite = mMagnet.getIsFavourite();
-        if (isFavourite)
+        mIsFavourite = mMagnetViewModel.getModel().getIsFavourite();
+        if (mIsFavourite)
             starBtn.setBackgroundResource(R.drawable.ic_star_gold_2x);
         else
             starBtn.setBackgroundResource(R.drawable.is_star_2x);

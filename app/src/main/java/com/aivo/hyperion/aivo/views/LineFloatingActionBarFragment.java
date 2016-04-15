@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.aivo.hyperion.aivo.R;
-import com.aivo.hyperion.aivo.models.Line;
+import com.aivo.hyperion.aivo.views.mindmap.LineViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,7 +20,6 @@ import com.aivo.hyperion.aivo.models.Line;
 public class LineFloatingActionBarFragment extends Fragment implements View.OnClickListener{
 
     private ImageButton trashBtn;
-    private ImageButton changeTitleButton;
 
     private OnFragmentInteractionListener mListener;
 
@@ -37,7 +36,7 @@ public class LineFloatingActionBarFragment extends Fragment implements View.OnCl
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View floatbarView = inflater.inflate(R.layout.fragment_magnet_group_floating_action_bar_fragment, container, false);
+        View floatbarView = inflater.inflate(R.layout.fragment_line_floating_action_bar_fragment, container, false);
 
         // Inflate the layout for this fragment
         return floatbarView;
@@ -65,11 +64,6 @@ public class LineFloatingActionBarFragment extends Fragment implements View.OnCl
             trashBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_trash);
             trashBtn.setOnClickListener(this);
         }
-
-        if (changeTitleButton == null) {
-            changeTitleButton = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_change_title);
-            changeTitleButton.setOnClickListener(this);
-        }
     }
 
 
@@ -79,14 +73,15 @@ public class LineFloatingActionBarFragment extends Fragment implements View.OnCl
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.floatbar_btn_trash:
-
+                mLineViewModel.getModel().actionDelete();
                 break;
 
             default:
+
                 break;
         }
-
     }
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -106,9 +101,9 @@ public class LineFloatingActionBarFragment extends Fragment implements View.OnCl
     public interface OnFragmentInteractionListener {
     }
 
-    private Line mLine;
+    private LineViewModel mLineViewModel;
 
-    public void openLineActions(Line line) {
-        mLine = line;
+    public void openLineActions(LineViewModel lineViewModel) {
+        mLineViewModel = lineViewModel;
     }
 }

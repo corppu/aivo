@@ -10,6 +10,7 @@ import android.widget.ImageButton;
 
 import com.aivo.hyperion.aivo.R;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
+import com.aivo.hyperion.aivo.views.mindmap.MagnetGroupViewModel;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -109,9 +110,9 @@ public class MagnetGroupFloatingActionBarFragment extends Fragment implements Vi
     public interface OnFragmentInteractionListener {
     }
 
-    private MagnetGroup mMagnetGroup;
+    private MagnetGroupViewModel mMagnetGroupViewModel;
 
-    public void openMagnetGroupActions(MagnetGroup magnetGroup) {
-        mMagnetGroup = magnetGroup;
+    public void openMagnetGroupActions(MagnetGroupViewModel magnetGroupViewModel) {
+        mMagnetGroupViewModel = magnetGroupViewModel;
     }
 }

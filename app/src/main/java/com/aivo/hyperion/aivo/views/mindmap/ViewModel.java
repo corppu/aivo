@@ -7,6 +7,10 @@ import android.graphics.RectF;
  */
 public interface ViewModel {
     Object getModel();
+    float getLeft();
+    float getTop();
+    float getRight();
+    float getBottom();
     void getOuterRectF(RectF outerRectF);
     void setIsSelected(boolean isSelected);
     boolean getIsSelected();
