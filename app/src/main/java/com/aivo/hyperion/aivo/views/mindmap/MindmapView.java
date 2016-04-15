@@ -639,7 +639,10 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
             MagnetGroupViewModel magnetGroupViewModelB = getMagnetGroupViewModel(magnetGroupViewModel.getMagnetViewModel(0,0), magnetGroupViewModel);
             if (magnetGroupViewModelB != null && magnetGroupViewModelB.getModel() != null) {
-                lineViewModel.getParent().getModel().actionCreateLine(magnetGroupViewModelB.getModel());
+                //lineViewModel.getParent().getModel().actionCreateLine(magnetGroupViewModelB.getModel());
+                MainActivity.getModelMediator().getMindmap().actionCreateLine(
+                        lineViewModel.getParent().getModel(), magnetGroupViewModelB.getModel()
+                );
             } else {
                 ((MainActivity) getContext())
                         .onCreateMagnet(
