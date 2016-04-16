@@ -1,18 +1,13 @@
 package com.aivo.hyperion.aivo.views.mindmap;
 
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.Log;
-
-
 import com.aivo.hyperion.aivo.main.MainActivity;
 import com.aivo.hyperion.aivo.models.Line;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
-
-import java.util.ArrayList;
 import java.util.Map;
 
 
@@ -302,7 +297,7 @@ public class LineViewModel implements ViewModel{
     }
 
     public void draw(Canvas canvas, Paint paint) {
-        if (mIsSelected || mIsGhost) {
+        if (mIsHighLighted) {
             paint.setColor(MagnetViewModel.HIGHLIGHT_BORDER_COLOR);
             paint.setStrokeWidth(MagnetViewModel.HIGHLIGHT_BORDER_SIZE);
             if (mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);
