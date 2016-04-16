@@ -194,7 +194,22 @@ public class Mindmap {
      * @param magnetGroup2  Connecting magnet group.
      */
     public void actionCreateLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
+        if (magnetGroup1 == magnetGroup2) return;
+        for (Line line : magnetGroup1.lines) {
+            if (line.getMagnetGroup1() == magnetGroup2 || line.getMagnetGroup2() == magnetGroup2) return;
+        }
         Action action = new LineCreate(mediator, magnetGroup1, magnetGroup2);
+        getActionHandler().executeAction(action);
+    }
+
+    /** Creates a new line through an action, with a line point in specified coordinates.
+     *
+     * @param magnetGroup1  Connecting magnet group.
+     * @param magnetGroup2  Connecting magnet group.
+     * @param midPoint      Line point to create between groups.
+     */
+    public void actionCreateLine(MagnetGroup magnetGroup1, MagnetGroup magnetGroup2, PointF midPoint) {
+        Action action = new LineCreate(mediator, magnetGroup1, magnetGroup2, midPoint);
         getActionHandler().executeAction(action);
     }
 

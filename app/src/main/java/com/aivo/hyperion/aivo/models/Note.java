@@ -22,7 +22,7 @@ public class Note {
         mediator = modelMediator_;
     }
 
-    protected Note(){} // default constructor for Magnet
+    protected Note(){} // DO NOT USE! default constructor required for Magnet
     protected Note(ModelMediator mediator_) {
         setMediator(mediator_);
     }

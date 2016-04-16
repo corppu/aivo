@@ -1,9 +1,12 @@
 package com.aivo.hyperion.aivo.main;
 
+import android.app.SearchManager;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.PointF;
 import android.content.Context;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +29,13 @@ import com.aivo.hyperion.aivo.models.ModelMediator;
 import com.aivo.hyperion.aivo.models.Note;
 import com.aivo.hyperion.aivo.models.User;
 import com.aivo.hyperion.aivo.models.actions.ActionHandler;
+import com.aivo.hyperion.aivo.views.LineFloatingActionBarFragment;
 import com.aivo.hyperion.aivo.views.MagnetFloatingActionBarFragment;
+import com.aivo.hyperion.aivo.views.MagnetGroupFloatingActionBarFragment;
 import com.aivo.hyperion.aivo.views.MainMenuFragment;
+import com.aivo.hyperion.aivo.views.mindmap.LineViewModel;
+import com.aivo.hyperion.aivo.views.mindmap.MagnetGroupViewModel;
+import com.aivo.hyperion.aivo.views.mindmap.MagnetViewModel;
 import com.aivo.hyperion.aivo.views.mindmap.MindmapFragment;
 import com.aivo.hyperion.aivo.views.NoteFragment;
 import com.aivo.hyperion.aivo.views.SearchFragment;
@@ -70,32 +78,44 @@ public class MainActivity extends AppCompatActivity
 
 
     private static MindmapFragment sMindmapFragment;
+    private static Fragment sVisibleFloatingActionBar;
+    private static MagnetGroupFloatingActionBarFragment sMagnetGroupFloatingActionBarFragment;
     private static MagnetFloatingActionBarFragment sMagnetFloatingActionBarFragment;
+    private static LineFloatingActionBarFragment sLineFloatingActionBarFragment;
     private static SearchFragment sSearchFragment;
     private static SideNoteFragment sSideNoteFragment;
     private static MainMenuFragment sMainMenuFragment;
 
-
+    public static void setNoteFragment(NoteFragment noteFragment) {
+        sNoteFragment = noteFragment;
+    }
+    private static NoteFragment sNoteFragment = null;
 
 
     private void openNoteFragment(int id, boolean isMagnet, String title, String content) {
-        NoteFragment noteFragment = NoteFragment.newInstance(id, isMagnet, title, content);
-        noteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
-        noteFragment.show(getSupportFragmentManager(), "noteFragment");
+        if (sNoteFragment != null) return;
+        sNoteFragment = NoteFragment.newInstance(id, isMagnet, title, content);
+        sNoteFragment.setStyle(DialogFragment.STYLE_NO_FRAME, android.R.style.Theme_Holo_Light_Dialog);
+        sNoteFragment.show(getSupportFragmentManager(), "noteFragment");
     }
 
     private void openMindmapFragment(String title) {
         sMindmapFragment = MindmapFragment.newInstance(title);
+        sMagnetGroupFloatingActionBarFragment = new MagnetGroupFloatingActionBarFragment();
         sMagnetFloatingActionBarFragment = new MagnetFloatingActionBarFragment();
+        sLineFloatingActionBarFragment = new LineFloatingActionBarFragment();
         sSearchFragment = new SearchFragment();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.contentArea, sMindmapFragment);
+        ft.add(R.id.contentAreaParent, sMagnetGroupFloatingActionBarFragment);
         ft.add(R.id.contentAreaParent, sMagnetFloatingActionBarFragment);
+        ft.add(R.id.contentAreaParent, sLineFloatingActionBarFragment);
         ft.add(R.id.contentAreaParent, sSearchFragment);
+        ft.hide(sMagnetGroupFloatingActionBarFragment);
+        ft.hide(sMagnetFloatingActionBarFragment);
+        ft.hide(sLineFloatingActionBarFragment);
+        ft.hide(sSearchFragment);
         ft.commit();
-
-        hideFloatingActionBar();
-        hideSearchFragment();
     }
 
     private void initMenus() {
@@ -133,14 +153,34 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void hideFloatingActionBar() {
+        if (sVisibleFloatingActionBar == null) return;
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.hide(sMagnetFloatingActionBarFragment);
+        ft.hide(sVisibleFloatingActionBar);
+        ft.commit();
+        sVisibleFloatingActionBar = null;
+    }
+
+    private void showFloatingActionBar(MagnetViewModel magnetViewModel) {
+        sVisibleFloatingActionBar = sMagnetFloatingActionBarFragment;
+        sMagnetFloatingActionBarFragment.openMagnetActions(magnetViewModel);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.show(sMagnetFloatingActionBarFragment);
         ft.commit();
     }
 
-    private void showFloatingActionBar() {
+    private void showFloatingActionBar(MagnetGroupViewModel magnetGroupViewModel) {
+        sVisibleFloatingActionBar = sMagnetGroupFloatingActionBarFragment;
+        sMagnetGroupFloatingActionBarFragment.openMagnetGroupActions(magnetGroupViewModel);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.show(sMagnetFloatingActionBarFragment);
+        ft.show(sMagnetGroupFloatingActionBarFragment);
+        ft.commit();
+    }
+
+    private void showFloatingActionBar(LineViewModel lineViewModel) {
+        sVisibleFloatingActionBar = sLineFloatingActionBarFragment;
+        sLineFloatingActionBarFragment.openLineActions(lineViewModel);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.show(sLineFloatingActionBarFragment);
         ft.commit();
     }
 
@@ -198,12 +238,17 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.remove(sMindmapFragment);
         ft.remove(sSearchFragment);
+        ft.remove(sMagnetGroupFloatingActionBarFragment);
         ft.remove(sMagnetFloatingActionBarFragment);
+        ft.remove(sLineFloatingActionBarFragment);
         ft.commit();
 
         sMindmapFragment = null;
         sSearchFragment = null;
+        sMagnetGroupFloatingActionBarFragment = null;
         sMagnetFloatingActionBarFragment = null;
+        sLineFloatingActionBarFragment = null;
+        sVisibleFloatingActionBar = null;
     }
 
     @Override
@@ -494,19 +539,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onSelectMagnet(Magnet magnet) {
-        sMagnetFloatingActionBarFragment.openMagnetActions(magnet);
-        showFloatingActionBar();
+    public void onSelectMagnet(MagnetViewModel magnetViewModel) {
+        showFloatingActionBar(magnetViewModel);
     }
 
     @Override
-    public void onSelectMagnetGroup(MagnetGroup magnetGroup) {
-        // TODO: implement some bar for this
+    public void onSelectMagnetGroup(MagnetGroupViewModel magnetGroupViewModel) {
+        showFloatingActionBar(magnetGroupViewModel);
     }
 
     @Override
-    public void onSelectLine(Line line) {
-        // TODO: implement some bar for this
+    public void onSelectLine(LineViewModel lineViewModel) {
+        showFloatingActionBar(lineViewModel);
     }
 
     @Override

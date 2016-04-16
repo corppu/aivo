@@ -21,7 +21,39 @@ import com.aivo.hyperion.aivo.models.Magnet;
 /**
  * Created by corppu on 23.2.2016.
  */
-public class MagnetViewModel {
+public class MagnetViewModel implements ViewModel{
+
+    private float mLastTouchX;
+    private float mLastTouchY;
+
+    public void setLastTouchPoint(float lastTouchX, float lastTouchY) {
+        mLastTouchX = lastTouchX;
+        mLastTouchY = lastTouchY;
+    }
+
+    public float getLastTouchX() {
+        return mLastTouchX;
+    }
+
+    public float getLastTouchY() {
+        return mLastTouchY;
+    }
+
+    @Override
+    public void moveBy(float distanceX, float distanceY) {
+        mTopIconCenterPointF.x -= distanceX;
+        mTopIconCenterPointF.y -= distanceY;
+        mBottomIconCenterPointF.x -= distanceX;
+        mBottomIconCenterPointF.y -= distanceY;
+        mCenterPointF.x -= distanceX;
+        mCenterPointF.y -= distanceY;
+        mOuterRectF.left -= distanceX;
+        mOuterRectF.right -= distanceX;
+        mOuterRectF.top -= distanceY;
+        mOuterRectF.bottom -= distanceY;
+    }
+
+
     private boolean mHasMoved = false;
     public boolean getHasMoved()
     {
@@ -31,6 +63,18 @@ public class MagnetViewModel {
     {
         mHasMoved = hasMoved;
         Log.d("mHasMoved", Boolean.toString(mHasMoved));
+    }
+
+
+    private boolean mIsHighLighted;
+    public boolean getIsHighLighted()
+    {
+        return mIsHighLighted;
+    }
+    public void setIsHighLighted(boolean isHighLighted)
+    {
+        mIsHighLighted = isHighLighted;
+        Log.d("mIsHighLighted", Boolean.toString(mIsHighLighted));
     }
 
     public void refresh() {
@@ -61,6 +105,16 @@ public class MagnetViewModel {
         Log.d("mIsSelected", Boolean.toString(mIsSelected));
     }
 
+
+    private MagnetGroupViewModel mMagnetGroupViewModel = null;
+    public void setMagnetGroupViewModel(MagnetGroupViewModel magnetGroupViewModel) {
+        mMagnetGroupViewModel = magnetGroupViewModel;
+    }
+    public MagnetGroupViewModel getMagnetGroupViewModel() {
+        return mMagnetGroupViewModel;
+    }
+
+
     // Model related
     private int mColor;
     private String mTitle;
@@ -74,8 +128,29 @@ public class MagnetViewModel {
         return mMagnet;
     }
 
+    @Override
+    public float getLeft() {
+        return mOuterRectF.left;
+    }
+
+    @Override
+    public float getTop() {
+        return mOuterRectF.top;
+    }
+
+    @Override
+    public float getRight() {
+        return mOuterRectF.right;
+    }
+
+    @Override
+    public float getBottom() {
+        return mOuterRectF.bottom;
+    }
+
     public MagnetViewModel() {
         mIsGhost = true;
+        mIsHighLighted = true;
         mIsSelected = false;
         mColor = ICON_COLOR;
         mTitle = TITLE;
@@ -87,6 +162,7 @@ public class MagnetViewModel {
 
     public MagnetViewModel(Magnet magnet) {
         mIsGhost = false;
+        mIsHighLighted = false;
         mIsSelected = false;
         mColor = magnet.getColor();
         mTitle = magnet.getTitle();
@@ -145,7 +221,7 @@ public class MagnetViewModel {
     static public final int TEXT_COLOR = Color.BLACK;
     static public final String TITLE = "Preview";
     static public final int INDICATOR_ICON_SIZE = HIGHLIGHT_BORDER_SIZE;
-    static public final int GHOST_ALPHA = 100;
+    static public final int GHOST_ALPHA = 50;
     static public final int OUTER_HALF_WIDTH_WITH_INDICATOR_SIZE = HALF_WIDTH + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
     static public final int OUTER_HALF_HEIGHT_WITH_INDICATOR_SIZE = HALF_HEIGHT + HIGHLIGHT_BORDER_SIZE + INDICATOR_ICON_SIZE;
 
@@ -158,7 +234,7 @@ public class MagnetViewModel {
 
     static final Bitmap sFavIcon = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(MainActivity.getContext().getResources(), R.drawable.ic_star_gold_2x), CIRLCE_RADIUS * 2, CIRLCE_RADIUS * 2, true);
     static public void draw(MagnetViewModel magnetViewModel, Canvas canvas, Paint paint) {
-        if (magnetViewModel.mIsSelected || magnetViewModel.mIsGhost) {
+        if (magnetViewModel.mIsHighLighted) {
             // Draw highlight borders
             paint.setColor(HIGHLIGHT_BORDER_COLOR);
             if (magnetViewModel.mIsGhost) paint.setAlpha(GHOST_ALPHA);
@@ -316,27 +392,7 @@ public class MagnetViewModel {
         return viewModelA.mOuterRectF.intersect(viewModelB.mOuterRectF);
     }
 
-    public boolean contains(MagnetViewModel magnetViewModel, float x, float y) {
+    public static boolean contains(MagnetViewModel magnetViewModel, float x, float y) {
         return magnetViewModel.mOuterRectF.contains(x, y);
-    }
-
-
-    public void move(float newTouchPointX, float newTouchPointY) {
-        float distanceX = mCenterPointF.x - newTouchPointX;
-        float distanceY = mCenterPointF.y - newTouchPointY;
-        moveDistance(distanceX, distanceY);
-    }
-
-    public void moveDistance(float distanceX, float distanceY) {
-        mTopIconCenterPointF.x -= distanceX;
-        mTopIconCenterPointF.y -= distanceY;
-        mBottomIconCenterPointF.x -= distanceX;
-        mBottomIconCenterPointF.y -= distanceY;
-        mCenterPointF.x -= distanceX;
-        mCenterPointF.y -= distanceY;
-        mOuterRectF.left -= distanceX;
-        mOuterRectF.right -= distanceX;
-        mOuterRectF.top -= distanceY;
-        mOuterRectF.bottom -= distanceY;
     }
 }

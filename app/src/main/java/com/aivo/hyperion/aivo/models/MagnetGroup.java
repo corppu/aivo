@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.aivo.hyperion.aivo.models.actions.Action;
 import com.aivo.hyperion.aivo.models.actions.MagnetGroupChangeData;
+import com.aivo.hyperion.aivo.models.actions.MagnetGroupDelete;
 import com.aivo.hyperion.aivo.models.actions.MagnetGroupMove;
 
 import org.json.JSONArray;
@@ -115,26 +116,9 @@ public class MagnetGroup {
         return count;
     }
 
-    // Should only be called from line, when creating a mindmap from json!
+    // DO NOT USE! Should only be called from line, when creating a mindmap from json!
     protected void addLine(Line line) {
         lines.add(line);
-    }
-
-    public void actionCreateLine(MagnetGroup magnetGroup) {
-        mediator.getMindmap().actionCreateLine(this, magnetGroup);
-    }
-
-    public void actionCreateMagnet(final int rowIndex, final int colIndex, final boolean createNewRowAlways,
-                                   String title, String content, final int color) {
-        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex, createNewRowAlways, title, content, color);
-    }
-    public void actionCreateMagnet(final int rowIndex, final int colIndex,
-                                   final boolean createNewRowAlways, Note noteReference) {
-        mediator.getMindmap().actionCreateMagnet(this, rowIndex, colIndex, createNewRowAlways, noteReference);
-    }
-
-    public void actionCreateMagnetChild(PointF pointF, String title, String content, final int color) {
-        mediator.getMindmap().actionCreateMagnetChild(this, pointF, title, content, color);
     }
 
     public void actionChangeData(String newTitle) {
@@ -149,5 +133,10 @@ public class MagnetGroup {
 
     public void actionMoveTo(MagnetGroup magnetGroupToMergeInto, final boolean keepLines) {
         throw new InternalError("MagnetGroup merging unimplemented for now!");
+    }
+
+    public void actionDelete() {
+        Action action = new MagnetGroupDelete(mediator, this);
+        mediator.getMindmap().getActionHandler().executeAction(action);
     }
 }

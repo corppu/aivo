@@ -42,12 +42,19 @@ public class Line {
         mediator = modelMediator_;
     }
 
+    // Normal constructor
     public Line(ModelMediator mediator_, MagnetGroup magnetGroup1, MagnetGroup magnetGroup2) {
         setMediator(mediator_);
         this.magnetGroup1 = magnetGroup1;
         this.magnetGroup2 = magnetGroup2;
         this.id = mediator.getMindmap().getNextId();
         this.points = new ArrayList<>();
+    }
+
+    // Constructor with midpoint
+    public Line(ModelMediator mediator_, MagnetGroup magnetGroup1, MagnetGroup magnetGroup2, PointF midPoint) {
+        this(mediator_, magnetGroup1, magnetGroup2);
+        this.points.add(midPoint);
     }
 
     /** Used to construct a line from a json object.
@@ -139,7 +146,7 @@ public class Line {
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
 
-    public void actionRemovePoint(PointF point) {
+    public void actionDeletePoint(PointF point) {
         Action action = new LinePointDelete(mediator, this, point);
         mediator.getMindmap().getActionHandler().executeAction(action);
     }
