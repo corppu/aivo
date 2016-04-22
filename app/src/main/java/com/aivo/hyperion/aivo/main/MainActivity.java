@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void hideSideNoteMenuFragment() {
-        LinearLayout sidePanel = (LinearLayout) findViewById(R.id.side_note_fragment);
+        RelativeLayout sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
         if (sidePanel != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)sidePanel.getLayoutParams();
             if (params.rightMargin > 0) params.rightMargin *= -1;
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity
         ft.show(sSideNoteFragment);
         ft.commit();
 
-        LinearLayout sidePanel = (LinearLayout) findViewById(R.id.side_note_fragment);
+        RelativeLayout sidePanel = (RelativeLayout) findViewById(R.id.side_note_fragment);
         if (sidePanel != null) {
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams)sidePanel.getLayoutParams();
             if (params.rightMargin > 0) params.rightMargin *= -1;
