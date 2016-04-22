@@ -5,8 +5,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import com.ogaclejapan.arclayout.ArcLayout;
 
 import com.aivo.hyperion.aivo.R;
 
@@ -18,7 +20,7 @@ import com.aivo.hyperion.aivo.R;
  * Use the {@link SideNoteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SideNoteFragment extends Fragment {
+public class SideNoteFragment extends Fragment implements View.OnClickListener  {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -27,7 +29,7 @@ public class SideNoteFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private ArcLayout arcLayout;
     private OnFragmentInteractionListener mListener;
 
     public SideNoteFragment() {
@@ -65,13 +67,30 @@ public class SideNoteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        View view = inflater.inflate(R.layout.fragment_side_note,container,false);
+
+        view.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View v, MotionEvent event) {
+
+                if (event.getAction() == MotionEvent.ACTION_MOVE) {
+
+                }
+                return false;
+            }
+        });
+
+
+
+
+
 //        container.setOnTouchListener(new View.OnTouchListener() {
 //            public boolean onTouch(View v, MotionEvent event) {
 //                return true;
 //            }
 //        });
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_side_note, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -84,12 +103,12 @@ public class SideNoteFragment extends Fragment {
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
 //            throw new RuntimeException(context.toString()
 //                    + " must implement OnFragmentInteractionListener");
-//        }
+        }
     }
 
     @Override
@@ -111,5 +130,10 @@ public class SideNoteFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    public void onClick(View view){
+
+
     }
 }
