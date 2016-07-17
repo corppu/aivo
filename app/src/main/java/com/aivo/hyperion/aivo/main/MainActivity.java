@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity
         ft.hide(sLineFloatingActionBarFragment);
         ft.hide(sSearchFragment);
         ft.commit();
+        initMenus();
     }
 
     private void initMenus() {
@@ -124,10 +125,9 @@ public class MainActivity extends AppCompatActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.add(R.id.contentAreaParent, sMainMenuFragment);
         ft.add(R.id.contentAreaParent, sSideNoteFragment);
+        ft.hide(sSideNoteFragment);
+        ft.hide(sMainMenuFragment);
         ft.commit();
-
-        hideMainMenuFragment();
-        hideSideNoteMenuFragment();
     }
 
     private void removeMenus() {
@@ -416,7 +416,7 @@ public class MainActivity extends AppCompatActivity
     public void onMindmapOpen(Mindmap mindmap) {
         mMindmapTitle = mindmap.getTitle();
         openMindmapFragment(mMindmapTitle);
-        initMenus();
+//        initMenus();
     }
 
     @Override

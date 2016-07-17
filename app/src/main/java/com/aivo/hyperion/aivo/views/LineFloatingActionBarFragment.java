@@ -21,7 +21,8 @@ import com.aivo.hyperion.aivo.views.mindmap.LineViewModel;
 public class LineFloatingActionBarFragment extends Fragment implements View.OnClickListener{
 
     private ImageButton trashBtn;
-    private ImageButton toggleMiddlePointBtn;
+    private ImageButton toggleCurveBtn;
+    private ImageButton toggleTypeBtn;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,9 +67,14 @@ public class LineFloatingActionBarFragment extends Fragment implements View.OnCl
             trashBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_trash);
             trashBtn.setOnClickListener(this);
         }
-        if (toggleMiddlePointBtn == null) {
-            toggleMiddlePointBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_middle_point_toggle);
-            toggleMiddlePointBtn.setOnClickListener(this);
+        if (toggleCurveBtn == null) {
+            toggleCurveBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_curve_toggle);
+            toggleCurveBtn.setOnClickListener(this);
+        }
+
+        if (toggleTypeBtn == null) {
+            toggleTypeBtn = (ImageButton) floatbarView.findViewById(R.id.floatbar_btn_linestyle_toggle);
+            toggleTypeBtn.setOnClickListener(this);
         }
     }
 
@@ -80,6 +86,13 @@ public class LineFloatingActionBarFragment extends Fragment implements View.OnCl
         switch (view.getId()) {
             case R.id.floatbar_btn_trash:
                 mLineViewModel.getModel().actionDelete();
+                break;
+
+            case R.id.floatbar_btn_linestyle_toggle:
+                int current = mLineViewModel.getModel().getType();
+                if (current >= 2) current = 0;
+                else current++;
+                mLineViewModel.getModel().actionChangeType(current);
                 break;
 
             default:

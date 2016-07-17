@@ -1,12 +1,19 @@
 package com.aivo.hyperion.aivo.views.mindmap;
 
 import android.graphics.Canvas;
+import android.graphics.ComposePathEffect;
+import android.graphics.CornerPathEffect;
+import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PathEffect;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.graphics.SumPathEffect;
 import android.util.Log;
 import com.aivo.hyperion.aivo.main.MainActivity;
 import com.aivo.hyperion.aivo.models.Line;
+import com.aivo.hyperion.aivo.models.Magnet;
 import com.aivo.hyperion.aivo.models.MagnetGroup;
 import java.util.Map;
 
@@ -101,11 +108,56 @@ public class LineViewModel implements ViewModel{
     private boolean mIsGhost = true;
     private boolean mIsSelected = true;
 
+    public boolean isDashed() {
+        return mIsDashed;
+    }
+
+    public void setIsDashed(boolean isDashed) {
+        this.mIsDashed = isDashed;
+    }
+
+    public boolean isDotted() {
+        return mIsDotted;
+    }
+
+    public void setIsDotted(boolean isDotted) {
+        this.mIsDotted = isDotted;
+    }
+
+    public boolean isCurved() {
+        return mIsCurved;
+    }
+
+    public void setIsCurved(boolean isCurved) {
+        this.mIsCurved = isCurved;
+    }
+
+    private boolean mIsDotted = false;
+    private boolean mIsDashed = false;
+    private boolean mIsCurved = false;
+
     private boolean mIsHighLighted;
     public boolean getIsHighLighted()
     {
         return mIsHighLighted;
     }
+
+    private Path mLinePath = new Path();
+
+
+    static private final DashPathEffect sDottedPathEffect = new DashPathEffect(
+            new float[]{5.0f, 5.0f}, //interval
+            0);       //phase
+
+    static private final DashPathEffect sDashedPathEffect = new DashPathEffect(
+            new float[]{MagnetViewModel.CIRLCE_RADIUS, MagnetViewModel.CIRLCE_RADIUS}, //interval
+            0);       //phase
+
+    static private final CornerPathEffect sCornerPathEffect = new CornerPathEffect(60.0f);
+
+    static private final ComposePathEffect sDottedCornerPathEffect = new ComposePathEffect(sDottedPathEffect, sCornerPathEffect);
+    static private final ComposePathEffect sDashedCornerPathEffect = new ComposePathEffect(sDashedPathEffect, sCornerPathEffect);
+
 
     @Override
     public void setLastTouchPoint(float canvasTouchX, float canvasTouchY) {
@@ -164,9 +216,38 @@ public class LineViewModel implements ViewModel{
     public void refresh() {
         if (mLine.getPoints().isEmpty()) {
             middlePointF = null;
+            mIsCurved = false;
         } else {
             middlePointF = new PointF();
             middlePointF.set(mLine.getPoints().get(0));
+            mIsCurved = true;
+        }
+
+        if(mLine.getType() == 0) {
+            mIsDotted = false;
+            mIsDashed = false;
+        }
+       else  if (mLine.getType() == 1) {
+            mIsDotted = true;
+            mIsDashed = false;
+        }
+        else if (mLine.getType() == 2) {
+            mIsDotted = false;
+            mIsDashed = true;
+        }
+    }
+
+    private void createPath() {
+        if (middlePointF == null) {
+            mLinePath = new Path();
+            mLinePath.moveTo(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY());
+            mLinePath.lineTo(mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY());
+        }
+        else {
+            mLinePath = new Path();
+            mLinePath.moveTo(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY());
+            mLinePath.lineTo(middlePointF.x, middlePointF.y);
+            mLinePath.lineTo(mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY());
         }
     }
 
@@ -222,55 +303,12 @@ public class LineViewModel implements ViewModel{
         mColor = MainActivity.getUser().getTheme().getColorLine();
     }
 
-
-//    Float parentSideX = 0f;
-//    Float parentSideY = 0f;
-//    Float childSideX = 0f;
-//    Float childSideY = 0f;
-
     public PointF createMiddlePointF() {
-//        //getLineStartAndEnd();
-//        return new PointF(
-//                (parentSideX + childSideX) / 2.0f,
-//                (parentSideY + childSideY) / 2.0f
-//        );
-
         return new PointF(
                 (mParentMagnetGroupViewModel.getCenterX() + mChildMagnetGroupViewModel.getCenterX()) / 2f,
                 (mParentMagnetGroupViewModel.getCenterY() + mChildMagnetGroupViewModel.getCenterY()) / 2f
         );
     }
-//
-//    private void getLineStartAndEnd() {
-//        RectF rectFParent = new RectF();
-//        RectF rectFChild = new RectF();
-//
-//        mParentMagnetGroupViewModel.getOuterRectF(rectFParent);
-//        mChildMagnetGroupViewModel.getOuterRectF(rectFChild);
-//
-//        // The child is in the right side  of parent
-//        if (mParentMagnetGroupViewModel.getCenterX() < mChildMagnetGroupViewModel.getCenterX()) {
-//            parentSideX = rectFParent.right;
-//            childSideX = rectFChild.left;
-//        }
-//        // The child is in the left side of parent
-//        else {
-//            parentSideX = rectFParent.left;
-//            childSideX = rectFChild.right;
-//        }
-//
-//        // The child is in the bottom side of parent
-//        if (mParentMagnetGroupViewModel.getCenterY() < mChildMagnetGroupViewModel.getCenterY()) {
-//            parentSideY = rectFParent.bottom;
-//            childSideY = rectFChild.top;
-//        }
-//
-//        // The child is in the top side of parent
-//        else {
-//            parentSideY = rectFParent.top;
-//            childSideY = rectFChild.bottom;
-//        }
-//    }
 
     public LineViewModel(Line line, Map<MagnetGroup, MagnetGroupViewModel> magnetMagnetGroupViewModelMap) {
         mParentMagnetGroupViewModel = magnetMagnetGroupViewModelMap.get(line.getMagnetGroup1());
@@ -279,13 +317,8 @@ public class LineViewModel implements ViewModel{
         mIsGhost = false;
         mIsSelected = false;
 
-//        if (line.getPoints().isEmpty()) {
-//            createMiddlePointF();
-//        }
-//        else
         refresh();
-
-       mColor = MainActivity.getUser().getTheme().getColorLine();
+        mColor = MainActivity.getUser().getTheme().getColorLine();
     }
 
     public void setColor(int color) {
@@ -297,31 +330,41 @@ public class LineViewModel implements ViewModel{
     }
 
     public void draw(Canvas canvas, Paint paint) {
+        createPath();
+
+        Paint.Style oldStyle = paint.getStyle();
+        PathEffect oldPathEffect = paint.getPathEffect();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setPathEffect(sCornerPathEffect);
+
         if (mIsHighLighted) {
             paint.setColor(MagnetViewModel.HIGHLIGHT_BORDER_COLOR);
             paint.setStrokeWidth(MagnetViewModel.HIGHLIGHT_BORDER_SIZE);
             if (mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);
-
-            if (middlePointF != null) {
-                canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), middlePointF.x, middlePointF.y, paint);
-                canvas.drawLine(middlePointF.x, middlePointF.y, mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
-                canvas.drawCircle(middlePointF.x, middlePointF.y, MagnetViewModel.CIRLCE_RADIUS + MagnetViewModel.HIGHLIGHT_BORDER_SIZE, paint);
-            } else {
-                canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
-            }
+            canvas.drawPath(mLinePath, paint);
         }
 
-        paint.setColor(mColor);
+
         paint.setStrokeWidth(MagnetViewModel.BORDER_SIZE);
+        paint.setColor(mColor);
         if (mIsGhost) paint.setAlpha(MagnetViewModel.GHOST_ALPHA);
 
-        if (middlePointF != null) {
-            canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), middlePointF.x, middlePointF.y, paint);
-            canvas.drawLine(middlePointF.x, middlePointF.y, mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
-            canvas.drawCircle(middlePointF.x, middlePointF.y, MagnetViewModel.CIRLCE_RADIUS, paint);
-        } else {
-            canvas.drawLine(mParentMagnetGroupViewModel.getCenterX(), mParentMagnetGroupViewModel.getCenterY(), mChildMagnetGroupViewModel.getCenterX(), mChildMagnetGroupViewModel.getCenterY(), paint);
+        if (mIsDotted) {
+            paint.setPathEffect(sDottedCornerPathEffect);
         }
+
+        else if (mIsDashed) {
+            paint.setPathEffect(sDashedCornerPathEffect);
+        }
+
+        canvas.drawPath(mLinePath, paint);
+
+        paint.setStyle(oldStyle);
+        paint.setPathEffect(oldPathEffect);
+//        if (middlePointF != null) {
+//            paint.setColor(mColor);
+//            canvas.drawCircle(middlePointF.x, middlePointF.y, MagnetViewModel.CIRLCE_RADIUS, paint);
+//        }
     }
 }
 

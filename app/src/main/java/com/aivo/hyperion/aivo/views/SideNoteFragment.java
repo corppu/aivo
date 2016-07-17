@@ -20,7 +20,7 @@ import com.aivo.hyperion.aivo.R;
  * Use the {@link SideNoteFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SideNoteFragment extends Fragment implements View.OnClickListener  {
+public class SideNoteFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -69,26 +69,6 @@ public class SideNoteFragment extends Fragment implements View.OnClickListener  
 
         View view = inflater.inflate(R.layout.fragment_side_note,container,false);
 
-        view.setOnTouchListener(new View.OnTouchListener() {
-
-            public boolean onTouch(View v, MotionEvent event) {
-
-                if (event.getAction() == MotionEvent.ACTION_MOVE) {
-
-                }
-                return false;
-            }
-        });
-
-
-
-
-
-//        container.setOnTouchListener(new View.OnTouchListener() {
-//            public boolean onTouch(View v, MotionEvent event) {
-//                return true;
-//            }
-//        });
         // Inflate the layout for this fragment
         return view;
     }
@@ -130,10 +110,5 @@ public class SideNoteFragment extends Fragment implements View.OnClickListener  
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
-    }
-
-    public void onClick(View view){
-
-
     }
 }

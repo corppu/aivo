@@ -1,9 +1,6 @@
 package com.aivo.hyperion.aivo.views;
 
-import android.net.Uri;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.support.v4.app.Fragment;
-
 import com.aivo.hyperion.aivo.R;
 
 /**

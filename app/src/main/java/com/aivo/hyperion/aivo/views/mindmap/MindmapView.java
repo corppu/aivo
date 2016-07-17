@@ -820,8 +820,8 @@ implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListene
 
             float minLeft = mLeftMostViewModel.getLeft() - ((float)getMeasuredWidth()) / 2f;
             float minTop = mTopMostViewModel.getTop() - ((float)getMeasuredHeight()) / 2f;
-            float maxLeft = mRightMostViewModel.getRight() - (float)getMeasuredWidth();
-            float maxTop = mBottomMostViewModel.getBottom() - (float)getMeasuredHeight();
+            float maxLeft = mRightMostViewModel.getRight() - (float)getMeasuredWidth() / 2f;
+            float maxTop = mBottomMostViewModel.getBottom() - (float)getMeasuredHeight() / 2f;
 
             mTopLeft.x += distanceX / mScaleFactor;
             mTopLeft.y += distanceY / mScaleFactor;

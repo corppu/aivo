@@ -19,16 +19,16 @@
         android:layout_width="50dp"
         android:background="@drawable/ic_trash_bin_2x"
         android:id="@+id/floatbar_btn_trash"
-        android:layout_toStartOf="@+id/floatbar_btn_arrow_left"
-        android:layout_toLeftOf="@+id/floatbar_btn_arrow_left"
+        android:layout_toStartOf="@+id/floatbar_btn_curve_toggle"
+        android:layout_toLeftOf="@+id/floatbar_btn_curve_toggle"
         android:layout_height="match_parent" >
     </ImageButton>
 
     <View android:layout_height="fill_parent"
         android:layout_width="2px"
         android:background="#90909090"
-        android:layout_toLeftOf="@+id/floatbar_btn_arrow_left"
-        android:layout_toStartOf="@+id/floatbar_btn_arrow_left"
+        android:layout_toLeftOf="@+id/floatbar_btn_curve_toggle"
+        android:layout_toStartOf="@+id/floatbar_btn_curve_toggle"
         />
 
     <ImageButton
@@ -39,13 +39,35 @@
         android:layout_marginBottom="5dp"
         android:layout_marginTop="5dp"
         android:layout_width="50dp"
-        android:id="@+id/floatbar_btn_middle_point_toggle"
+        android:id="@+id/floatbar_btn_curve_toggle"
         android:layout_height="match_parent"
         android:layout_centerInParent="true"
         android:background="@drawable/sidenote_button"
         android:layout_gravity="center_horizontal">
     </ImageButton>
 
+    <View android:layout_height="fill_parent"
+        android:layout_width="2px"
+        android:background="#90909090"
+        android:layout_toRightOf="@+id/floatbar_btn_curve_toggle"
+        android:layout_toEndOf="@+id/floatbar_btn_curve_toggle"
+        />
 
+    <ImageButton
+        android:layout_marginStart="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_width="50dp"
+        android:id="@+id/floatbar_btn_linestyle_toggle"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:background="@drawable/sidenote_button"
+        android:layout_toRightOf="@+id/floatbar_btn_curve_toggle"
+        android:layout_toEndOf="@+id/floatbar_btn_curve_toggle"
+        android:layout_gravity="center_horizontal">
+    </ImageButton>
 
 </RelativeLayout>
